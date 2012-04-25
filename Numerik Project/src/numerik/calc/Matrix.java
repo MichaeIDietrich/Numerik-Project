@@ -11,7 +11,7 @@ public class Matrix {
   private int rows;
   private int cols;
   
-  private double[][] values;
+  double[][] values;
   
   
   // constructors
@@ -62,6 +62,7 @@ public class Matrix {
   
   
   public Matrix(String file) {
+    
     try {
       BufferedReader br = new BufferedReader(new FileReader(file));
       
@@ -151,6 +152,15 @@ public class Matrix {
     }
     
     return transposedMatrix;
+  }
+  
+  
+  @Override
+  public Matrix clone() {
+    
+    Matrix copy = new Matrix(rows, cols);
+    copy.values = values.clone();
+    return copy;
   }
   
   
