@@ -9,11 +9,11 @@ public class MathLib {
   
   public static BigDecimal round(BigDecimal value) {
     
-    // Platzhalter für Rundung
+    // ziemlich wahrscheinlich noch fehlerhaft -> ungenutzte Variablen
     if (active) {
       
       long tempmant = 0;
-      //double tempexp = 0;
+      double tempexp = 0;
       String tempstr[];
       boolean sign = value.signum() == -1;
       value = value.abs();
@@ -39,7 +39,7 @@ public class MathLib {
         
       } else {
         
-        //tempexp  = fracDigits.length();
+        tempexp  = fracDigits.length();
         tempmant = Long.valueOf( fracDigits );
         
         fracDigits = String.valueOf(tempmant);
@@ -69,10 +69,6 @@ public class MathLib {
       
 //      System.out.println("nachher: "+ dec +", d_mantisse: "+ d_mantisse );
     }
-    return value;
-    
-    
-    
     return value;
   }
   
