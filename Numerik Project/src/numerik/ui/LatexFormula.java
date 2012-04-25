@@ -26,7 +26,7 @@ public class LatexFormula {
   }
   
   public void addString(String str) {
-    
+    formula.append(str);
   }
   
   public Image toImage() {

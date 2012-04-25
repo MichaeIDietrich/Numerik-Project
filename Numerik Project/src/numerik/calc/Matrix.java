@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 public class Matrix {
@@ -11,7 +12,7 @@ public class Matrix {
   private int rows;
   private int cols;
   
-  double[][] values;
+  BigDecimal[][] values;
   
   
   // constructors
@@ -19,11 +20,18 @@ public class Matrix {
     this.rows = rows;
     this.cols = cols;
     
-    values = new double[rows][cols];
+    values = new BigDecimal[rows][cols];
+    
+    for (int m = 0; m < rows; m++) {
+      for (int n = 0; n < cols; n++) {
+        values[m][n] = BigDecimal.ZERO;
+      }
+    }
+
   }
   
   
-  public Matrix(double[][] values) {
+  public Matrix(BigDecimal[][] values) {
     this.rows = values.length;
     this.cols = values[0].length;
     
@@ -31,14 +39,14 @@ public class Matrix {
   }
   
   
-  public Matrix(double[] values, int cols) {
+  public Matrix(BigDecimal[] values, int cols) {
     this.cols = cols;
     this.rows = values.length / cols;
     
-    this.values = new double[rows][cols];
+    this.values = new BigDecimal[rows][cols];
     
     int m = 0, n = 0;
-    for (double v : values) {
+    for (BigDecimal v : values) {
       this.values[m][n] = v;
       
       n++;
@@ -50,12 +58,12 @@ public class Matrix {
   }
   
   
-  public Matrix(int cols, int rows, double value) {
+  public Matrix(int cols, int rows, BigDecimal initValue) {
     this(cols, rows);
     
     for (int m = 0; m < values.length; m++) {
       for (int n = 0; n < values[m].length; n++) {
-        values[m][n] = value;
+        values[m][n] = initValue;
       }
     }
   }
@@ -67,19 +75,21 @@ public class Matrix {
       BufferedReader br = new BufferedReader(new FileReader(file));
       
       String line;
-      ArrayList<ArrayList<Double>> entries = new ArrayList<ArrayList<Double>>();
+      ArrayList<ArrayList<BigDecimal>> entries = new ArrayList<ArrayList<BigDecimal>>();
       while ((line = br.readLine()) != null && !line.equals("")) {
-        ArrayList<Double> entry = new ArrayList<Double>();
+        
+        ArrayList<BigDecimal> entry = new ArrayList<BigDecimal>();
         entries.add(entry);
+        
         for (String number : line.split(",")) {
-          entry.add(Double.parseDouble(number));
+          entry.add(new BigDecimal(number));
         }
       }
       
       rows = entries.size();
       cols = entries.get(0).size();
       
-      values = new double[rows][cols];
+      values = new BigDecimal[rows][cols];
       
       for (int n = 0; n < rows; n++) {
         for (int m = 0; m < cols; m++) {
@@ -104,18 +114,18 @@ public class Matrix {
     return cols;
   }
   
-  public double get(int row, int col) {
+  public BigDecimal get(int row, int col) {
     if (!isValidIndex(row, col)) {
-      System.err.println("Matrix-Get-Function: Index out of Bounds: row=" + row + ", col=" + col);
-      return 0;
+      System.err.println("Matrix.get-Funktion: Index out of Bounds: row=" + row + ", col=" + col);
+      return BigDecimal.ZERO;
     }
     
     return values[row][col];
   }
   
-  public void set(int row, int col, double value) {
+  public void set(int row, int col, BigDecimal value) {
     if (!isValidIndex(row, col)) {
-      System.err.println("Matrix-Set-Function: Index out of Bounds: row=" + row + ", col=" + col);
+      System.err.println("Matrix.set-Funktion: Index out of Bounds: row=" + row + ", col=" + col);
     }
     
     values[row][col] = value;
@@ -135,7 +145,7 @@ public class Matrix {
     
     Matrix identity = new Matrix(rows, cols);
     for (int i = 0; i < rows; i++) {
-      identity.set(i, i, 1d);
+      identity.set(i, i, BigDecimal.ONE);
     }
     
     return identity;

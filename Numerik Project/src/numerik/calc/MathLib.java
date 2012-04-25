@@ -75,7 +75,7 @@ public class MathLib {
   
   public static BigDecimal pow10(int exponent) {
     if (exponent < 0) {
-      System.err.println("pow10-Function: only positive exponents: exponent=" + exponent);
+      System.err.println("MathLib.pow10-Funktion: Nur positive Exponenten erlaubt: exponent=" + exponent);
       return BigDecimal.ZERO;
     }
     
