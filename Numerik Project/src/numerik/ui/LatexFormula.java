@@ -21,7 +21,7 @@ public class LatexFormula
         // weitere Sonderzeichen hinzufügen
         
         characterTable = new HashMap<String, String>();
-        characterTable.put("kappa", "\\{\\kappa}");
+        //characterTable.put("kappa", "\\{\\kappa}");
         characterTable.put("mal", "\\cdot");
         
     }
@@ -79,11 +79,26 @@ public class LatexFormula
     }
     
     
+    public void addCharacter(String name)
+    {
+        if (characterTable.containsKey(name))
+        {
+            formula.append(characterTable.get(name));
+        }
+        else
+        {
+            formula.append("\\{\\");
+            formula.append(name);
+            formula.append("}");
+        }
+    }
+    
+    
     public Image toImage()
     {
         
-        TeXFormula fomule = new TeXFormula(formula.toString());
-        TeXIcon icon = fomule.createTeXIcon(TeXConstants.STYLE_DISPLAY, 20);
+        TeXFormula texFormula = new TeXFormula(formula.toString());
+        TeXIcon icon = texFormula.createTeXIcon(TeXConstants.STYLE_DISPLAY, 20);
         BufferedImage b = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_4BYTE_ABGR);
         icon.paintIcon(new JLabel(), b.getGraphics(), 0, 0);
         
