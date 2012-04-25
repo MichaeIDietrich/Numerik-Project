@@ -33,6 +33,7 @@ public class Matrix
         
     }
     
+    
     public Matrix(BigDecimal[][] values)
     {
         this.rows = values.length;
@@ -40,6 +41,7 @@ public class Matrix
         
         this.values = values;
     }
+    
     
     public Matrix(BigDecimal[] values, int cols)
     {
@@ -62,6 +64,7 @@ public class Matrix
         }
     }
     
+    
     public Matrix(int cols, int rows, BigDecimal initValue)
     {
         this(cols, rows);
@@ -74,6 +77,7 @@ public class Matrix
             }
         }
     }
+    
     
     public Matrix(String file)
     {
@@ -120,16 +124,19 @@ public class Matrix
         }
     }
     
+    
     // getters
     public int getRows()
     {
         return rows;
     }
     
+    
     public int getCols()
     {
         return cols;
     }
+    
     
     public BigDecimal get(int row, int col)
     {
@@ -142,6 +149,7 @@ public class Matrix
         return values[row][col];
     }
     
+    
     public void set(int row, int col, BigDecimal value)
     {
         if (!isValidIndex(row, col))
@@ -152,11 +160,13 @@ public class Matrix
         values[row][col] = value;
     }
     
+    
     // functions
     public boolean isQuadratic()
     {
         return rows == cols;
     }
+    
     
     public Matrix getIdentity()
     {
@@ -189,6 +199,7 @@ public class Matrix
         
         return transposedMatrix;
     }
+    
     
     @Override
     public Matrix clone()

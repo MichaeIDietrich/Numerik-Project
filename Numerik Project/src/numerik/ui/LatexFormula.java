@@ -12,42 +12,72 @@ import org.scilab.forge.jlatexmath.TeXIcon;
 
 public class LatexFormula
 {
+    private StringBuilder formula;
+    
+    private static  HashMap<String, String> characterTable;
     
     static
     {
+        // weitere Sonderzeichen hinzufügen
         
-        HashMap<String, String> characterTable = new HashMap<String, String>();
+        characterTable = new HashMap<String, String>();
         characterTable.put("kappa", "\\{\\kappa}");
         characterTable.put("mal", "\\cdot");
         
     }
     
-    private StringBuilder formula;
     
     public LatexFormula()
     {
         formula = new StringBuilder();
     }
     
+    
     public LatexFormula(String formula)
     {
         this.formula = new StringBuilder(formula);
     }
+    
     
     public void clear()
     {
         formula = new StringBuilder();
     }
     
+    
     public void addString(String str)
     {
         formula.append(str);
     }
     
+    
     public void addString(String str, boolean bold, boolean italic, boolean underline)
     {
-        
+        if (bold) formula.append("\\textbf{");
+        if (italic) formula.append("\\textit{");
+        if (underline) formula.append("\\underline{");
+        formula.append(str);
+        if (bold) formula.append("}");
+        if (bold) formula.append("}");
+        if (bold) formula.append("}");
     }
+    
+    
+    public void addExponent(String exponent)
+    {
+        formula.append("^{");
+        formula.append(exponent);
+        formula.append("}");
+    }
+    
+    
+    public void addIndex(String index)
+    {
+        formula.append("_{");
+        formula.append(index);
+        formula.append("}");
+    }
+    
     
     public Image toImage()
     {
