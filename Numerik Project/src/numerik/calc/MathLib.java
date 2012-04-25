@@ -80,8 +80,10 @@ public class MathLib {
    * Compute the natural logarithm of x to a given scale, x > 0.
    */
   public static BigDecimal ln(BigDecimal x) {
+    // diese beiden Variablen vllt. von als Parameter oder so übergeben, bzw. von precision abhängig machen
     int ITER = 1000;
     MathContext context = new MathContext(100);
+    
     if (x.equals(BigDecimal.ONE)) {
         return BigDecimal.ZERO;
     }
