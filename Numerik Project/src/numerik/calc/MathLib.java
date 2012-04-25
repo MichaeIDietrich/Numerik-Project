@@ -1,6 +1,6 @@
 package numerik.calc;
 
-import java.math.BigDecimal;
+import java.math.*;
 
 public class MathLib {
   
@@ -60,9 +60,9 @@ public class MathLib {
         }
       }
       
-      value = value.multiply(pow10(mantissa + 1)).setScale(0, BigDecimal.ROUND_FLOOR);
+      value = value.multiply(new BigDecimal(10).pow(mantissa + 1)).setScale(0, BigDecimal.ROUND_FLOOR);
       value = value.divide(new BigDecimal(10), 0, BigDecimal.ROUND_HALF_UP);
-      value = value.divide(pow10(mantissa), precision, BigDecimal.ROUND_HALF_UP);
+      value = value.divide(new BigDecimal(10).pow(mantissa), precision, BigDecimal.ROUND_HALF_UP);
       if (sign) {
         value = value.negate();
       }
@@ -73,24 +73,35 @@ public class MathLib {
   }
   
   
-  public static BigDecimal pow10(int exponent) {
-    if (exponent < 0) {
-      System.err.println("MathLib.pow10-Funktion: Nur positive Exponenten erlaubt: exponent=" + exponent);
-      return BigDecimal.ZERO;
-    }
-    
-    if (exponent == 1) {
-      return BigDecimal.ONE;
-    }
-    
-    StringBuilder number = new StringBuilder("10");
-    
-    for (int i = 1; i < exponent; i++) {
-      number.append("0");
-    }
-    return new BigDecimal(number.toString());
-  }
   
+  // Funktion stammt von: http://www.humbug.in/stackoverflow/de/logarithm-of-a-bigdecimal-739532.html
+  // siehe unten auf der Seite
+  /**
+   * Compute the natural logarithm of x to a given scale, x > 0.
+   */
+  public static BigDecimal ln(BigDecimal x) {
+    int ITER = 1000;
+    MathContext context = new MathContext(100);
+    if (x.equals(BigDecimal.ONE)) {
+        return BigDecimal.ZERO;
+    }
+
+    x = x.subtract(BigDecimal.ONE);
+    BigDecimal ret = new BigDecimal(ITER + 1);
+    for (long i = ITER; i >= 0; i--) {
+    BigDecimal N = new BigDecimal(i / 2 + 1).pow(2);
+        N = N.multiply(x, context);
+        ret = N.divide(ret, context);
+
+        N = new BigDecimal(i + 1);
+        ret = ret.add(N, context);
+
+    }
+
+    ret = x.divide(ret, context);
+    return ret;
+}
+
   
   // getters and setters
   public static int getPrecision() {
