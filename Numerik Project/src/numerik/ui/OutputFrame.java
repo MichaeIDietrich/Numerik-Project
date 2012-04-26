@@ -3,12 +3,41 @@ package numerik.ui;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 
+import numerik.calc.Matrix;
+
 public class OutputFrame extends JFrame {
   
   public OutputFrame() {
     super("Numerik");
     
-    final LatexFormula formula = new LatexFormula("M={\\begin{pmatrix} a_1 & a_2 & a_3 \\\\ b_1 & b_2 & b_3 \\\\ c_1 & c_2 & c_3  \\end{pmatrix}}^{T}");
+    final LatexFormula formula = new LatexFormula();
+    //formula.addLatexFormula("\\{ \\kappa} ");
+    formula.addSpecialCharacter("kappa");
+    formula.addText("(x)=");
+    formula.addMatrix(Matrix.getIdentity(4));
+    formula.addExponent("T");
+    formula.addNewLine();
+    
+    formula.addFraction();
+    
+    formula.startGroup();
+    formula.addSpecialCharacter("kappa");
+    formula.addSpecialCharacter("*");
+    formula.addText("x");
+    formula.endGroup();
+    
+    formula.startGroup();
+    formula.addSpecialCharacter("kappa");
+    formula.addSpecialCharacter("*");
+    formula.addText("x");
+    formula.endGroup();
+    
+    formula.addText("=z");
+    
+    formula.addNewLine();
+    formula.addText("hallo");
+    formula.addNewLine();
+    formula.addText("hallo", false, true, false);
     
     
     this.add(new JScrollPane(new ImageComponent(formula.toImage())));
