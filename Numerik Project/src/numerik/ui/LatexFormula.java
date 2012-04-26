@@ -13,7 +13,8 @@ import org.scilab.forge.jlatexmath.TeXIcon;
 
 public class LatexFormula
 {
-    private StringBuilder formula;
+    // package scope
+    StringBuilder formula;
     
     private static  HashMap<String, String> characterTable;
     
@@ -31,14 +32,13 @@ public class LatexFormula
     
     public LatexFormula()
     {
-        formula = new StringBuilder("\\begin{array}{l}");
+        formula = new StringBuilder();
     }
     
     
     public LatexFormula(String latexFormula)
     {
-        this();
-        formula.append(latexFormula);
+        formula = new StringBuilder(latexFormula);
     }
     
     
@@ -201,6 +201,14 @@ public class LatexFormula
     }
     
     
+    public LatexFormula addFormula(LatexFormula formula)
+    {
+        formula.addLatexFormula(formula.formula.toString());
+        
+        return this;
+    }
+    
+    
     public Image toImage()
     {
         return toImage(20);
@@ -210,7 +218,7 @@ public class LatexFormula
     public Image toImage(int size)
     {
         System.out.println(formula.toString());
-        TeXFormula texFormula = new TeXFormula(formula.toString() + "\\end{array}");
+        TeXFormula texFormula = new TeXFormula("\\begin{array}{l}" + formula.toString() + "\\end{array}");
         TeXIcon icon = texFormula.createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
         BufferedImage b = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_4BYTE_ABGR);
         icon.setForeground(Color.BLACK);
