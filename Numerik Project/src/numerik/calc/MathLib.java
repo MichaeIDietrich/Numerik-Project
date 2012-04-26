@@ -4,10 +4,8 @@ import java.math.*;
 
 public class MathLib
 {
-    
     private static int precision;
     private static boolean active;
-    
     
     public static BigDecimal round(BigDecimal value)
     {
@@ -124,11 +122,21 @@ public class MathLib
     
     
     // Logarithmus zur Basis 10
-    public static BigDecimal lg(BigDecimal value) 
+    public static BigDecimal log10(BigDecimal value) 
     {
         return ln(value).divide(ln(BigDecimal.TEN));
     }
     
+    // Berechnen eines Exponenten einer Zahl
+    public static int getExponent(BigDecimal value)
+    {
+        BigDecimal absoluteDecimal = value.abs();
+        BigDecimal exponent = MathLib.log10(absoluteDecimal);
+        
+        String roundedValue = BigDecimalExtension.roundingAwayFromZero(exponent).toEngineeringString();
+        
+        return Integer.valueOf(roundedValue);
+    }
     
     // getters and setters
     public static int getPrecision()
