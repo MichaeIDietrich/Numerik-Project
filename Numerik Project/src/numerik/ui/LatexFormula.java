@@ -48,21 +48,25 @@ public class LatexFormula
     }
     
     
-    public void addLatexFormula(String latexFormula)
+    public LatexFormula addLatexFormula(String latexFormula)
     {
         formula.append(latexFormula);
+        
+        return this;
     }
     
     
-    public void addText(String text)
+    public LatexFormula addText(String text)
     {
         formula.append("\\text{");
         formula.append(text);
         formula.append("}");
+        
+        return this;
     }
     
     
-    public void addText(String str, boolean bold, boolean italic, boolean underline)
+    public LatexFormula addText(String str, boolean bold, boolean italic, boolean underline)
     {
         if (bold) formula.append("\\textbf{");
         if (italic) formula.append("\\textit{");
@@ -71,54 +75,68 @@ public class LatexFormula
         if (bold) formula.append("}");
         if (italic) formula.append("}");
         if (underline) formula.append("}");
+        
+        return this;
     }
     
     
-    public void addExponent(String exponent)
+    public LatexFormula addExponent(String exponent)
     {
         formula.append("^{");
         formula.append(exponent);
         formula.append("}");
+        
+        return this;
     }
     
     
-    public void addIndex(String index)
+    public LatexFormula addIndex(String index)
     {
         formula.append("_{");
         formula.append(index);
         formula.append("}");
+        
+        return this;
     }
     
     
-    public void addFraction(String upperPart, String lowerPart)
+    public LatexFormula addFraction(String upperPart, String lowerPart)
     {
         formula.append("\\frac {");
         formula.append(upperPart);
         formula.append("}{");
         formula.append(lowerPart);
         formula.append("}");
+        
+        return this;
     }
     
     
-    public void addFraction()
+    public LatexFormula addFraction()
     {
         formula.append("\\frac");
+        
+        return this;
     }
     
     
-    public void startGroup()
+    public LatexFormula startGroup()
     {
         formula.append("{");
+        
+        return this;
     }
     
     
-    public void endGroup()
+    public LatexFormula endGroup()
     {
         formula.append("}");
+        
+        return this;
     }
     
     
-    public void addSpecialCharacter(String name)
+    public LatexFormula addSpecialCharacter(String name)
     {
         if (characterTable.containsKey(name))
         {
@@ -131,21 +149,27 @@ public class LatexFormula
             formula.append(name);
             //formula.append("}");
         }
+        
+        return this;
     }
     
     
-    public void addNewLine()
+    public LatexFormula addNewLine()
     {
         formula.append("\\\\");
+        
+        return this;
     }
     
-    public void addNewLine(int lineCount)
+    public LatexFormula addNewLine(int lineCount)
     {
         for (int i = 0; i < lineCount; i++)
             formula.append("\\\\");
+        
+        return this;
     }
     
-    public void addMatrix(Matrix matrix) 
+    public LatexFormula addMatrix(Matrix matrix) 
     {
         formula.append("\\begin{pmatrix}");
         for (int n = 0; n < matrix.getRows(); n++)
@@ -162,14 +186,18 @@ public class LatexFormula
                 formula.append("\\\\");
         }
         formula.append("\\end{pmatrix}");
+        
+        return this;
     }
     
     
-    public void addNormVariable(String variable)
+    public LatexFormula addNormVariable(String variable)
     {
         formula.append("\\lVert");
         formula.append(variable);
         formula.append("\\rVert");
+        
+        return this;
     }
     
     
