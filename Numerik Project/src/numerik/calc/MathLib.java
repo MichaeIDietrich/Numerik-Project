@@ -1,7 +1,6 @@
 package numerik.calc;
 
 import java.math.*;
-
 import org.nevec.rjm.BigDecimalMath;
 
 public class MathLib
@@ -86,7 +85,7 @@ public class MathLib
         }
         return value;
     }
-    
+
     //So würde ich das Runden unmsetzen
     public static BigDecimal roundMantissa(BigDecimal value, int scale) {
 		boolean neg = value.doubleValue() < 0 ? true : false;
@@ -138,7 +137,6 @@ public class MathLib
         ret = x.divide(ret, context);
         return ret;
     }
-    
     
     // Logarithmus zur Basis 10
     public static BigDecimal log10(BigDecimal value) 
