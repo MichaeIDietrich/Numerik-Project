@@ -10,6 +10,8 @@ public class MathLib_TestFixture
 {
     private BigDecimal m_BigDecimalInput;
     private BigDecimal m_BigDecimalOutput;
+    
+    private String m_BigDecimalStringOutput;
    
 	@Test
     public void round__Exponent_Of_Decimal_Is_30_And_Precision_Is_12()
@@ -100,6 +102,72 @@ public class MathLib_TestFixture
         assertEquals(-35, resultExponent);
 	}
 	
+	@Test
+	public void log10__Logarithmus_Base_10_Test_One()
+	{
+	    m_BigDecimalInput = new BigDecimal("3.2154");
+	    m_BigDecimalOutput = MathLib.log10(m_BigDecimalInput);
+	    
+	    m_BigDecimalStringOutput = m_BigDecimalOutput.toEngineeringString();
+	    
+	    assertTrue(m_BigDecimalStringOutput.contains("0.507235007427"));
+	}
+	
+    @Test
+    public void log10__Logarithmus_Base_10_Test_Two()
+    {
+        m_BigDecimalInput = new BigDecimal("0");
+        m_BigDecimalOutput = MathLib.log10(m_BigDecimalInput);
+        
+        m_BigDecimalStringOutput = m_BigDecimalOutput.toEngineeringString();
+        
+        assertTrue(m_BigDecimalStringOutput.contains("undef"));
+    }
+	
+    @Test
+    public void log10__Logarithmus_Base_10_Test_Three()
+    {
+        m_BigDecimalInput = new BigDecimal("0");
+        m_BigDecimalOutput = MathLib.log10(m_BigDecimalInput);
+        
+        m_BigDecimalStringOutput = m_BigDecimalOutput.toEngineeringString();
+        
+        assertTrue(m_BigDecimalStringOutput.contains("undef"));
+    }
+    
+    @Test
+    public void log10__Logarithmus_Base_10_Test_Four()
+    {
+        m_BigDecimalInput = new BigDecimal("4.32544E+30");
+        m_BigDecimalOutput = MathLib.log10(m_BigDecimalInput);
+        
+        m_BigDecimalStringOutput = m_BigDecimalOutput.toEngineeringString();
+        
+        assertTrue(m_BigDecimalStringOutput.contains("30.6360302921"));
+    }
+    
+    @Test
+    public void log10__Logarithmus_Base_10_Test_Five()
+    {
+        m_BigDecimalInput = new BigDecimal("4.32544E-30");
+        m_BigDecimalOutput = MathLib.log10(m_BigDecimalInput);
+        
+        m_BigDecimalStringOutput = m_BigDecimalOutput.toEngineeringString();
+        
+        assertTrue(m_BigDecimalStringOutput.contains("-29.93639697079"));
+    }
+    
+    @Test
+    public void log10__Logarithmus_Base_10_Test_Six()
+    {
+        m_BigDecimalInput = new BigDecimal("-1");
+        m_BigDecimalOutput = MathLib.log10(m_BigDecimalInput);
+        
+        m_BigDecimalStringOutput = m_BigDecimalOutput.toEngineeringString();
+        
+        assertTrue(m_BigDecimalStringOutput.contains("nicht-reelles Ergebnis"));
+    }
+    
 	/* Setzen von allgemeinen Werten, die bei jedem Test verwendet werden */
 	@Before
 	public void setUp()
@@ -112,5 +180,7 @@ public class MathLib_TestFixture
 	{
 	    m_BigDecimalInput = null;
 	    m_BigDecimalOutput = null;
+	    
+	    m_BigDecimalStringOutput = null;
 	}
 }
