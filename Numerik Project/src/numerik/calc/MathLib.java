@@ -4,10 +4,8 @@ import java.math.*;
 
 public class MathLib
 {
-    
     private static int precision;
     private static boolean active;
-    
     
     public static BigDecimal round(BigDecimal value)
     {
@@ -87,6 +85,23 @@ public class MathLib
         return value;
     }
     
+    //So würde ich das Runden unmsetzen
+    public static BigDecimal roundMantissa(BigDecimal value, int scale) {
+		boolean neg = value.doubleValue() < 0 ? true : false;
+		if (neg)
+			value.multiply(BigDecimal.valueOf(-1d));
+		int exponent = (int) Math.log10(value.doubleValue());
+		BigDecimal mantissa = value.multiply(BigDecimal.valueOf(Math.pow(10.0, -exponent)));
+		BigDecimal bd = mantissa.setScale(scale,
+				BigDecimal.ROUND_HALF_UP);
+		BigDecimal round_value = bd.multiply(BigDecimal.valueOf(Math.pow(10, exponent)));
+		if (neg)
+			round_value.multiply(BigDecimal.valueOf(-1d));
+		return round_value;
+	}
+    
+    
+    // Die gleiche Funktion ist BigDecimalMath.log(BigDecimal x), enthalten in BigDecimalMath.jar
     // Funktion stammt von:
     // http://www.humbug.in/stackoverflow/de/logarithm-of-a-bigdecimal-739532.html
     // siehe unten auf der Seite
@@ -124,11 +139,21 @@ public class MathLib
     
     
     // Logarithmus zur Basis 10
-    public static BigDecimal lg(BigDecimal value) 
+    public static BigDecimal log10(BigDecimal value) 
     {
         return ln(value).divide(ln(BigDecimal.TEN));
     }
     
+    // Berechnen eines Exponenten einer Zahl
+    public static int getExponent(BigDecimal value)
+    {
+        BigDecimal absoluteDecimal = value.abs();
+        BigDecimal exponent = MathLib.log10(absoluteDecimal);
+        
+        String roundedValue = BigDecimalExtension.roundingAwayFromZero(exponent).toEngineeringString();
+        
+        return Integer.valueOf(roundedValue);
+    }
     
     // getters and setters
     public static int getPrecision()
