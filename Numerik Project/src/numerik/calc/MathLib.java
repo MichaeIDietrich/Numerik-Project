@@ -85,23 +85,23 @@ public class MathLib
         return value;
     }
     
-    //So würde ich das Runden unmsetzen
-    public static BigDecimal roundMantissa(BigDecimal value, int scale) {
-		boolean neg = value.doubleValue() < 0 ? true : false;
-		if (neg)
-			value.multiply(BigDecimal.valueOf(-1d));
-		int exponent = (int) Math.log10(value.doubleValue());
-		BigDecimal mantissa = value.multiply(BigDecimal.valueOf(Math.pow(10.0, -exponent)));
-		BigDecimal bd = mantissa.setScale(scale,
-				BigDecimal.ROUND_HALF_UP);
-		BigDecimal round_value = bd.multiply(BigDecimal.valueOf(Math.pow(10, exponent)));
-		if (neg)
-			round_value.multiply(BigDecimal.valueOf(-1d));
-		return round_value;
-	}
+    // So würde ich das Runden unmsetzen
+    public static BigDecimal roundMantissa(BigDecimal value, int scale)
+    {
+        boolean neg = value.signum() < 0;
+        if (neg)
+            value = value.abs();
+        int exponent = (int) Math.log10(value.doubleValue());
+        BigDecimal mantissa = value.multiply(BigDecimal.valueOf(Math.pow(10.0, -exponent)));
+        BigDecimal bd = mantissa.setScale(scale, BigDecimal.ROUND_HALF_UP);
+        BigDecimal round_value = bd.multiply(BigDecimal.valueOf(Math.pow(10, exponent)));
+        if (neg)
+            value = value.negate();
+        return round_value;
+    }
     
-    
-    // Die gleiche Funktion ist BigDecimalMath.log(BigDecimal x), enthalten in BigDecimalMath.jar
+    // Die gleiche Funktion ist BigDecimalMath.log(BigDecimal x), enthalten in
+    // BigDecimalMath.jar
     // Funktion stammt von:
     // http://www.humbug.in/stackoverflow/de/logarithm-of-a-bigdecimal-739532.html
     // siehe unten auf der Seite
@@ -137,9 +137,8 @@ public class MathLib
         return ret;
     }
     
-    
     // Logarithmus zur Basis 10
-    public static BigDecimal log10(BigDecimal value) 
+    public static BigDecimal log10(BigDecimal value)
     {
         return ln(value).divide(ln(BigDecimal.TEN));
     }
