@@ -14,7 +14,7 @@ public class OutputFrame extends JFrame {
     //formula.addLatexFormula("\\{ \\kappa} ");
     formula.addSpecialCharacter("kappa");
     formula.addText("(x)=");
-    formula.addMatrix(Matrix.getIdentity(4));
+    formula.addMatrix(Matrix.identity(4));
     formula.addExponent("T");
     formula.addNewLine();
     
