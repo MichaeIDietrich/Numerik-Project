@@ -3,13 +3,27 @@ package numerik.ui;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 
+import numerik.calc.MathLib;
+import numerik.calc.Matrix;
+
 public class OutputFrame extends JFrame {
   
   public OutputFrame() {
     super("Numerik");
     
-    final LatexFormula formula = new LatexFormula("M={\\begin{pmatrix} a_1 & a_2 & a_3 \\\\ b_1 & b_2 & b_3 \\\\ c_1 & c_2 & c_3  \\end{pmatrix}}^{T}");
+    MathLib.setPrecision(10);
     
+    Matrix A    = new Matrix("Matrix1.txt");
+    Matrix invA = A.getInverse();
+    Matrix AinvA = A.mult(invA);  
+    
+    final LatexFormula formula = new LatexFormula();
+       
+    formula.addMatrix(A);
+    formula.addNewLine(2);
+    formula.addMatrix(invA);
+    formula.addNewLine(2);
+    formula.addMatrix(AinvA);
     
     this.add(new JScrollPane(new ImageComponent(formula.toImage())));
     
