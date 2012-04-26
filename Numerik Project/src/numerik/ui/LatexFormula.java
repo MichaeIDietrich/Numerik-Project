@@ -5,6 +5,7 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
+import numerik.calc.MathLib;
 import numerik.calc.Matrix;
 
 import org.scilab.forge.jlatexmath.TeXConstants;
@@ -176,7 +177,7 @@ public class LatexFormula
         {
           for (int m = 0; m < matrix.getCols(); m++)
           {
-                formula.append(matrix.get(n, m));
+                formula.append(MathLib.round(matrix.get(n, m)));
                 
                 if (m < matrix.getCols() - 1)
                     formula.append("&");
