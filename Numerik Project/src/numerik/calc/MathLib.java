@@ -2,6 +2,8 @@ package numerik.calc;
 
 import java.math.*;
 
+import org.nevec.rjm.BigDecimalMath;
+
 public class MathLib
 {
     private static int precision;
@@ -90,7 +92,7 @@ public class MathLib
 		boolean neg = value.doubleValue() < 0 ? true : false;
 		if (neg)
 			value.multiply(BigDecimal.valueOf(-1d));
-		int exponent = (int) Math.log10(value.doubleValue());
+		int exponent = log10(value).intValue();
 		BigDecimal mantissa = value.multiply(BigDecimal.valueOf(Math.pow(10.0, -exponent)));
 		BigDecimal bd = mantissa.setScale(scale,
 				BigDecimal.ROUND_HALF_UP);
@@ -141,7 +143,8 @@ public class MathLib
     // Logarithmus zur Basis 10
     public static BigDecimal log10(BigDecimal value) 
     {
-        return ln(value).divide(ln(BigDecimal.TEN));
+    	return BigDecimalMath.log(value).divide(BigDecimalMath.log(BigDecimal.TEN));
+        //return ln(value).divide(ln(BigDecimal.TEN));
     }
     
     // Berechnen eines Exponenten einer Zahl
