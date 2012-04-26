@@ -138,11 +138,11 @@ public class MathLib
         return ret;
     }
     
+    
     // Logarithmus zur Basis 10
     public static BigDecimal log10(BigDecimal value) 
     {
-    	return BigDecimalMath.log(value).divide(BigDecimalMath.log(BigDecimal.TEN));
-        //return ln(value).divide(ln(BigDecimal.TEN));
+        return ln(value).divide(ln(BigDecimal.TEN), precision, BigDecimal.ROUND_HALF_UP);
     }
     
     // Berechnen eines Exponenten einer Zahl
