@@ -1,7 +1,6 @@
 package numerik.calc;
 
 import java.math.*;
-import org.nevec.rjm.BigDecimalMath;
 
 public class MathLib
 {
