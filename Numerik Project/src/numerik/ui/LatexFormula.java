@@ -222,7 +222,7 @@ public class LatexFormula
     {
         System.out.println(formula.toString());
 
-        TeXFormula texFormula = new TeXFormula(formula.toString() + "\\end{array}");
+        TeXFormula texFormula = new TeXFormula( "\\begin{array}{l}" + formula.toString() + "\\end{array}");
         TeXIcon    		 icon = texFormula.createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
         BufferedImage 		b = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_4BYTE_ABGR);
         icon.paintIcon(new JLabel(), b.getGraphics(), 0, 0);

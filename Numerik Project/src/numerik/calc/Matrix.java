@@ -27,7 +27,6 @@ public class Matrix {
 				values[m][n] = BigDecimal.ZERO;
 			}
 		}
-
 	}
 
 	public Matrix(BigDecimal[][] values) {
@@ -107,6 +106,14 @@ public class Matrix {
 
 	public int getCols() {
 		return cols;
+	}
+	
+	protected void setRows(int rows) {
+		this.rows = rows;
+	}
+
+	protected void setCols(int cols) {
+		this.cols = cols;
 	}
 
 	public BigDecimal get(int row, int col) {
@@ -265,18 +272,28 @@ public class Matrix {
 		return inverse;
 	}
 	
+	public Vector determineX(Vector b) {
+		Matrix L = getL();
+		Matrix U = getU();
+		
+		Vector y = substitution( L, b, "forward"  );
+		Vector x = substitution( U, y, "backward" );
+		
+		return x;
+	}
+	
 	public Matrix getL() {
-		return doLUDecomposition(0);
+		return doLUDecomposition(0, null);	// 0 liefert L zurück
 	}
 	
 	public Matrix getU() {
-		return doLUDecomposition(1);
+		return doLUDecomposition(1, null);	// 1 liefert U zurück
 	}
 	
-	private Matrix doLUDecomposition(int what_matrix) {
+	private Matrix doLUDecomposition(int what_matrix, Vector b) {
 		
 		BigDecimal temp = BigDecimal.ZERO;
-		Matrix    	  b = clone();						// ACHTUNG!!! Muss noch als Vektor geschrieben werden.
+//		if (b==null)  b = clone();						// ACHTUNG!!! Muss noch als Vektor geschrieben werden.
 		Matrix    	  L = clone();
 		Matrix 		  U = new Matrix( rows, rows ).identity();
 		
@@ -302,6 +319,62 @@ public class Matrix {
 		} else {
 			return U;
 		}
+	}
+	
+	
+	public Vector substitution( Matrix matrix, Vector b, String str ) {
+		
+		BigDecimal term1 = BigDecimal.ZERO;						// mx = matrix, vec_li = y , vec_re = b
+		BigDecimal term2 = BigDecimal.ZERO;
+		Vector    	   y = new Vector( b.getLength());
+		
+		if ( str.equals("forward") ) {
+			y.set( 0, b.get(0) );									// y_0 = b_0
+			
+			for(int row=1; row<matrix.rows-1; row++) {
+				
+				term1 = y.get(row).subtract( subsum( matrix, y, row) );
+				term2 = term1.divide( matrix.values[row][row], MathLib.getPrecision(), RoundingMode.HALF_UP );
+				System.out.println( term1+", "+term2+", " );
+				y.set(row, term2);
+			}
+		}
+		
+		if ( str.equals("backward") ) {
+			int dim = matrix.getRows()-1;
+			y.set(dim, b.get(dim).divide( matrix.values[dim][dim], MathLib.getPrecision(), RoundingMode.HALF_UP));
+			
+			for(int row=matrix.getRows()-1; row>=0; row--) {
+				term1 = b.get(row).subtract( resubsum( matrix, y, row) );
+				term2 = term1.divide( matrix.values[row][row], MathLib.getPrecision(), RoundingMode.HALF_UP );
+				y.set(row, term2);
+			}
+		}
+		
+		return y;
+	}
+	
+	
+	public BigDecimal subsum( Matrix matrix, Vector y, int row) {
+		
+		BigDecimal temp = BigDecimal.ZERO;
+		
+		for(int i=0; i<row; i++) {
+			temp = matrix.values[row][i].multiply( y.get(i) ).add( temp );
+		}
+		return temp;
+	}
+	
+	
+	public BigDecimal resubsum( Matrix matrix, Vector y, int row ) {
+		
+		BigDecimal temp = BigDecimal.ZERO;
+		int dim = matrix.getRows();
+		
+		for(int i=0; i<matrix.getRows()-1-row; i++) {
+			temp = temp.add( matrix.values[row][dim-i].multiply( y.get(dim-i) ) );
+		}
+		return temp;
 	}
 }
 

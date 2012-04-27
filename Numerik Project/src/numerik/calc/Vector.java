@@ -7,6 +7,21 @@ public class Vector extends Matrix {
   private boolean transposed;
   private int length;
   
+  public Vector( int rows ) {
+//	super( rows, 0 );
+//	setRows( rows );
+//	setCols( 0 );
+//
+//	BigDecimal[] values = new BigDecimal[rows];
+//
+//	for (int row = 0; row<rows; row++) {
+//		values[row] = BigDecimal.ZERO;
+//	}
+//    this.transposed = false;
+//    this.length 	= values.length;
+	  this(new BigDecimal[rows]);
+	  setToNullvector();
+  }
   
   public Vector(BigDecimal[] values) {
     this(values, false);
@@ -15,7 +30,7 @@ public class Vector extends Matrix {
   public Vector(BigDecimal[] values, boolean transposed) {
     super(values, transposed ? values.length : 1);
     this.transposed = transposed;
-    this.length = values.length;
+    this.length 	= values.length;
   }
   
   public boolean isTransposed() {
@@ -32,17 +47,34 @@ public class Vector extends Matrix {
     }
   }
   
+  public void set(int index, BigDecimal value) {
+	    if (transposed) {
+	      this.set(0, index, value);
+	      
+	    } else {
+	      this.set(index, 0, value);
+	      
+	    }
+	  }
+  
   public int getLength() {
     return length;
   }
   
   @Override
-  public Vector getTransposedMatrix() {
+  public Vector getTransposed() {
     BigDecimal[] values = new BigDecimal[length];
     for (int i = 0; i < length; i++) {
       values[i] = get(i);
     }
     return new Vector(values, !transposed);
   }
+  
+  public void setToNullvector() {
+	  for(int i=0; i<length; i++) {
+		  set(i, BigDecimal.ZERO);
+	  }
+  }
+  
   
 }
