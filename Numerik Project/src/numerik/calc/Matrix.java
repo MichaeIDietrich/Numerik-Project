@@ -147,7 +147,7 @@ public class Matrix {
 		return identity;
 	}
 
-	public Matrix getTransposedMatrix() {
+	public Matrix getTransposed() {
 		Matrix transposedMatrix = new Matrix(cols, rows);
 
 		for (int m = 0; m < rows; m++) {
@@ -263,6 +263,45 @@ public class Matrix {
 			}
 		}
 		return inverse;
+	}
+	
+	public Matrix getL() {
+		return doLUDecomposition(0);
+	}
+	
+	public Matrix getU() {
+		return doLUDecomposition(1);
+	}
+	
+	private Matrix doLUDecomposition(int what_matrix) {
+		
+		BigDecimal temp = BigDecimal.ZERO;
+		Matrix    	  b = clone();						// ACHTUNG!!! Muss noch als Vektor geschrieben werden.
+		Matrix    	  L = clone();
+		Matrix 		  U = new Matrix( rows, rows ).identity();
+		
+		for(int row=0; row<L.rows; row++) {
+			
+			// if (MathLib.isPivotstrategy()) L = pivotCycleLines( L, b, row );	
+		
+			for(int t=row; t<L.cols-1; t++) {
+			
+				temp = L.values[t+1][row].divide( L.values[row][row].negate(), MathLib.getPrecision(), RoundingMode.HALF_UP );
+				
+				U.values[t+1][row] = temp.multiply( BigDecimal.ONE.negate() );				
+
+				for(int i=0; i<L.rows; i++) {
+					L.values[t+1][i] = L.values[t+1][i].add( temp.multiply( L.values[row][i]) );
+				}
+				L.values[t+1][row] = BigDecimal.ZERO;
+			}
+		}
+		
+		if(what_matrix==0) {
+			return L;
+		} else {
+			return U;
+		}
 	}
 }
 
