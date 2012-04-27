@@ -6,6 +6,7 @@ import org.nevec.rjm.BigDecimalMath;
 public class MathLib
 {
     private static int precision;
+    private static boolean pivotstrategy;
     private static boolean active;
     
     public static BigDecimal round(BigDecimal value)
@@ -176,4 +177,12 @@ public class MathLib
     {
         MathLib.active = active;
     }
+
+	public static boolean isPivotstrategy() {
+		return pivotstrategy;
+	}
+
+	public static void setPivotstrategy(boolean pivotstrategy) {
+		MathLib.pivotstrategy = pivotstrategy;
+	}
 }
