@@ -221,6 +221,7 @@ public class Matrix {
 		return row >= 0 && row < rows && col >= 0 && col < cols;
 	}
 
+	
 	public Matrix getInverse() {
 		
 		Matrix inverse = new Matrix( rows, rows ).identity();
@@ -231,13 +232,9 @@ public class Matrix {
 			BigDecimal temp = BigDecimal.ZERO;
 			Matrix    clone = clone();
 			
-			for(int col=0; col<rows-1; col++) {
-				for(int row=col; row<rows-1; row++) {
-					
-					System.out.println(row+", "+col);
-					
-					temp = clone.values[row+1][col].divide( clone.values[col][col].negate(), MathLib.getPrecision(), RoundingMode.FLOOR );
-						
+			for(int col=0; col<rows-1; col++) {					// überführt A aus (A|E) in obere Dreiecksmatrix, Umformungen in A parallel in E
+				for(int row=col; row<rows-1; row++) {	
+					temp = clone.values[row+1][col].divide( clone.values[col][col].negate(), MathLib.getPrecision(), RoundingMode.FLOOR );	
 					for(int i=0; i<this.values.length; i++) {
 						  clone.values[row+1][i] =   clone.values[row+1][i].add( temp.multiply(   clone.values[col][i] ));
 						inverse.values[row+1][i] = inverse.values[row+1][i].add( temp.multiply( inverse.values[col][i] ));
@@ -246,16 +243,15 @@ public class Matrix {
 				}
 			}
 			
-			for(int row=0; row<rows; row++) {
+			for(int row=0; row<rows; row++) {					// normiert Spur von A auf 1, Rechenschritte parallel auch in E durchführen
 				temp = clone.values[row][row];
 				for(int col=0; col<rows; col++) {
-					System.out.println(MathLib.getPrecision());
 					inverse.values[row][col] = inverse.values[row][col].divide( temp, MathLib.getPrecision(), RoundingMode.HALF_UP );
 					  clone.values[row][col] =   clone.values[row][col].divide( temp, MathLib.getPrecision(), RoundingMode.HALF_UP );
 				}
 			}
 			
-			for(int t=rows-1; t>=1; t--) {
+			for(int t=rows-1; t>=1; t--) {						// überführe A in Einheitsmatrix E, dann (A|E) -> (E|A^(-1))
 				for(int row=rows-1; row>=0; row--) {
 					if(row<t) {
 						temp = clone.values[row][t].negate();

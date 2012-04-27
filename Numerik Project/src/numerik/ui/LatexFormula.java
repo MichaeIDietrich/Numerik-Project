@@ -5,6 +5,8 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
+import javax.swing.JLabel;
+
 import numerik.calc.Matrix;
 
 import org.scilab.forge.jlatexmath.TeXConstants;
@@ -152,14 +154,14 @@ public class LatexFormula
         {
           for (int m = 0; m < matrix.getCols(); m++)
           {
-                formula.append(matrix.get(n, m));
+              formula.append(matrix.get(n, m));
                 
-                if (m < matrix.getCols() - 1)
-                    formula.append("&");
-            }
+              if (m < matrix.getCols() - 1)
+            	  formula.append("&");
+          }
             
             if (n < matrix.getRows() - 1)
-                formula.append("\\\\");
+            	formula.append("\\\\");
         }
         formula.append("\\end{pmatrix}");
     }
@@ -185,9 +187,9 @@ public class LatexFormula
         TeXFormula texFormula = new TeXFormula(formula.toString() + "\\end{array}");
         TeXIcon icon = texFormula.createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
         BufferedImage b = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_4BYTE_ABGR);
-        icon.setForeground(Color.BLACK);
-        icon.paintIcon(null, b.getGraphics(), 0, 0);
+        icon.paintIcon(new JLabel(), b.getGraphics(), 0, 0);
         return b;
     }
+    
     
 }
