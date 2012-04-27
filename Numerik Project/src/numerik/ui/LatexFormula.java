@@ -1,9 +1,10 @@
 package numerik.ui;
 
-import java.awt.Color;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
+
+import javax.swing.JLabel;
 
 import numerik.calc.MathLib;
 import numerik.calc.Matrix;
@@ -219,22 +220,12 @@ public class LatexFormula
     public Image toImage(int size)
     {
         System.out.println(formula.toString());
-<<<<<<< HEAD
-        TeXFormula texFormula = new TeXFormula("\\begin{array}{l}" + formula.toString() + "\\end{array}");
-        TeXIcon icon = texFormula.createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
-        BufferedImage b = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_4BYTE_ABGR);
-        icon.setForeground(Color.BLACK);
-        icon.paintIcon(null, b.getGraphics(), 0, 0);
-=======
+
         TeXFormula texFormula = new TeXFormula(formula.toString() + "\\end{array}");
-        TeXIcon    		 icon = texFormula.createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
-        BufferedImage 		b = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+        TeXIcon          icon = texFormula.createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
+        BufferedImage       b = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_4BYTE_ABGR);
         icon.paintIcon(new JLabel(), b.getGraphics(), 0, 0);
->>>>>>> branch 'master' of git@github.com:FrecherxDachs/Numerik-Project.git
+        
         return b;
     }
-<<<<<<< HEAD
-    
-=======
->>>>>>> branch 'master' of git@github.com:FrecherxDachs/Numerik-Project.git
 }

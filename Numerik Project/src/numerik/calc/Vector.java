@@ -37,7 +37,7 @@ public class Vector extends Matrix {
   }
   
   @Override
-  public Vector getTransposedMatrix() {
+  public Vector getTransposed() {
     BigDecimal[] values = new BigDecimal[length];
     for (int i = 0; i < length; i++) {
       values[i] = get(i);
