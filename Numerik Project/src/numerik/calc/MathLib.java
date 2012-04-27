@@ -1,6 +1,7 @@
 package numerik.calc;
 
 import java.math.*;
+import org.nevec.rjm.BigDecimalMath;
 
 public class MathLib
 {
@@ -13,7 +14,7 @@ public class MathLib
         if (active)
         {
             
-            long tempmant = 0;
+            long  tempmant = 0;
             double tempexp = 0;
             String tempstr[];
             boolean sign = value.signum() == -1;

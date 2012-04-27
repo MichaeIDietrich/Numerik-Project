@@ -2,7 +2,7 @@ package numerik.ui;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
-
+import numerik.calc.MathLib;
 import numerik.calc.Matrix;
 
 public class OutputFrame extends JFrame {
@@ -10,37 +10,19 @@ public class OutputFrame extends JFrame {
   public OutputFrame() {
     super("Numerik");
     
+    MathLib.setPrecision(12);
+    
+    Matrix A    = new Matrix("Matrix1.txt");
+    Matrix invA = A.getInverse();
+    Matrix AinvA = A.mult(invA);  
+    
     final LatexFormula formula = new LatexFormula();
-    //formula.addLatexFormula("\\{ \\kappa} ");
-    formula.addSpecialCharacter("kappa");
-    formula.addText("(x)=");
-    formula.addMatrix(Matrix.identity(4));
-    formula.addExponent("T");
-    formula.addNewLine();
+       
+    formula.addText("A = "); 	formula.addMatrix(A); 		formula.addNewLine(2);
+    formula.addMatrix(invA); 	formula.addNewLine(2);
+    formula.addMatrix(AinvA);
     
-    formula.addFraction();
-    
-    formula.startGroup();
-    formula.addSpecialCharacter("kappa");
-    formula.addSpecialCharacter("*");
-    formula.addText("x");
-    formula.endGroup();
-    
-    formula.startGroup();
-    formula.addSpecialCharacter("kappa");
-    formula.addSpecialCharacter("*");
-    formula.addText("x");
-    formula.endGroup();
-    
-    formula.addText("=z");
-    
-    formula.addNewLine();
-    formula.addText("hallo");
-    formula.addNewLine();
-    formula.addText("hallo", false, true, false);
-    
-    
-    this.add(new JScrollPane(new ImageComponent(formula.toImage())));
+    this.add(new JScrollPane(new ImageComponent(formula.toImage(18))));
     
     
     this.setSize(640, 480);
@@ -48,6 +30,7 @@ public class OutputFrame extends JFrame {
     
     this.setDefaultCloseOperation(EXIT_ON_CLOSE);
     this.setVisible(true);
+
+    
   }
-  
 }

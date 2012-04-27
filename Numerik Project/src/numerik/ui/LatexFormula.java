@@ -5,7 +5,8 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
-import numerik.calc.MathLib;
+import javax.swing.JLabel;
+
 import numerik.calc.Matrix;
 
 import org.scilab.forge.jlatexmath.TeXConstants;
@@ -14,8 +15,7 @@ import org.scilab.forge.jlatexmath.TeXIcon;
 
 public class LatexFormula
 {
-    // package scope
-    StringBuilder formula;
+    private StringBuilder formula;
     
     private static  HashMap<String, String> characterTable;
     
@@ -33,13 +33,14 @@ public class LatexFormula
     
     public LatexFormula()
     {
-        formula = new StringBuilder();
+        formula = new StringBuilder("\\begin{array}{l}");
     }
     
     
     public LatexFormula(String latexFormula)
     {
-        formula = new StringBuilder(latexFormula);
+        this();
+        formula.append(latexFormula);
     }
     
     
@@ -49,25 +50,21 @@ public class LatexFormula
     }
     
     
-    public LatexFormula addLatexFormula(String latexFormula)
+    public void addLatexFormula(String latexFormula)
     {
         formula.append(latexFormula);
-        
-        return this;
     }
     
     
-    public LatexFormula addText(String text)
+    public void addText(String text)
     {
         formula.append("\\text{");
         formula.append(text);
         formula.append("}");
-        
-        return this;
     }
     
     
-    public LatexFormula addText(String str, boolean bold, boolean italic, boolean underline)
+    public void addText(String str, boolean bold, boolean italic, boolean underline)
     {
         if (bold) formula.append("\\textbf{");
         if (italic) formula.append("\\textit{");
@@ -76,68 +73,54 @@ public class LatexFormula
         if (bold) formula.append("}");
         if (italic) formula.append("}");
         if (underline) formula.append("}");
-        
-        return this;
     }
     
     
-    public LatexFormula addExponent(String exponent)
+    public void addExponent(String exponent)
     {
         formula.append("^{");
         formula.append(exponent);
         formula.append("}");
-        
-        return this;
     }
     
     
-    public LatexFormula addIndex(String index)
+    public void addIndex(String index)
     {
         formula.append("_{");
         formula.append(index);
         formula.append("}");
-        
-        return this;
     }
     
     
-    public LatexFormula addFraction(String upperPart, String lowerPart)
+    public void addFraction(String upperPart, String lowerPart)
     {
         formula.append("\\frac {");
         formula.append(upperPart);
         formula.append("}{");
         formula.append(lowerPart);
         formula.append("}");
-        
-        return this;
     }
     
     
-    public LatexFormula addFraction()
+    public void addFraction()
     {
         formula.append("\\frac");
-        
-        return this;
     }
     
     
-    public LatexFormula startGroup()
+    public void startGroup()
     {
         formula.append("{");
-        
-        return this;
     }
     
     
-    public LatexFormula endGroup()
+    public void endGroup()
     {
         formula.append("}");
-        
-        return this;
     }
     
     
-    public LatexFormula addSpecialCharacter(String name)
+    public void addSpecialCharacter(String name)
     {
         if (characterTable.containsKey(name))
         {
@@ -150,63 +133,45 @@ public class LatexFormula
             formula.append(name);
             //formula.append("}");
         }
-        
-        return this;
     }
     
     
-    public LatexFormula addNewLine()
+    public void addNewLine()
     {
         formula.append("\\\\");
-        
-        return this;
     }
     
-    public LatexFormula addNewLine(int lineCount)
+    public void addNewLine(int lineCount)
     {
         for (int i = 0; i < lineCount; i++)
             formula.append("\\\\");
-        
-        return this;
     }
     
-    public LatexFormula addMatrix(Matrix matrix) 
+    public void addMatrix(Matrix matrix) 
     {
         formula.append("\\begin{pmatrix}");
         for (int n = 0; n < matrix.getRows(); n++)
         {
           for (int m = 0; m < matrix.getCols(); m++)
           {
-                formula.append(MathLib.round(matrix.get(n, m)));
+              formula.append(matrix.get(n, m));
                 
-                if (m < matrix.getCols() - 1)
-                    formula.append("&");
-            }
+              if (m < matrix.getCols() - 1)
+            	  formula.append("&");
+          }
             
             if (n < matrix.getRows() - 1)
-                formula.append("\\\\");
+            	formula.append("\\\\");
         }
         formula.append("\\end{pmatrix}");
-        
-        return this;
     }
     
     
-    public LatexFormula addNormVariable(String variable)
+    public void addNormVariable(String variable)
     {
         formula.append("\\lVert");
         formula.append(variable);
         formula.append("\\rVert");
-        
-        return this;
-    }
-    
-    
-    public LatexFormula addFormula(LatexFormula formula)
-    {
-        formula.addLatexFormula(formula.formula.toString());
-        
-        return this;
     }
     
     
@@ -219,12 +184,10 @@ public class LatexFormula
     public Image toImage(int size)
     {
         System.out.println(formula.toString());
-        TeXFormula texFormula = new TeXFormula("\\begin{array}{l}" + formula.toString() + "\\end{array}");
-        TeXIcon icon = texFormula.createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
-        BufferedImage b = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_4BYTE_ABGR);
-        icon.setForeground(Color.BLACK);
-        icon.paintIcon(null, b.getGraphics(), 0, 0);
+        TeXFormula texFormula = new TeXFormula(formula.toString() + "\\end{array}");
+        TeXIcon    		 icon = texFormula.createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
+        BufferedImage 		b = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+        icon.paintIcon(new JLabel(), b.getGraphics(), 0, 0);
         return b;
     }
-    
 }
