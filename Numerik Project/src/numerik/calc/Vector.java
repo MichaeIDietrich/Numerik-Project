@@ -2,25 +2,27 @@ package numerik.calc;
 
 import java.math.BigDecimal;
 
+import numerik.calc.Matrix;
+
 public class Vector extends Matrix {
   
   private boolean transposed;
   private int length;
   
-  public Vector( int rows ) {
-//	super( rows, 0 );
-//	setRows( rows );
-//	setCols( 0 );
-//
-//	BigDecimal[] values = new BigDecimal[rows];
-//
-//	for (int row = 0; row<rows; row++) {
-//		values[row] = BigDecimal.ZERO;
-//	}
-//    this.transposed = false;
-//    this.length 	= values.length;
-	  this(new BigDecimal[rows]);
-	  setToNullvector();
+  public Vector(int rows) {
+    // super( rows, 0 );
+    // setRows( rows );
+    // setCols( 0 );
+    //
+    // BigDecimal[] values = new BigDecimal[rows];
+    //
+    // for (int row = 0; row<rows; row++) {
+    // values[row] = BigDecimal.ZERO;
+    // }
+    // this.transposed = false;
+    // this.length = values.length;
+    this(new BigDecimal[rows]);
+    setToNullvector();
   }
   
   public Vector(BigDecimal[] values) {
@@ -30,7 +32,7 @@ public class Vector extends Matrix {
   public Vector(BigDecimal[] values, boolean transposed) {
     super(values, transposed ? values.length : 1);
     this.transposed = transposed;
-    this.length 	= values.length;
+    this.length = values.length;
   }
   
   public boolean isTransposed() {
@@ -48,14 +50,14 @@ public class Vector extends Matrix {
   }
   
   public void set(int index, BigDecimal value) {
-	    if (transposed) {
-	      this.set(0, index, value);
-	      
-	    } else {
-	      this.set(index, 0, value);
-	      
-	    }
-	  }
+    if (transposed) {
+      this.set(0, index, value);
+      
+    } else {
+      this.set(index, 0, value);
+      
+    }
+  }
   
   public int getLength() {
     return length;
@@ -71,8 +73,20 @@ public class Vector extends Matrix {
   }
   
   public void setToNullvector() {
-	  for(int i=0; i<length; i++) {
-		  set(i, BigDecimal.ZERO);
-	  }
-  } 
+    for (int i = 0; i < length; i++) {
+      set(i, BigDecimal.ZERO);
+    }
+  }
+  
+  @Override
+  public Vector clone() {
+    
+    Vector copy = new Vector(length);
+    
+    for (int i = 0; i < length; i++) {
+        copy.set(i, get(i));
+    }
+    return copy;
+  }
+
 }
