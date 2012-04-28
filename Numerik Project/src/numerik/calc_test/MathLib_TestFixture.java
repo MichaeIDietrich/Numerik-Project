@@ -20,7 +20,7 @@ public class MathLib_TestFixture {
 				"1.1111111111191234123412341234132E+30");
 		m_BigDecimalOutput = MathLib.round(m_BigDecimalInput);
 
-		assertEquals("1.111111111112E+30",
+		assertEquals("1.11111111112E+30",
 				m_BigDecimalOutput.toEngineeringString());
 	}
 
@@ -33,20 +33,30 @@ public class MathLib_TestFixture {
 
 		assertEquals("1.11112", m_BigDecimalOutput.toEngineeringString());
 	}
+	
+    @Test
+    public void round__Exponent_Of_Decimal_Is_10_And_Precision_Is_6() {
+        MathLib.setPrecision(6);
+
+        m_BigDecimalInput = new BigDecimal("1111119000");
+        m_BigDecimalOutput = MathLib.round(m_BigDecimalInput);
+
+        assertEquals("1111120000", m_BigDecimalOutput.toPlainString());
+    }
 
 	@Test
 	public void round__Exponent_Of_Decimal_Is_Minus_20_And_Precision_Is_10() {
-		MathLib.setPrecision(6);
+		MathLib.setPrecision(10);
 
-		m_BigDecimalInput = new BigDecimal("1.11111111119E-20");
+		m_BigDecimalInput = new BigDecimal("1.1111111119E-20");
 		m_BigDecimalOutput = MathLib.round(m_BigDecimalInput);
 
-		assertEquals("1.111111112E-20",
+		assertEquals("11.11111112E-21",
 				m_BigDecimalOutput.toEngineeringString());
 	}
 
 	@Test
-	public void round__Exponent_Of_Decimal_Is_Zero_And_Precision_Is_20() {
+	public void round__Exponent_Of_Decimal_Is_Minus_One_And_Precision_Is_20() {
 		MathLib.setPrecision(20);
 
 		m_BigDecimalInput = new BigDecimal("0.111111111111111111119");
@@ -56,6 +66,38 @@ public class MathLib_TestFixture {
 				m_BigDecimalOutput.toEngineeringString());
 	}
 
+    @Test
+    public void round__Exponent_Of_Decimal_Is_Minus_5_And_Precision_Is_20() {
+        MathLib.setPrecision(20);
+
+        m_BigDecimalInput = new BigDecimal("0.0000111111111111111111119");
+        m_BigDecimalOutput = MathLib.round(m_BigDecimalInput);
+
+        assertEquals("0.000011111111111111111112",
+                m_BigDecimalOutput.toPlainString());
+    }
+	
+    @Test
+    public void round__Exponent_Of_Negative_Decimal_Is_Minus_5_And_Precision_Is_20() {
+        MathLib.setPrecision(20);
+
+        m_BigDecimalInput = new BigDecimal("-0.0000111111111111111111119");
+        m_BigDecimalOutput = MathLib.round(m_BigDecimalInput);
+
+        assertEquals("-0.000011111111111111111112",
+                m_BigDecimalOutput.toPlainString());
+    }
+    
+    @Test
+    public void round__Exponent_Of_Decimal_Is_Zero_And_Precision_Is_20() {
+        MathLib.setPrecision(20);
+
+        m_BigDecimalInput = BigDecimal.ZERO;
+        m_BigDecimalOutput = MathLib.round(m_BigDecimalInput);
+
+        assertTrue(BigDecimalExtension.equals(BigDecimal.ZERO, m_BigDecimalOutput));
+    }
+	
 	@Test
 	public void getExponent__Exponent_Of_Decimal_Is_40() {
 		m_BigDecimalInput = new BigDecimal("1.93423423423324234E+40");
@@ -159,7 +201,9 @@ public class MathLib_TestFixture {
 
 	/* Setzen von allgemeinen Werten, die bei jedem Test verwendet werden */
 	@Before
-	public void setUp() {
+	public void setUp()
+	{
+	    MathLib.setActive(true);
 	}
 
 	/*
@@ -172,5 +216,7 @@ public class MathLib_TestFixture {
 		m_BigDecimalOutput = null;
 
 		m_BigDecimalStringOutput = null;
+		
+		MathLib.setActive(false);
 	}
 }
