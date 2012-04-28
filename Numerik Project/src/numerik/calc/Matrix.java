@@ -314,11 +314,11 @@ public class Matrix {
 			if (MathLib.isPivotstrategy()) L = pivotColumnStrategy( L, b, row );	
 		
 			for(int t=row; t<L.cols-1; t++) {
-				temp = L.values[t+1][row].divide( L.values[row][row].negate(), MathLib.getPrecision(), RoundingMode.HALF_UP );
-				U.values[t+1][row] = temp.multiply( BigDecimal.ONE.negate() );				
+				temp = MathLib.round( L.values[t+1][row].divide( L.values[row][row].negate(), MathLib.getPrecision(), RoundingMode.HALF_UP ));
+				U.values[t+1][row] = MathLib.round( temp.multiply( BigDecimal.ONE.negate() ));				
 
 				for(int i=0; i<L.rows; i++) {
-					L.values[t+1][i] = L.values[t+1][i].add( temp.multiply( L.values[row][i]) );
+					L.values[t+1][i] = MathLib.round( L.values[t+1][i].add( MathLib.round(temp.multiply( L.values[row][i])) ));
 				}
 				L.values[t+1][row] = BigDecimal.ZERO;
 			}
@@ -345,22 +345,26 @@ public class Matrix {
 			
 			for(int row=1; row<matrix.rows; row++) {
 				term0 = BigDecimal.ZERO;
-				for(int i=0; i<y.getLength()-1; i++) term0 = matrix.values[row][i].multiply( y.get(i) ).add( term0 );
-				term1 = b.get(row).subtract( term0 );
-				term2 = term1.divide( matrix.values[row][row], MathLib.getPrecision(), RoundingMode.HALF_UP );
+				for(int i=0; i<y.getLength()-1; i++) {
+					term0 = MathLib.round( MathLib.round(matrix.values[row][i].multiply( y.get(i) )).add( term0 ));
+				}
+				term1 = MathLib.round(b.get(row).subtract( term0 ));
+				term2 = MathLib.round( term1.divide( matrix.values[row][row], MathLib.getPrecision(), RoundingMode.HALF_UP ));
 				y.set(row, term2);
 			}
 		}
 		
 		if ( str.equals("backward") ) {
 			int dim = matrix.getRows()-1;
-			y.set(dim, b.get(dim).divide( matrix.values[dim][dim], MathLib.getPrecision(), RoundingMode.HALF_UP ));
+			y.set(dim, MathLib.round( b.get(dim).divide( matrix.values[dim][dim], MathLib.getPrecision(), RoundingMode.HALF_UP )));
 			
 			for(int row=matrix.getRows()-1; row>=0; row--) {
 				term0 = BigDecimal.ZERO;
-				for(int i=0; i<matrix.getRows()-1-row; i++) term0 = term0.add( matrix.values[row][dim-i].multiply( y.get(dim-i) ) );
-				term1 = b.get(row).subtract( term0 );
-				term2 = term1.divide( matrix.values[row][row], MathLib.getPrecision(), RoundingMode.HALF_UP );
+				for(int i=0; i<matrix.getRows()-1-row; i++) {
+					term0 = MathLib.round(term0.add( MathLib.round( matrix.values[row][dim-i].multiply( y.get(dim-i) )) ));
+				}
+				term1 = MathLib.round(b.get(row).subtract( term0 ));
+				term2 = MathLib.round(term1.divide( matrix.values[row][row], MathLib.getPrecision(), RoundingMode.HALF_UP ));
 				y.set(row, term2);
 			}
 		}

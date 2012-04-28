@@ -5,12 +5,9 @@ import java.awt.image.BufferedImage;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.HashMap;
-
 import javax.swing.JLabel;
-
 import numerik.calc.MathLib;
 import numerik.calc.Matrix;
-
 import org.scilab.forge.jlatexmath.TeXConstants;
 import org.scilab.forge.jlatexmath.TeXFormula;
 import org.scilab.forge.jlatexmath.TeXIcon;
@@ -180,8 +177,8 @@ public class LatexFormula
         {
           for (int m = 0; m < matrix.getCols(); m++)
           {
-                formula.append( matrix.get(n, m).round( new MathContext( MathLib.getPrecision(), RoundingMode.HALF_UP)).toPlainString() );
-                
+                formula.append( MathLib.round(matrix.get(n, m) ));
+
                 if (m < matrix.getCols() - 1)
                     formula.append("&");
             }

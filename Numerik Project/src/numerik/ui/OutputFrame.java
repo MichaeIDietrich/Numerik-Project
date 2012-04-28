@@ -20,7 +20,9 @@ public class OutputFrame extends JFrame {
     
     MathLib.setPrecision(5);
     
-    BigDecimal[] data = {new BigDecimal(0.00129222083),new BigDecimal(-0.299435028),new BigDecimal(0.247863248)};
+//    BigDecimal[] data = {new BigDecimal(0.00129222083),new BigDecimal(-0.299435028),new BigDecimal(0.247863248)};
+    BigDecimal[] data = {new BigDecimal(6.5),new BigDecimal(-5.3),new BigDecimal(2.9)};
+
     Vector b = new Vector( data );
     
     Matrix A = new Matrix("Matrix1.txt");
@@ -32,11 +34,13 @@ public class OutputFrame extends JFrame {
     
     final LatexFormula formula = new LatexFormula();
        
-    formula.addText("A = ").addMatrix(A).addText(", A = ").addMatrix(b).addNewLine(2);
+    formula.addText("A = ").addMatrix(A).addText(", b = ").addMatrix(b).addNewLine(2);
     formula.addText("L = ").addMatrix(L).addNewLine(2);
     formula.addText("U = ").addMatrix(U).addNewLine(2);
     formula.addText("x = ").addMatrix(x).addNewLine(2);
     formula.addText("A^{-1} = ").addMatrix(invA).addNewLine(2);
+    
+    MathLib.setRoundingMode( MathLib.normal );
     formula.addText("A").addSymbol("*").addText("A^{-1} = ").addMatrix(AinvA).addNewLine(2);
     
     this.add(new JScrollPane(new ImageComponent(formula.toImage(18))));

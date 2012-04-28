@@ -203,7 +203,7 @@ public class MathLib_TestFixture {
 	@Before
 	public void setUp()
 	{
-	    MathLib.setActive(true);
+	    MathLib.enableRound(true);
 	}
 
 	/*
@@ -217,6 +217,6 @@ public class MathLib_TestFixture {
 
 		m_BigDecimalStringOutput = null;
 		
-		MathLib.setActive(false);
+		MathLib.enableRound(false);
 	}
 }

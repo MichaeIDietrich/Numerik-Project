@@ -7,46 +7,32 @@ public class MathLib
 {
     private static int precision;
     private static boolean pivotstrategy;
-    private static boolean active;
+    private static boolean active = true;
+    private static int roundingmode = 0;
+    public  static final int  exact = 0;
+    public  static final int normal = 1;
     
     public static BigDecimal round(BigDecimal value)
     {
         if (active)
         {
-            if (BigDecimalExtension.equals(value, BigDecimal.ZERO))
-            {
-                return value;
-            }
-            
-            int sign = value.signum();
-            
-            /* destinguish sign */
-            if (sign == -1)
-            {
-                return value.round(new MathContext(precision, RoundingMode.HALF_DOWN));
-            }
-
-            return value.round(new MathContext(precision, RoundingMode.HALF_UP));
+        	if (MathLib.getRoundingMode() == MathLib.exact ) 
+        	{
+	            value = value.round(new MathContext( precision, RoundingMode.HALF_UP ));
+	        }
+        	
+        	if (MathLib.getRoundingMode() == MathLib.normal ) 
+        	{
+        		value = value.setScale( precision, RoundingMode.HALF_UP );
+        	}
         }
-        
-        return value;
+        if (BigDecimalExtension.equals(value, BigDecimal.ZERO))
+        {
+        	return BigDecimal.ZERO;
+        }
+        return value.stripTrailingZeros();
     }
-
-    //So würde ich das Runden unmsetzen
-    public static BigDecimal roundMantissa(BigDecimal value, int scale) {
-		boolean neg = value.doubleValue() < 0 ? true : false;
-		if (neg)
-			value.multiply(BigDecimal.valueOf(-1d));
-		int exponent = log10(value).intValue();
-		BigDecimal mantissa = value.multiply(BigDecimal.valueOf(Math.pow(10.0, -exponent)));
-		BigDecimal bd = mantissa.setScale(scale,
-				BigDecimal.ROUND_HALF_UP);
-		BigDecimal round_value = bd.multiply(BigDecimal.valueOf(Math.pow(10, exponent)));
-		if (neg)
-			round_value.multiply(BigDecimal.valueOf(-1d));
-		return round_value;
-	}
-    
+   
     
     // Die gleiche Funktion ist BigDecimalMath.log(BigDecimal x), enthalten in BigDecimalMath.jar
     // Funktion stammt von:
@@ -123,7 +109,7 @@ public class MathLib
         return active;
     }
     
-    public static void setActive(boolean active)
+    public static void enableRound(boolean active)
     {
         MathLib.active = active;
     }
@@ -134,5 +120,13 @@ public class MathLib
 
 	public static void setPivotstrategy(boolean pivotstrategy) {
 		MathLib.pivotstrategy = pivotstrategy;
+	}
+	
+	public static void setRoundingMode(int mode) {
+		MathLib.roundingmode = mode;
+	}
+	
+	public static int getRoundingMode() {
+		return MathLib.roundingmode;
 	}
 }
