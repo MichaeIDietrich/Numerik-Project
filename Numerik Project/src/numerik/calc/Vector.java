@@ -74,7 +74,5 @@ public class Vector extends Matrix {
 	  for(int i=0; i<length; i++) {
 		  set(i, BigDecimal.ZERO);
 	  }
-  }
-  
-  
+  } 
 }

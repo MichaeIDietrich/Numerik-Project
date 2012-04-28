@@ -210,6 +210,8 @@ public class Matrix {
 		}
 	}
 
+	
+	
 	@Override
 	public Matrix clone() {
 
@@ -223,11 +225,14 @@ public class Matrix {
 		return copy;
 	}
 
+	
+	
 	// helper function
 	private boolean isValidIndex(int row, int col) {
 		return row >= 0 && row < rows && col >= 0 && col < cols;
 	}
 
+	
 	
 	public Matrix getInverse() {
 		
@@ -241,7 +246,7 @@ public class Matrix {
 			
 			for(int col=0; col<rows-1; col++) {					// überführt A aus (A|E) in obere Dreiecksmatrix, Umformungen in A parallel in E -
 				for(int row=col; row<rows-1; row++) {	
-					temp = clone.values[row+1][col].divide( clone.values[col][col].negate(), MathLib.getPrecision(), RoundingMode.FLOOR );	
+					temp = clone.values[row+1][col].divide( clone.values[col][col].negate(), 20, RoundingMode.FLOOR );	
 					for(int i=0; i<this.values.length; i++) {
 						  clone.values[row+1][i] =   clone.values[row+1][i].add( temp.multiply(   clone.values[col][i] ));
 						inverse.values[row+1][i] = inverse.values[row+1][i].add( temp.multiply( inverse.values[col][i] ));
@@ -253,8 +258,8 @@ public class Matrix {
 			for(int row=0; row<rows; row++) {					// normiert Spur von A auf 1, Rechenschritte parallel auch in E durchführen -
 				temp = clone.values[row][row];
 				for(int col=0; col<rows; col++) {
-					inverse.values[row][col] = inverse.values[row][col].divide( temp, MathLib.getPrecision(), RoundingMode.HALF_UP );
-					  clone.values[row][col] =   clone.values[row][col].divide( temp, MathLib.getPrecision(), RoundingMode.HALF_UP );
+					inverse.values[row][col] = inverse.values[row][col].divide( temp, 20, RoundingMode.HALF_UP );
+					  clone.values[row][col] =   clone.values[row][col].divide( temp, 20, RoundingMode.HALF_UP );
 				}
 			}
 			
@@ -272,6 +277,8 @@ public class Matrix {
 		return inverse;
 	}
 	
+	
+	
 	public Vector determineX(Vector b) {
 		Matrix L = getL();
 		Matrix U = getU();
@@ -282,29 +289,32 @@ public class Matrix {
 		return x;
 	}
 	
+	
+	
 	public Matrix getL() {
 		return doLUDecomposition(0, null);	// 0 liefert L zurück
 	}
+	
+	
 	
 	public Matrix getU() {
 		return doLUDecomposition(1, null);	// 1 liefert U zurück
 	}
 	
+	
+	
 	private Matrix doLUDecomposition(int what_matrix, Vector b) {
 		
 		BigDecimal temp = BigDecimal.ZERO;
-//		if (b==null)  b = clone();						// ACHTUNG!!! Muss noch als Vektor geschrieben werden.
 		Matrix    	  L = clone();
 		Matrix 		  U = new Matrix( rows, rows ).identity();
 		
-		for(int row=0; row<L.rows; row++) {
+		for(int row=0; row<U.rows; row++) {
 			
-			// if (MathLib.isPivotstrategy()) L = pivotCycleLines( L, b, row );	
+			if (MathLib.isPivotstrategy()) L = pivotColumnStrategy( L, b, row );	
 		
 			for(int t=row; t<L.cols-1; t++) {
-			
 				temp = L.values[t+1][row].divide( L.values[row][row].negate(), MathLib.getPrecision(), RoundingMode.HALF_UP );
-				
 				U.values[t+1][row] = temp.multiply( BigDecimal.ONE.negate() );				
 
 				for(int i=0; i<L.rows; i++) {
@@ -315,66 +325,78 @@ public class Matrix {
 		}
 		
 		if(what_matrix==0) {
-			return L;
+			return U;			// Matrizen vertauscht U=L und L=U
 		} else {
-			return U;
+			return L;
 		}
 	}
 	
 	
+	
 	public Vector substitution( Matrix matrix, Vector b, String str ) {
 		
-		BigDecimal term1 = BigDecimal.ZERO;						// mx = matrix, vec_li = y , vec_re = b
+		BigDecimal term0 = BigDecimal.ZERO;
+		BigDecimal term1 = BigDecimal.ZERO;						
 		BigDecimal term2 = BigDecimal.ZERO;
 		Vector    	   y = new Vector( b.getLength());
 		
 		if ( str.equals("forward") ) {
-			y.set( 0, b.get(0) );									// y_0 = b_0
+			y.set( 0, b.get(0) );		  // y_0 = b_0
 			
-			for(int row=1; row<matrix.rows-1; row++) {
-				
-				term1 = y.get(row).subtract( subsum( matrix, y, row) );
+			for(int row=1; row<matrix.rows; row++) {
+				term0 = BigDecimal.ZERO;
+				for(int i=0; i<y.getLength()-1; i++) term0 = matrix.values[row][i].multiply( y.get(i) ).add( term0 );
+				term1 = b.get(row).subtract( term0 );
 				term2 = term1.divide( matrix.values[row][row], MathLib.getPrecision(), RoundingMode.HALF_UP );
-				System.out.println( term1+", "+term2+", " );
 				y.set(row, term2);
 			}
 		}
 		
 		if ( str.equals("backward") ) {
 			int dim = matrix.getRows()-1;
-			y.set(dim, b.get(dim).divide( matrix.values[dim][dim], MathLib.getPrecision(), RoundingMode.HALF_UP));
+			y.set(dim, b.get(dim).divide( matrix.values[dim][dim], MathLib.getPrecision(), RoundingMode.HALF_UP ));
 			
 			for(int row=matrix.getRows()-1; row>=0; row--) {
-				term1 = b.get(row).subtract( resubsum( matrix, y, row) );
+				term0 = BigDecimal.ZERO;
+				for(int i=0; i<matrix.getRows()-1-row; i++) term0 = term0.add( matrix.values[row][dim-i].multiply( y.get(dim-i) ) );
+				term1 = b.get(row).subtract( term0 );
 				term2 = term1.divide( matrix.values[row][row], MathLib.getPrecision(), RoundingMode.HALF_UP );
 				y.set(row, term2);
 			}
 		}
-		
 		return y;
 	}
 	
 	
-	public BigDecimal subsum( Matrix matrix, Vector y, int row) {
-		
-		BigDecimal temp = BigDecimal.ZERO;
-		
-		for(int i=0; i<row; i++) {
-			temp = matrix.values[row][i].multiply( y.get(i) ).add( temp );
-		}
-		return temp;
-	}
 	
-	
-	public BigDecimal resubsum( Matrix matrix, Vector y, int row ) {
+	public Matrix pivotColumnStrategy( Matrix matrix, Vector b, int row ) {
 		
+		BigDecimal  max = BigDecimal.ZERO;
 		BigDecimal temp = BigDecimal.ZERO;
-		int dim = matrix.getRows();
+		int 	 laenge = matrix.rows-(row-1);
+		int 		pos = 0;
 		
-		for(int i=0; i<matrix.getRows()-1-row; i++) {
-			temp = temp.add( matrix.values[row][dim-i].multiply( y.get(dim-i) ) );
+		for(int t=0; t<laenge-row+1; t++) {						    // Bsp 4x4: vergleicht Zeilen ...
+			for(int i=t; i<laenge-1; i++) {						    // Row=1: 1,2,3,4; Row=2: 2,3,4; Row=3: 3,4 ; Ende
+				if (matrix.values[row+i][row].abs().compareTo( max.abs() ) == 1) {
+					pos = row+i;									// Markiert Zeile mit groesstem Wert
+					max = matrix.values[row+i][row];
+				}
+			}
+		
+			for(int i=0; i<matrix.getRows(); i++) {					// Zeilenvertauschung der Matrix	
+				temp = matrix.values[row][i];
+				matrix.values[row][i] = matrix.values[pos][i];		
+				matrix.values[pos][i] = temp;
+			}
+		
+			if(pos!=row) {											// Zeilenvertauschung des Vektors
+				temp = b.get(row);
+				b.set(row, b.get(pos));								
+				b.set(pos, temp);
+			}
 		}
-		return temp;
+		return matrix;
 	}
 }
 

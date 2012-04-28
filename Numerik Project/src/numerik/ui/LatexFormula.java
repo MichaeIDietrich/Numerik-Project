@@ -3,6 +3,8 @@ package numerik.ui;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.HashMap;
 
 import javax.swing.JLabel;
@@ -139,7 +141,7 @@ public class LatexFormula
     }
     
     
-    public LatexFormula addSpecialCharacter(String name)
+    public LatexFormula addSymbol(String name)
     {
         if (characterTable.containsKey(name))
         {
@@ -179,7 +181,7 @@ public class LatexFormula
         {
           for (int m = 0; m < matrix.getCols(); m++)
           {
-                formula.append(MathLib.round(matrix.get(n, m)));
+                formula.append( matrix.get(n, m).round( new MathContext( MathLib.getPrecision(), RoundingMode.HALF_UP)).toPlainString() );
                 
                 if (m < matrix.getCols() - 1)
                     formula.append("&");
