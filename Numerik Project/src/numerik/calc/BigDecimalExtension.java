@@ -4,21 +4,25 @@ import java.math.BigDecimal;
 
 public class BigDecimalExtension
 {
+    /* expectedToBeGreater > bigDecimalToCompare */
     public static boolean greater(BigDecimal bigDecimalToCompare, BigDecimal expectedToBeGreater)
     {
         return expectedToBeGreater.compareTo(bigDecimalToCompare) == 1;
     }
     
+    /* expectedToBeLesser < bigDecimalToCompare */
     public static boolean lesser(BigDecimal bigDecimalToCompare, BigDecimal expectedToBeLesser)
     {
         return expectedToBeLesser.compareTo(bigDecimalToCompare) == -1;
     }
     
+    /* expectedToBeEqual == bigDecimalToCompare */
     public static boolean equals(BigDecimal bigDecimalToCompare, BigDecimal expectedToBeEqual)
     {
         return expectedToBeEqual.compareTo(bigDecimalToCompare) == 0;
     }
     
+    /* expectedToBeUnequal != bigDecimalToCompare */
     public static boolean unequals(BigDecimal bigDecimalToCompare, BigDecimal expectedToBeUnequal)
     {
         return expectedToBeUnequal.compareTo(bigDecimalToCompare) != 0;
