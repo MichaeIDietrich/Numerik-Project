@@ -2,12 +2,10 @@ package numerik.ui;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.util.HashMap;
 import javax.swing.JLabel;
-import numerik.calc.MathLib;
-import numerik.calc.Matrix;
+import numerik.calc.*;
+
 import org.scilab.forge.jlatexmath.TeXConstants;
 import org.scilab.forge.jlatexmath.TeXFormula;
 import org.scilab.forge.jlatexmath.TeXIcon;
@@ -187,6 +185,13 @@ public class LatexFormula
                 formula.append("\\\\");
         }
         formula.append("\\end{pmatrix}");
+        
+        return this;
+    }
+    
+    public LatexFormula addMatrix(Vector vector) // naja, vllt doch lieber umbenennen 
+    {
+        addMatrix(vector.toMatrix());
         
         return this;
     }

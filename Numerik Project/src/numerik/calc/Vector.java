@@ -1,92 +1,127 @@
 package numerik.calc;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 
 import numerik.calc.Matrix;
 
-public class Vector extends Matrix {
-  
-  private boolean transposed;
-  private int length;
-  
-  public Vector(int rows) {
-    // super( rows, 0 );
-    // setRows( rows );
-    // setCols( 0 );
-    //
-    // BigDecimal[] values = new BigDecimal[rows];
-    //
-    // for (int row = 0; row<rows; row++) {
-    // values[row] = BigDecimal.ZERO;
-    // }
-    // this.transposed = false;
-    // this.length = values.length;
-    this(new BigDecimal[rows]);
-    setToNullvector();
-  }
-  
-  public Vector(BigDecimal[] values) {
-    this(values, false);
-  }
-  
-  public Vector(BigDecimal[] values, boolean transposed) {
-    super(values, transposed ? values.length : 1);
-    this.transposed = transposed;
-    this.length = values.length;
-  }
-  
-  public boolean isTransposed() {
-    return transposed;
-  }
-  
-  public BigDecimal get(int index) {
-    if (transposed) {
-      return this.get(0, index);
-      
-    } else {
-      return this.get(index, 0);
-      
-    }
-  }
-  
-  public void set(int index, BigDecimal value) {
-    if (transposed) {
-      this.set(0, index, value);
-      
-    } else {
-      this.set(index, 0, value);
-      
-    }
-  }
-  
-  public int getLength() {
-    return length;
-  }
-  
-  @Override
-  public Vector getTransposed() {
-    BigDecimal[] values = new BigDecimal[length];
-    for (int i = 0; i < length; i++) {
-      values[i] = get(i);
-    }
-    return new Vector(values, !transposed);
-  }
-  
-  public void setToNullvector() {
-    for (int i = 0; i < length; i++) {
-      set(i, BigDecimal.ZERO);
-    }
-  }
-  
-  @Override
-  public Vector clone() {
+public final class Vector
+{
     
-    Vector copy = new Vector(length);
+    private boolean transposed;
+    private int length;
     
-    for (int i = 0; i < length; i++) {
-        copy.set(i, get(i));
+    BigDecimal[] values;
+    
+    public Vector(int rows)
+    {
+        this(new BigDecimal[rows]);
+        setToNullvector();
     }
-    return copy;
-  }
-
+    
+    public Vector(BigDecimal[] values)
+    {
+        this(values, false);
+    }
+    
+    public Vector(BigDecimal[] values, boolean transposed)
+    {
+        this.values = values;
+        this.transposed = transposed;
+        this.length = values.length;
+    }
+    
+    public boolean isTransposed()
+    {
+        return transposed;
+    }
+    
+    public BigDecimal get(int index)
+    {
+        return values[index];
+    }
+    
+    public void set(int index, BigDecimal value)
+    {
+        values[index] = value;
+    }
+    
+    public int getLength()
+    {
+        return length;
+    }
+    
+    
+    public Vector mult(BigDecimal value)
+    {
+        BigDecimal[] v = new BigDecimal[length];
+        for (int i = 0; i < values.length; i++)
+        {
+            v[i] = values[i].multiply(value);
+        }
+        return new Vector(v);
+    }
+    
+    
+    public Vector add(Vector vector)
+    {
+        if (vector.getLength() != length)
+        {
+            return null;
+        }
+        BigDecimal[] v = new BigDecimal[length];
+        for (int i = 0; i < length; i++)
+        {
+            v[i] = values[i].add(vector.get(i));
+        }
+        return new Vector(v);
+    }
+    
+    
+    public Vector sub(Vector vector)
+    {
+        if (vector.getLength() != length)
+        {
+            return null;
+        }
+        BigDecimal[] v = new BigDecimal[length];
+        for (int i = 0; i < length; i++)
+        {
+            v[i] = values[i].subtract(vector.get(i));
+        }
+        return new Vector(v);
+    }
+    
+    
+    public Vector getTransposed()
+    {
+        return new Vector(Arrays.copyOf(values, values.length), !transposed);
+    }
+    
+    public void setToNullvector()
+    {
+        for (int i = 0; i < length; i++)
+        {
+            values[i] = BigDecimal.ZERO;
+        }
+    }
+    
+    public Matrix toMatrix() {
+        return new Matrix(Arrays.copyOf(values, values.length), transposed ? values.length : 1);
+    }
+    
+    @Override
+    public Vector clone()
+    {
+        
+        Vector copy = new Vector(length);
+        
+        for (int i = 0; i < length; i++)
+        {
+            copy.set(i, get(i));
+        }
+        return copy;
+    }
+    
+    
 }
