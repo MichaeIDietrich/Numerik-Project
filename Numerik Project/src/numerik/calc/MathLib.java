@@ -1,4 +1,3 @@
-
 package numerik.calc;
 
 import java.math.*;
@@ -9,32 +8,44 @@ public class MathLib
     private static boolean pivotstrategy;
     private static boolean active = true;
     private static int roundingmode = 0;
-    public  static final int  exact = 0;
-    public  static final int normal = 1;
+    public static final int exact = 0;
+    public static final int normal = 1;
     
     public static BigDecimal round(BigDecimal value)
     {
         if (active)
         {
-        	if (MathLib.getRoundingMode() == MathLib.exact ) 
-        	{
-	            value = value.round(new MathContext( precision, RoundingMode.HALF_UP ));
-	        }
-        	
-        	if (MathLib.getRoundingMode() == MathLib.normal ) 
-        	{
-        		value = value.setScale( precision, RoundingMode.HALF_UP );
-        	}
+            if (MathLib.getRoundingMode() == MathLib.exact)
+            {
+                value = value.round(new MathContext(precision, RoundingMode.HALF_UP));
+            }
+            
+            if (MathLib.getRoundingMode() == MathLib.normal)
+            {
+                value = value.setScale(precision, RoundingMode.HALF_UP);
+            }
         }
-        if (BigDecimalExtension.equals(value, BigDecimal.ZERO))
-        {
-        	return BigDecimal.ZERO;
-        }
-        return value.stripTrailingZeros();
+        return stripTrailingZeros(value);
     }
-   
     
-    // Die gleiche Funktion ist BigDecimalMath.log(BigDecimal x), enthalten in BigDecimalMath.jar
+    
+    // da das Nullen-Abschneiden verbugt ist und auch der Vergleich gegen Null (0 != 0.000) hinkt
+    // habe ich hier eine eigene Funktion gebaut, einen guten regulären Ausdrauck habe ich nicht
+    // gefunden, der auch alle Sonderfälle abdeckt
+    public static BigDecimal stripTrailingZeros(BigDecimal value) {
+        
+        char[] plain = value.toPlainString().toCharArray();
+        for (int i = plain.length - 1; i > 0; i--) {
+          if (plain[i] != '0') {
+            return new BigDecimal(new String(plain, 0, i + 1));
+          }
+        }
+        return value;
+      }
+    
+    
+    // Die gleiche Funktion ist BigDecimalMath.log(BigDecimal x), enthalten in
+    // BigDecimalMath.jar
     // Funktion stammt von:
     // http://www.humbug.in/stackoverflow/de/logarithm-of-a-bigdecimal-739532.html
     // siehe unten auf der Seite
@@ -70,9 +81,8 @@ public class MathLib
         return ret;
     }
     
-    
     // Logarithmus zur Basis 10
-    public static BigDecimal log10(BigDecimal value) 
+    public static BigDecimal log10(BigDecimal value)
     {
         return ln(value).divide(ln(BigDecimal.TEN), precision, BigDecimal.ROUND_HALF_UP);
     }
@@ -84,7 +94,7 @@ public class MathLib
         {
             return 0;
         }
-            
+        
         BigDecimal absoluteDecimal = value.abs();
         BigDecimal exponent = MathLib.log10(absoluteDecimal);
         
@@ -113,20 +123,24 @@ public class MathLib
     {
         MathLib.active = active;
     }
-
-	public static boolean isPivotstrategy() {
-		return pivotstrategy;
-	}
-
-	public static void setPivotstrategy(boolean pivotstrategy) {
-		MathLib.pivotstrategy = pivotstrategy;
-	}
-	
-	public static void setRoundingMode(int mode) {
-		MathLib.roundingmode = mode;
-	}
-	
-	public static int getRoundingMode() {
-		return MathLib.roundingmode;
-	}
+    
+    public static boolean isPivotstrategy()
+    {
+        return pivotstrategy;
+    }
+    
+    public static void setPivotstrategy(boolean pivotstrategy)
+    {
+        MathLib.pivotstrategy = pivotstrategy;
+    }
+    
+    public static void setRoundingMode(int mode)
+    {
+        MathLib.roundingmode = mode;
+    }
+    
+    public static int getRoundingMode()
+    {
+        return MathLib.roundingmode;
+    }
 }
