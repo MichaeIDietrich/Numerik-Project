@@ -28,21 +28,24 @@ public class MathLib
         return stripTrailingZeros(value);
     }
     
-    
-    // da das Nullen-Abschneiden verbugt ist und auch der Vergleich gegen Null (0 != 0.000) hinkt
-    // habe ich hier eine eigene Funktion gebaut, einen guten regulären Ausdrauck habe ich nicht
+    // da das Nullen-Abschneiden verbugt ist und auch der Vergleich gegen Null
+    // (0 != 0.000) hinkt
+    // habe ich hier eine eigene Funktion gebaut, einen guten regulären
+    // Ausdrauck habe ich nicht
     // gefunden, der auch alle Sonderfälle abdeckt
-    public static BigDecimal stripTrailingZeros(BigDecimal value) {
+    public static BigDecimal stripTrailingZeros(BigDecimal value)
+    {
         
         char[] plain = value.toPlainString().toCharArray();
-        for (int i = plain.length - 1; i > 0; i--) {
-          if (plain[i] != '0') {
-            return new BigDecimal(new String(plain, 0, i + 1));
-          }
+        for (int i = plain.length - 1; i > 0; i--)
+        {
+            if (plain[i] != '0')
+            {
+                return new BigDecimal(new String(plain, 0, i + 1));
+            }
         }
         return value;
-      }
-    
+    }
     
     // Die gleiche Funktion ist BigDecimalMath.log(BigDecimal x), enthalten in
     // BigDecimalMath.jar
