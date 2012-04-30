@@ -101,6 +101,8 @@ public class MathLib_TestFixture
         assertTrue(BigDecimalExtension.equals(BigDecimal.ZERO, m_BigDecimalOutput));
     }
     
+    
+    
     @Test
     public void getExponent__Exponent_Of_Decimal_Is_40()
     {
