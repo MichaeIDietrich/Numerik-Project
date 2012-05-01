@@ -5,12 +5,14 @@ import java.math.*;
 
 public class MathLib
 {
-    private static int precision;
-    private static boolean pivotstrategy;
-    private static boolean active = true;
-    private static int roundingmode = 0;
-    public  static final int  exact = 0;
-    public  static final int normal = 1;
+    private static boolean pivotstrategy = false;
+    private static boolean        active = true;
+    private static int         precision = 5;
+    private static int inverse_precision = 10;
+    private static int      roundingmode = 0;
+    public  static final int       exact = 0;
+    public  static final int      normal = 1;
+        
     
     public static BigDecimal round(BigDecimal value)
     {
@@ -18,7 +20,7 @@ public class MathLib
         {
         	if (MathLib.getRoundingMode() == MathLib.exact ) 
         	{
-	            value = value.round(new MathContext( precision, RoundingMode.HALF_UP ));
+        	    value = value.round(new MathContext( precision, RoundingMode.HALF_UP ));
 	        }
         	
         	if (MathLib.getRoundingMode() == MathLib.normal ) 
@@ -114,11 +116,11 @@ public class MathLib
         MathLib.active = active;
     }
 
-	public static boolean isPivotstrategy() {
+	public static boolean isPivotStrategy() {
 		return pivotstrategy;
 	}
 
-	public static void setPivotstrategy(boolean pivotstrategy) {
+	public static void setPivotStrategy(boolean pivotstrategy) {
 		MathLib.pivotstrategy = pivotstrategy;
 	}
 	
@@ -129,4 +131,14 @@ public class MathLib
 	public static int getRoundingMode() {
 		return MathLib.roundingmode;
 	}
+
+
+    public static int getInversePrecision() {
+        return inverse_precision;
+    }
+
+
+    public static void setInversePrecision(int inverse_precision) {
+        MathLib.inverse_precision = inverse_precision;
+    }
 }

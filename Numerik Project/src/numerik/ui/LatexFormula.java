@@ -2,8 +2,6 @@ package numerik.ui;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.util.HashMap;
 import javax.swing.JLabel;
 import numerik.calc.MathLib;
