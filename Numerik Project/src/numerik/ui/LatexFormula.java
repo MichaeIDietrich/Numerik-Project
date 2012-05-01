@@ -1,6 +1,6 @@
 package numerik.ui;
 
-import java.awt.Image;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import javax.swing.JLabel;
@@ -47,7 +47,7 @@ public class LatexFormula
     }
     
     
-    public LatexFormula addLatexFormula(String latexFormula)
+    public LatexFormula addLatexString(String latexFormula)
     {
         formula.append(latexFormula);
         
@@ -254,28 +254,67 @@ public class LatexFormula
     }
     
     
+    public LatexFormula startAlignedEquation() {
+      formula.append("\\begin{eqnarray}");
+      
+      return this;
+    }
+    
+    
+    public LatexFormula addAlignedEquation(String equation, String alignedChar) {
+      formula.append(equation.replaceAll(new String(alignedChar), "&" + alignedChar + "&"));
+      
+      return this;
+    }
+    
+    
+    public LatexFormula endAlignedEquation() {
+      formula.append("\\end{eqnarray}");
+      
+      return this;
+    }
+    
+    
     public Image toImage()
     {
-        return toImage(20);
+        return toImage(20, null);
     }
     
     
     public Image toImage(int size)
     {
-        System.out.println(formula.toString());
-
+      return toImage(size, null);
+    }
+    
+    
+    public Image toImage(Color color)
+    {
+      return toImage(20, color);
+    }
+    
+    
+    public Image toImage(int size, Color color)
+    {
+        System.out.println("\\begin{array}{l}" + formula.toString() + "\\end{array}");
+        
         TeXFormula texFormula = new TeXFormula( "\\begin{array}{l}" + formula.toString() + "\\end{array}");
         TeXIcon          icon = texFormula.createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
         BufferedImage       b = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_4BYTE_ABGR);
-
-        icon.paintIcon(new JLabel(), b.getGraphics(), 0, 0);
-
+        
+        if (color == null) {
+          icon.paintIcon(new JLabel(), b.getGraphics(), 0, 0);
+        } else {
+          icon.setForeground(color);
+          icon.paintIcon(null, b.getGraphics(), 0, 0);
+        }
+        
         return b;
     }
     
     @Override
     public String toString() {
-        return formula.toString();
+      
+      return formula.toString();
     }
     
     
