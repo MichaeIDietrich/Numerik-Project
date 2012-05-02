@@ -303,12 +303,15 @@ public class ExpressionEngine
             
             case 2:
                 
-                vars.add(expression(priority + 1));
+                Value v = expression(priority + 1);
+                System.out.println("v: " + v);
+                vars.add(v);
                 
                 while (lastToken == Token.TIMES || lastToken == Token.DIVISION)
                 {
                     
                     token = lastToken;
+                    System.out.println("peek: " + vars.peek());
                     lastToken = getNextToken();
                     
                     vars.add(expression(priority + 1));
@@ -355,8 +358,10 @@ public class ExpressionEngine
                 {
                     
                     lastToken = getNextToken();
-                    
+                    System.out.println("set var: " + lastVariable);
                     vars.add(new Value(new Variable(lastVariable)));
+                    System.out.println("++: " + new Value(new Variable(lastVariable)));
+                    System.out.println("set var+: " + vars.peek());
                     
                 }
                 else if (lastToken == Token.LGROUP)
@@ -504,6 +509,10 @@ public class ExpressionEngine
     
     private Value calc(Value var1, Value var2, Token operation)
     {
+        
+        System.out.println("var1: " + var1);
+        System.out.println("var2: " + var2);
+        System.out.println("op: " + operation);
         
         var1 = resolveVariable(var1);
         var2 = resolveVariable(var2);
@@ -695,8 +704,12 @@ public class ExpressionEngine
     
     private Value resolveVariable(Value var)
     {
-        if (var != null && var.getType() == ValueType.VARIABLE)
+        if (var.getType() == ValueType.VARIABLE)
         {
+            if (!variables.containsKey(var.toVariable().toString())) 
+            {
+                return new Value("undefiniert");
+            }
             return variables.get(var.toVariable().toString());
         }
         return var;

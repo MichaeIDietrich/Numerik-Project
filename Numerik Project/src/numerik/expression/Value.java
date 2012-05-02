@@ -9,7 +9,7 @@ public class Value
     
     public enum ValueType
     {
-        NULL, MATRIX, VECTOR, DECIMAL, VARIABLE, STRING
+        NULL, MATRIX, VECTOR, DECIMAL, VARIABLE, TEXT
     }
     
     public static Value EMPTY = new Value();
@@ -18,7 +18,7 @@ public class Value
     private Matrix matrix = null;
     private Vector vector = null;
     private Variable variable = null;
-    private String string = null;
+    private String text = null;
     
     private ValueType type = ValueType.NULL;
     
@@ -51,10 +51,10 @@ public class Value
         type = ValueType.VARIABLE;
     }
     
-    public Value(String string)
+    public Value(String text)
     {
-        this.string = string;
-        type = ValueType.STRING;
+        this.text = text;
+        type = ValueType.TEXT;
     }
     
     public ValueType getType()
@@ -82,9 +82,9 @@ public class Value
         return variable;
     }
     
-    public String toString()
+    public String toText()
     {
-        return string;
+        return text;
     }
     
     public Object toObject()
@@ -99,8 +99,8 @@ public class Value
                 return decimal;
             case VARIABLE:
                 return variable;
-            case STRING:
-                return string;
+            case TEXT:
+                return text;
         }
         return null;
     }
