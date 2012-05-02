@@ -1,6 +1,6 @@
 package numerik.ui;
 
-import java.awt.Container;
+import java.awt.*;
 import java.awt.event.*;
 
 import javax.swing.JButton;
@@ -14,6 +14,9 @@ public class ExpandButton extends JButton implements ActionListener
     public ExpandButton(ImageComponent relatedImage)
     {
         super("+");
+        this.setMargin(new Insets(0, 0, 0 ,0));
+        int size = this.getPreferredSize().height;
+        this.setMaximumSize(new Dimension(size, size));
         this.setToolTipText("Zwischenschritte einblenden");
         this.addActionListener(this);
         img = relatedImage;

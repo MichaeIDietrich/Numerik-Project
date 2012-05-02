@@ -303,15 +303,12 @@ public class ExpressionEngine
             
             case 2:
                 
-                Value v = expression(priority + 1);
-                System.out.println("v: " + v);
-                vars.add(v);
+                vars.add(expression(priority + 1));
                 
                 while (lastToken == Token.TIMES || lastToken == Token.DIVISION)
                 {
                     
                     token = lastToken;
-                    System.out.println("peek: " + vars.peek());
                     lastToken = getNextToken();
                     
                     vars.add(expression(priority + 1));
@@ -358,10 +355,7 @@ public class ExpressionEngine
                 {
                     
                     lastToken = getNextToken();
-                    System.out.println("set var: " + lastVariable);
                     vars.add(new Value(new Variable(lastVariable)));
-                    System.out.println("++: " + new Value(new Variable(lastVariable)));
-                    System.out.println("set var+: " + vars.peek());
                     
                 }
                 else if (lastToken == Token.LGROUP)
@@ -507,12 +501,8 @@ public class ExpressionEngine
         return list;
     }
     
-    private Value calc(Value var1, Value var2, Token operation)
+    private Value calc(Value var1, Value var2, Token operation) throws InvalidExpressionException
     {
-        
-        System.out.println("var1: " + var1);
-        System.out.println("var2: " + var2);
-        System.out.println("op: " + operation);
         
         var1 = resolveVariable(var1);
         var2 = resolveVariable(var2);
@@ -555,7 +545,6 @@ public class ExpressionEngine
                     calcSteps.addText(value.toDecimal().toString()).addNewLine();
                     return value;
             }
-            return null;
             
         }
         else if (var1.getType() == ValueType.MATRIX && var2.getType() == ValueType.MATRIX)
@@ -635,14 +624,14 @@ public class ExpressionEngine
                     
                     if (!var2.toDecimal().equals(BigDecimal.ONE.negate()))
                     {
-                        return null;
+                        throw new InvalidExpressionException("Momentan ist nur -1 als Exponent für Matrizen implementiert.");
                     }
                     return new Value(var1.toMatrix().getInverse());
             }
             
         }
         
-        return null;
+        throw new InvalidExpressionException("Ungültige Operation.");
     }
     
     private Value callFunc(String funcName, Value... args) throws InvalidExpressionException

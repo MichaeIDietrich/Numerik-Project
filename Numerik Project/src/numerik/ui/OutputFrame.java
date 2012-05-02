@@ -2,7 +2,9 @@ package numerik.ui;
 
 import java.awt.*;
 import java.awt.event.*;
+
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 
 import numerik.expression.*;
 import numerik.expression.Value.ValueType;
@@ -10,9 +12,13 @@ import numerik.expression.Value.ValueType;
 public class OutputFrame extends JFrame implements KeyListener
 {
     
+    private JTabbedPane tabMain;
+    
     private ExpressionEngine solver;
-    private JTextArea text;
-    private JPanel pnlOut;
+    private JTextArea txtExpressionInput;
+    private JPanel pnlExpressionOutput;
+    
+    private JPanel pnlStaticCode;
     
     public OutputFrame()
     {
@@ -20,74 +26,79 @@ public class OutputFrame extends JFrame implements KeyListener
         
         solver = new ExpressionEngine();
         
-        try
-        {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        }
-        catch (ClassNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-        catch (InstantiationException e)
-        {
-            e.printStackTrace();
-        }
-        catch (IllegalAccessException e)
-        {
-            e.printStackTrace();
-        }
-        catch (UnsupportedLookAndFeelException e)
-        {
-            e.printStackTrace();
-        }
+        initLookAndFeel();
         
-        // pnlOut = new JPanel(new GridLayout(0, 1));
-        pnlOut = new JPanel();
-        BoxLayout box = new BoxLayout(pnlOut, BoxLayout.Y_AXIS);
-        pnlOut.setLayout(box);
-        pnlOut.setBackground(Color.WHITE);
+        // --- Toolbar ---
         
-        text = new JTextArea();
-        text.setBackground(new Color(255, 255, 100));
-        text.addKeyListener(this);
+        JToolBar toolBar = new JToolBar();
+        toolBar.setFloatable(false);
+        JButton btnNewMatrix = new JButton(new ImageIcon("icons/new_matrix16.png"));
+        btnNewMatrix.setToolTipText("Neue Matrix erzeugen");
+        toolBar.add(btnNewMatrix);
         
-        this.add(text, BorderLayout.PAGE_END);
+        this.add(toolBar, BorderLayout.PAGE_START);
         
-        this.add(new JScrollPane(pnlOut));
+        // --- Expression-Panel ---
+        
+        JPanel pnlExpression = new JPanel(new BorderLayout());
+        
+        pnlExpressionOutput = new JPanel();
+        BoxLayout box = new BoxLayout(pnlExpressionOutput, BoxLayout.Y_AXIS);
+        pnlExpressionOutput.setLayout(box);
+        pnlExpressionOutput.setBackground(Color.WHITE);
+        
+        txtExpressionInput = new JTextArea();
+        txtExpressionInput.setBorder(new LineBorder(Color.BLACK));
+        txtExpressionInput.setBackground(new Color(255, 255, 100));
+        txtExpressionInput.addKeyListener(this);
+        
+        JScrollPane scrExpressionOutput = new JScrollPane(pnlExpressionOutput);
+        scrExpressionOutput.getVerticalScrollBar().setUnitIncrement(10);
+        
+        pnlExpression.add(scrExpressionOutput);
+        pnlExpression.add(txtExpressionInput, BorderLayout.PAGE_END);
+        
+        // --- Static-Code-Panel ---
+        
+        pnlStaticCode = new JPanel();
+        
+        // --- Tab-Pane ---
+        
+        tabMain = new JTabbedPane(JTabbedPane.BOTTOM);
+        tabMain.addTab("Expression", pnlExpression);
+        tabMain.addTab("Statischer Code", pnlStaticCode);
+        
+        this.add(tabMain);
         
         this.setSize(640, 480);
         this.setLocationRelativeTo(null);
         
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setVisible(true);
+        
+        txtExpressionInput.requestFocusInWindow();
     }
     
     @Override
-    public void keyPressed(KeyEvent e)
-    {
-    }
+    public void keyPressed(KeyEvent e) { }
     
     @Override
     public void keyReleased(KeyEvent e)
     {
         
-        // pnlOut.add(new ImageComponent(new
-        // LatexFormula("\\begin{pmatrix}1&2&3\\\\4&5&6\\\\7&8&9\\end{pmatrix}").toImage()));
-        // if (e.getKeyCode() == KeyEvent.VK_ENTER && e.isControlDown()) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER)
         {
-            pnlOut.removeAll();
+            pnlExpressionOutput.removeAll();
             LatexFormula formula = new LatexFormula();
             
-            for (String line : text.getText().split("\n"))
+            for (String line : txtExpressionInput.getText().split("\n"))
             {
                 System.out.println("Line: " + line);
                 if (line.equals("\n") || line.equals(""))
                     continue;
                 
-                // formula.addText(line + " = ");
                 formula.addText(line);
-                pnlOut.add(new ImageComponent(formula.toImage(10)));
+                pnlExpressionOutput.add(new ImageComponent(formula.toImage(10)));
                 formula.clear();
                 
                 Value res;
@@ -113,23 +124,23 @@ public class OutputFrame extends JFrame implements KeyListener
                     {
                         formula.addText(res.toObject().toString());
                     }
-                    pnlOut.add(new ImageComponent(formula.toImage()));
+                    pnlExpressionOutput.add(new ImageComponent(formula.toImage()));
                     
                     if (!Recorder.getInstance().isEmpty())
                     {
                         formula.clear();
                         formula.addFormula(Recorder.getInstance().get(true));
-                        pnlOut.add(new ExpandButton(new ImageComponent(formula.toImage(15))));
+                        pnlExpressionOutput.add(new ExpandButton(new ImageComponent(formula.toImage(15))));
                     }
                     
                 }
                 catch (InvalidExpressionException ex)
                 {
                     formula.addText(ex.getMessage());
-                    pnlOut.add(new ImageComponent(formula.toImage(12, Color.RED)));
+                    pnlExpressionOutput.add(new ImageComponent(formula.toImage(12, Color.RED)));
                 }
                 
-                pnlOut.add(new HorizontalLine());
+                pnlExpressionOutput.add(new HorizontalLine());
                 formula.clear();
                 
             }
@@ -140,7 +151,29 @@ public class OutputFrame extends JFrame implements KeyListener
     }
     
     @Override
-    public void keyTyped(KeyEvent e)
+    public void keyTyped(KeyEvent e) { }
+    
+    private void initLookAndFeel()
     {
+        try
+        {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        }
+        catch (ClassNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        catch (InstantiationException e)
+        {
+            e.printStackTrace();
+        }
+        catch (IllegalAccessException e)
+        {
+            e.printStackTrace();
+        }
+        catch (UnsupportedLookAndFeelException e)
+        {
+            e.printStackTrace();
+        }
     }
 }
