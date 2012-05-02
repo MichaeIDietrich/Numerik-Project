@@ -690,7 +690,7 @@ public class ExpressionEngine
             throw new InvalidExpressionException("Bitte Eingabe überprüfen, Funktion nimmt als Parameter eine Matrix.");
         }
         
-        throw new InvalidExpressionException("Funktion '" + funcName + "' existiert nicht");
+        throw new InvalidExpressionException("Funktion '" + funcName + "' existiert nicht.");
     }
     
     private Value resolveVariable(Value var)
