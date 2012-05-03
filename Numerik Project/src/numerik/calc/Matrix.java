@@ -340,6 +340,17 @@ public class Matrix {
     
     
     
+    public Matrix getL() {
+        return doLUDecomposition(0, null); // 0 liefert L zurück
+    }
+    
+    
+    
+    public Matrix getU() {
+        return doLUDecomposition(1, null); // 1 liefert U zurück
+    }
+    
+    
     public Matrix getL(Vector b) {
         
         return doLUDecomposition( 0, b );

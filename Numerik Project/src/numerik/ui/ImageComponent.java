@@ -19,6 +19,7 @@ class ImageComponent extends JComponent
   public void setImage( Image image ) 
   { 
     this.setPreferredSize(new Dimension(image.getWidth(null), image.getHeight(null)));
+    this.setMaximumSize(new Dimension(10000, image.getHeight(null)));
     this.image = image; 
     
     invalidate(); 

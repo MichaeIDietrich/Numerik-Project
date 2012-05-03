@@ -1,6 +1,6 @@
 package numerik.ui;
 
-import java.awt.Image;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import javax.swing.JLabel;
@@ -12,48 +12,41 @@ import org.scilab.forge.jlatexmath.TeXIcon;
 
 public class LatexFormula
 {
-    // package scope
-    StringBuilder formula;
+    private StringBuilder formula;
     
-    private static  HashMap<String, String> characterTable;
+    private static HashMap<String, String> characterTable;
     
     static
     {
         // weitere Sonderzeichen hinzufügen
         
         characterTable = new HashMap<String, String>();
-        //characterTable.put("kappa", "\\{\\kappa}");
         characterTable.put("mal", "\\cdot");
         characterTable.put("*", "\\cdot");
         
     }
-    
     
     public LatexFormula()
     {
         formula = new StringBuilder();
     }
     
-    
     public LatexFormula(String latexFormula)
     {
         formula = new StringBuilder(latexFormula);
     }
-    
     
     public void clear()
     {
         formula = new StringBuilder();
     }
     
-    
-    public LatexFormula addLatexFormula(String latexFormula)
+    public LatexFormula addLatexString(String latexFormula)
     {
         formula.append(latexFormula);
         
         return this;
     }
-    
     
     public LatexFormula addText(String text)
     {
@@ -64,20 +57,24 @@ public class LatexFormula
         return this;
     }
     
-    
     public LatexFormula addText(String str, boolean bold, boolean italic, boolean underline)
     {
-        if (bold) formula.append("\\textbf{");
-        if (italic) formula.append("\\textit{");
-        if (underline) formula.append("\\underline{");
+        if (bold)
+            formula.append("\\textbf{");
+        if (italic)
+            formula.append("\\textit{");
+        if (underline)
+            formula.append("\\underline{");
         formula.append(str);
-        if (bold) formula.append("}");
-        if (italic) formula.append("}");
-        if (underline) formula.append("}");
+        if (bold)
+            formula.append("}");
+        if (italic)
+            formula.append("}");
+        if (underline)
+            formula.append("}");
         
         return this;
     }
-    
     
     public LatexFormula addExponent(String exponent)
     {
@@ -88,7 +85,6 @@ public class LatexFormula
         return this;
     }
     
-    
     public LatexFormula addIndex(String index)
     {
         formula.append("_{");
@@ -97,7 +93,6 @@ public class LatexFormula
         
         return this;
     }
-    
     
     public LatexFormula addFraction(String upperPart, String lowerPart)
     {
@@ -110,14 +105,12 @@ public class LatexFormula
         return this;
     }
     
-    
     public LatexFormula addSolidLine()
     {
         formula.append("\\hline");
         
         return this;
     }
-    
     
     public LatexFormula addFraction()
     {
@@ -126,23 +119,26 @@ public class LatexFormula
         return this;
     }
     
-    public LatexFormula addTildeText(String text) {
+    public LatexFormula addTildeText(String text)
+    {
         
         formula.append("\\tilde{");
-        formula.append( text );
+        formula.append(text);
         formula.append("}");
         
         return this;
     }
     
-    public LatexFormula addRelError(String text) {
+    public LatexFormula addRelError(String text)
+    {
         
-        addNormXdivY( "\\Delta{"+text+"}", text);
+        addNormXdivY("\\Delta{" + text + "}", text);
         
         return this;
     }
     
-    public LatexFormula addNormXdivY(String x, String y) {
+    public LatexFormula addNormXdivY(String x, String y)
+    {
         
         formula.append("\\frac{");
         
@@ -165,14 +161,12 @@ public class LatexFormula
         return this;
     }
     
-    
     public LatexFormula endGroup()
     {
         formula.append("}");
         
         return this;
     }
-    
     
     public LatexFormula addSymbol(String name)
     {
@@ -182,15 +176,12 @@ public class LatexFormula
         }
         else
         {
-            //formula.append("\\{\\");
             formula.append("\\");
             formula.append(name);
-            //formula.append("}");
         }
         
         return this;
     }
-    
     
     public LatexFormula addNewLine()
     {
@@ -207,15 +198,15 @@ public class LatexFormula
         return this;
     }
     
-    public LatexFormula addMatrix(Matrix matrix) 
+    public LatexFormula addMatrix(Matrix matrix)
     {
         formula.append("\\begin{pmatrix}");
         for (int n = 0; n < matrix.getRows(); n++)
         {
-          for (int m = 0; m < matrix.getCols(); m++)
-          {
-                formula.append( MathLib.round(matrix.get(n, m) ));
-
+            for (int m = 0; m < matrix.getCols(); m++)
+            {
+                formula.append(MathLib.round(matrix.get(n, m)));
+                
                 if (m < matrix.getCols() - 1)
                     formula.append("&");
             }
@@ -228,13 +219,11 @@ public class LatexFormula
         return this;
     }
     
-    public LatexFormula addVector(Vector vector) // naja, vllt doch lieber umbenennen 
+    public LatexFormula addVector(Vector vector)
     {
         addMatrix(vector.toMatrix());
-        
         return this;
     }
-    
     
     public LatexFormula addNormVariable(String variable)
     {
@@ -245,7 +234,6 @@ public class LatexFormula
         return this;
     }
     
-    
     public LatexFormula addFormula(LatexFormula formula)
     {
         this.formula.append(formula.formula.toString());
@@ -253,31 +241,68 @@ public class LatexFormula
         return this;
     }
     
+    public LatexFormula startAlignedEquation()
+    {
+        formula.append("\\begin{eqnarray}");
+        
+        return this;
+    }
+    
+    public LatexFormula addAlignedEquation(String equation, String alignedChar)
+    {
+        formula.append(equation.replaceAll(new String(alignedChar), "&" + alignedChar + "&"));
+        
+        return this;
+    }
+    
+    public LatexFormula endAlignedEquation()
+    {
+        formula.append("\\end{eqnarray}");
+        
+        return this;
+    }
     
     public Image toImage()
     {
-        return toImage(20);
+        return toImage(20, null);
     }
     
-    
-    public Image toImage(int size)
+    public Image toImage(int fontSize)
     {
-        System.out.println(formula.toString());
-
-        TeXFormula texFormula = new TeXFormula( "\\begin{array}{l}" + formula.toString() + "\\end{array}");
-        TeXIcon          icon = texFormula.createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
-        BufferedImage       b = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_4BYTE_ABGR);
-
-        icon.paintIcon(new JLabel(), b.getGraphics(), 0, 0);
-
+        return toImage(fontSize, null);
+    }
+    
+    public Image toImage(Color foregroundColor)
+    {
+        return toImage(20, foregroundColor);
+    }
+    
+    public Image toImage(int fontSize, Color foregroundColor)
+    {
+        System.out.println("\\begin{array}{l}" + formula.toString() + "\\end{array}"); // nur zum Debug
+        
+        TeXFormula texFormula = new TeXFormula("\\begin{array}{l}" + formula.toString() + "\\end{array}");
+        TeXIcon icon = texFormula.createTeXIcon(TeXConstants.STYLE_DISPLAY, fontSize);
+        BufferedImage b = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+        
+        if (foregroundColor == null)
+        {
+            icon.paintIcon(new JLabel(), b.getGraphics(), 0, 0);
+        }
+        else
+        {
+            icon.setForeground(foregroundColor);
+            icon.paintIcon(null, b.getGraphics(), 0, 0);
+        }
+        
         return b;
     }
     
     @Override
-    public String toString() {
+    public String toString()
+    {
+        
         return formula.toString();
     }
     
-    
 }
-

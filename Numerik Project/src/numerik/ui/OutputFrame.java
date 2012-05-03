@@ -1,69 +1,179 @@
 package numerik.ui;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import numerik.calc.MathLib;
-import numerik.calc.Matrix;
-import numerik.calc.Vector;
+import java.awt.*;
+import java.awt.event.*;
 
-public class OutputFrame extends JFrame {
-  
-  public OutputFrame() throws IOException {
-      
-    super("Numerik");
-    
-    Recorder recorder = Recorder.getInstance();
-    
-    MathLib.setPrecision( 5 );
-    MathLib.setPivotStrategy( true );
-    MathLib.setRoundingMode( MathLib.exact );
-    MathLib.setInversePrecision( 20 );
- 
-    Matrix A = new Matrix("Matrix1.txt");
-    Matrix P = A.getScaleOf();
-    A.name = "A";
-    
-    BigDecimal[] data = {new BigDecimal(6.5),new BigDecimal(-5.3),new BigDecimal(2.9)};//,new BigDecimal(1.9),new BigDecimal(1.9)};
-    Vector b = new Vector( data );
-    b.name = "b";
-    
-    Matrix   scA = P.mult(A);
-    Vector   scb = P.mult(b);
-    Matrix  invA = A.getInverse();
-    Matrix AinvA = A.mult(invA);
-    Vector     x = scA.determineX( scb );
-    Vector invAb = scA.mult( scb );
-    Vector     r = scA.mult(x).sub( scb );
-    
-    BigDecimal     kappa = invA.zsnorm().multiply( A.zsnorm() );
-    BigDecimal relFehler = kappa.multiply( r.zsnorm().divide( b.zsnorm(), MathLib.getPrecision(), RoundingMode.HALF_UP) );
-    
-    
-    final LatexFormula formula = new LatexFormula();
-       
-    formula.addNewLine(2).addText("scA = ").addMatrix(scA).addText(", scb = ").addVector(scb).addNewLine(2);
-    formula.addFormula( recorder.get( true ) );
-    formula.addText("x = ").addVector(x).addText(",     Exakt: (A)^{-1}").addSymbol("*").addText("b = ").addVector(invAb).addNewLine(2);
-    formula.addText("A^{-1} = ").addMatrix(invA).addNewLine(2);
+import javax.swing.*;
+import javax.swing.border.LineBorder;
 
-    MathLib.setRoundingMode( MathLib.normal );
-    formula.addText("A").addSymbol("*").addText("A^{-1} = ").addMatrix(AinvA).addNewLine(3);
-    formula.addSymbol("kappa").addText("(A) = ").addNormVariable("A").addSymbol("*").addNormVariable("A^{-1}").addText(" = "+kappa).addNewLine(2);
-    formula.addRelError("x").addText(" = ").addSymbol("kappa").addText("(A)").addSymbol("*").addNormXdivY("r","b").addText( " = "+relFehler );
+import numerik.expression.*;
+import numerik.expression.Value.ValueType;
+
+public class OutputFrame extends JFrame implements KeyListener
+{
     
+    private JTabbedPane tabMain;
     
+    private ExpressionEngine solver;
+    private JTextArea txtExpressionInput;
+    private JPanel pnlExpressionOutput;
     
-    JScrollPane scrollpane = new JScrollPane( new ImageComponent(formula.toImage(18)) );
-    scrollpane.getVerticalScrollBar().setUnitIncrement(20);
-    this.add(scrollpane);
+    private JPanel pnlStaticCode;
     
-    this.setSize(640, 480);
-    this.setLocationRelativeTo(null);
+    public OutputFrame()
+    {
+        super("Numerik");
+        
+        solver = new ExpressionEngine();
+        
+        initLookAndFeel();
+        
+        // --- Toolbar ---
+        
+        JToolBar toolBar = new JToolBar();
+        toolBar.setFloatable(false);
+        JButton btnNewMatrix = new JButton(new ImageIcon("icons/new_matrix16.png"));
+        btnNewMatrix.setToolTipText("Neue Matrix erzeugen");
+        toolBar.add(btnNewMatrix);
+        
+        this.add(toolBar, BorderLayout.PAGE_START);
+        
+        // --- Expression-Panel ---
+        
+        JPanel pnlExpression = new JPanel(new BorderLayout());
+        
+        pnlExpressionOutput = new JPanel();
+        BoxLayout box = new BoxLayout(pnlExpressionOutput, BoxLayout.Y_AXIS);
+        pnlExpressionOutput.setLayout(box);
+        pnlExpressionOutput.setBackground(Color.WHITE);
+        
+        txtExpressionInput = new JTextArea();
+        txtExpressionInput.setBorder(new LineBorder(Color.BLACK));
+        txtExpressionInput.setBackground(new Color(255, 255, 100));
+        txtExpressionInput.addKeyListener(this);
+        
+        JScrollPane scrExpressionOutput = new JScrollPane(pnlExpressionOutput);
+        scrExpressionOutput.getVerticalScrollBar().setUnitIncrement(10);
+        
+        pnlExpression.add(scrExpressionOutput);
+        pnlExpression.add(txtExpressionInput, BorderLayout.PAGE_END);
+        
+        // --- Static-Code-Panel ---
+        
+        pnlStaticCode = new JPanel();
+        
+        // --- Tab-Pane ---
+        
+        tabMain = new JTabbedPane(JTabbedPane.BOTTOM);
+        tabMain.addTab("Expression", pnlExpression);
+        tabMain.addTab("Statischer Code", pnlStaticCode);
+        
+        this.add(tabMain);
+        
+        this.setSize(640, 480);
+        this.setLocationRelativeTo(null);
+        
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.setVisible(true);
+        
+        txtExpressionInput.requestFocusInWindow();
+    }
     
-    this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-    this.setVisible(true);
-  }
+    @Override
+    public void keyPressed(KeyEvent e) { }
+    
+    @Override
+    public void keyReleased(KeyEvent e)
+    {
+        
+        if (e.getKeyCode() == KeyEvent.VK_ENTER)
+        {
+            pnlExpressionOutput.removeAll();
+            LatexFormula formula = new LatexFormula();
+            
+            for (String line : txtExpressionInput.getText().split("\n"))
+            {
+                System.out.println("Line: " + line);
+                if (line.equals("\n") || line.equals(""))
+                    continue;
+                
+                formula.addText(line);
+                pnlExpressionOutput.add(new ImageComponent(formula.toImage(10)));
+                formula.clear();
+                
+                Value res;
+                try
+                {
+                    res = solver.solve(line);
+                    
+                    if (solver.getAssignedVariable() != null)
+                    {
+                        formula.addText(solver.getAssignedVariable());
+                    }
+                    
+                    if (res.getType() != ValueType.TEXT)
+                    {
+                        formula.addText(" = ");
+                    }
+                    
+                    if (res.getType() == ValueType.MATRIX)
+                    {
+                        formula.addMatrix(res.toMatrix());
+                    }
+                    else
+                    {
+                        formula.addText(res.toObject().toString());
+                    }
+                    pnlExpressionOutput.add(new ImageComponent(formula.toImage()));
+                    
+                    if (!Recorder.getInstance().isEmpty())
+                    {
+                        formula.clear();
+                        formula.addFormula(Recorder.getInstance().get(true));
+                        pnlExpressionOutput.add(new ExpandButton(new ImageComponent(formula.toImage(15))));
+                    }
+                    
+                }
+                catch (InvalidExpressionException ex)
+                {
+                    formula.addText(ex.getMessage());
+                    pnlExpressionOutput.add(new ImageComponent(formula.toImage(12, Color.RED)));
+                }
+                
+                pnlExpressionOutput.add(new HorizontalLine());
+                formula.clear();
+                
+            }
+            
+            this.validate();
+        }
+        
+    }
+    
+    @Override
+    public void keyTyped(KeyEvent e) { }
+    
+    private void initLookAndFeel()
+    {
+        try
+        {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        }
+        catch (ClassNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        catch (InstantiationException e)
+        {
+            e.printStackTrace();
+        }
+        catch (IllegalAccessException e)
+        {
+            e.printStackTrace();
+        }
+        catch (UnsupportedLookAndFeelException e)
+        {
+            e.printStackTrace();
+        }
+    }
 }
