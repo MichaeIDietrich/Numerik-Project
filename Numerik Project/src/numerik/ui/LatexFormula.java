@@ -4,11 +4,11 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import javax.swing.JLabel;
-import numerik.calc.*;
-
 import org.scilab.forge.jlatexmath.TeXConstants;
 import org.scilab.forge.jlatexmath.TeXFormula;
 import org.scilab.forge.jlatexmath.TeXIcon;
+import numerik.calc.*;
+
 
 public class LatexFormula
 {
