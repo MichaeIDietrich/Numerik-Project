@@ -576,12 +576,13 @@ public class Matrix {
         
         BigDecimal sum;
         
-        if (!isQuadratic()) 
+        if (!isQuadratic() || (rows>3 && cols>3)) 
         {
             return null;
         } 
         else 
         {
+            // Determinanten mittels Sarrus Regel für 2x2 und 3x3 Matrizen
             int        dim = cols-1;
             BigDecimal det = BigDecimal.ONE;
                        sum = BigDecimal.ZERO;
@@ -600,6 +601,7 @@ public class Matrix {
                 det = BigDecimal.ONE;
             }
             
+            
             for(int i=dim; i>=0; i--) 
             { // Regel von Sarrus: Teil 2 - Subtraktion
                 for(int t=dim; t>=0; t--) 
@@ -609,9 +611,9 @@ public class Matrix {
                     } else {
                         det = det.multiply( values[dim-t][t+i+1] );
                     }
-                }
                 sum = sum.subtract( det );
                 det = BigDecimal.ONE;
+                }
             }
         }
         return sum;

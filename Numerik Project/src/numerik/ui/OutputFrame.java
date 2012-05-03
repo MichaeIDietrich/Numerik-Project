@@ -64,8 +64,9 @@ public class OutputFrame extends JFrame {
     formula.addSymbol("kappa").addText("(A) = ").addNormVariable("A").addSymbol("*").addNormVariable("A^{-1}").addText(" = "+kappa).addNewLine(2);
     formula.addRelError("x").addText(" = ").addSymbol("kappa").addText("(A)").addSymbol("*").addNormXdivY("r","b").addText( " = "+relFehler );
     
+    System.out.println( A.det() );
     
-    
+
     JScrollPane scrollpane = new JScrollPane( new ImageComponent(formula.toImage(18)) );
     scrollpane.getVerticalScrollBar().setUnitIncrement(20);
     this.add(scrollpane);
@@ -75,7 +76,5 @@ public class OutputFrame extends JFrame {
     
     this.setDefaultCloseOperation(EXIT_ON_CLOSE);
     this.setVisible(true);
-    
-    System.out.println( A.det() );
   }
 }
