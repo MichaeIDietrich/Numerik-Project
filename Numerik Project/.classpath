@@ -2,7 +2,8 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry kind="lib" path="D:/Programme/eclipse/bibliotheken/jlatexmath-0.9.7.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="libs/jlatexmath-0.9.7.jar"/>
+	<classpathentry kind="lib" path="libs/junit-4.10.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
