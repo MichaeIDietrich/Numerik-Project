@@ -143,6 +143,7 @@ public class Matrix {
         values[row][col] = value;
     }
 
+    
     // functions
     public boolean isQuadratic() {
         return rows == cols;
@@ -365,7 +366,7 @@ public class Matrix {
     
     
     
-    private Matrix doLUDecomposition(int what_matrix, Vector b) {
+    private Matrix doLUDecomposition(int which_matrix, Vector b) {
         
         BigDecimal temp = BigDecimal.ZERO;
         Matrix        U = clone();
@@ -421,7 +422,7 @@ public class Matrix {
             recorder.add(formula);
         }
         
-        if(what_matrix==0) 
+        if(which_matrix==0) 
         {
             return L;           
         } else {
@@ -568,6 +569,52 @@ public class Matrix {
             scaledMatrix.values[row][row] = koeff.get(row).multiply( scaledMatrix.values[row][row] );
         }
         return scaledMatrix;
+    }
+    
+    
+    public BigDecimal det() {
+        
+        BigDecimal sum;
+        
+        if (!isQuadratic()) 
+        {
+            return null;
+        } 
+        else 
+        {
+            int        dim = cols-1;
+            BigDecimal det = BigDecimal.ONE;
+                       sum = BigDecimal.ZERO;
+                       
+            for(int i=0; i<=dim; i++) 
+            { // Regel von Sarrus: Teil 1 - Addition
+                for(int t=0; t<=dim; t++)   
+                {
+                    if( i+t <= dim ) {
+                        det = det.multiply( values[t][t+i] );
+                    } else {
+                        det = det.multiply( values[t][t+i-dim-1] );
+                    }
+                }
+                sum = sum.add( det );
+                det = BigDecimal.ONE;
+            }
+            
+            for(int i=dim; i>=0; i--) 
+            { // Regel von Sarrus: Teil 2 - Subtraktion
+                for(int t=dim; t>=0; t--) 
+                {
+                    if( t+i-dim >= 0 ) {
+                        det = det.multiply( values[dim-t][t+i-dim] );
+                    } else {
+                        det = det.multiply( values[dim-t][t+i+1] );
+                    }
+                }
+                sum = sum.subtract( det );
+                det = BigDecimal.ONE;
+            }
+        }
+        return sum;
     }
 }
 

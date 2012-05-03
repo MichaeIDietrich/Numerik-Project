@@ -95,6 +95,20 @@ public class MathLib
         return Integer.valueOf(roundedValue);
     }
     
+    public static BigDecimal stripTrailingZeros(BigDecimal value)
+    {
+        
+        char[] plain = value.toPlainString().toCharArray();
+        for (int i = plain.length - 1; i > 0; i--)
+        {
+            if (plain[i] != '0')
+            {
+                return new BigDecimal(new String(plain, 0, i + 1));
+            }
+        }
+        return value;
+    }
+    
     // getters and setters
     public static int getPrecision()
     {
@@ -141,19 +155,26 @@ public class MathLib
     public static void setInversePrecision(int inverse_precision) {
         MathLib.inverse_precision = inverse_precision;
     }
+
     
-    
-    public static BigDecimal stripTrailingZeros(BigDecimal value)
-    {
+    public static BigDecimal rootOf(BigDecimal root) {
         
-        char[] plain = value.toPlainString().toCharArray();
-        for (int i = plain.length - 1; i > 0; i--)
-        {
-            if (plain[i] != '0')
-            {
-                return new BigDecimal(new String(plain, 0, i + 1));
-            }
+        return root_n_Of(root, 2, 20);
+    }
+    
+    public static BigDecimal root_n_Of(BigDecimal root, int k, int mantisse) {
+        
+        BigDecimal a = root.add(BigDecimal.valueOf(1));
+        BigDecimal x = root.divide( BigDecimal.valueOf(2));
+        BigDecimal comparand  = BigDecimal.ONE.divide( BigDecimal.TEN.pow( mantisse ));
+        
+        // a, x siehe Wikipedia Wurzelberechnung nach Heron
+        
+        while( a.subtract(x).compareTo( comparand )==1 ) {
+            a = x;
+            x = BigDecimal.valueOf( k-1 ).multiply( x.pow( k ) ).add( root )
+                          .divide( BigDecimal.valueOf( k ).multiply( x.pow( k-1 ) ), 2*mantisse , RoundingMode.HALF_UP );
         }
-        return value;
+        return round(x);
     }
 }
