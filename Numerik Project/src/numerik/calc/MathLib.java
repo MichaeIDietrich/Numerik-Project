@@ -157,23 +157,23 @@ public class MathLib
     }
 
     
-    public static BigDecimal rootOf(BigDecimal root) {
+    public static BigDecimal sqrt(BigDecimal root) {
         
-        return root_n_Of(root, 2, 20);
+        return root_n_Of(root, 2);
     }
     
-    public static BigDecimal root_n_Of(BigDecimal root, int k, int mantisse) {
+    public static BigDecimal root_n_Of(BigDecimal root, int k) {
         
         BigDecimal a = root.add(BigDecimal.valueOf(1));
-        BigDecimal x = root.divide( BigDecimal.valueOf(2));
-        BigDecimal comparand  = BigDecimal.ONE.divide( BigDecimal.TEN.pow( mantisse ));
+        BigDecimal x = root.divide( BigDecimal.valueOf(2) );
+        BigDecimal comparand  = BigDecimal.ONE.divide( BigDecimal.TEN.pow( getPrecision() ));
         
         // a, x siehe Wikipedia Wurzelberechnung nach Heron
         
         while( a.subtract(x).compareTo( comparand )==1 ) {
             a = x;
             x = BigDecimal.valueOf( k-1 ).multiply( x.pow( k ) ).add( root )
-                          .divide( BigDecimal.valueOf( k ).multiply( x.pow( k-1 ) ), 2*mantisse , RoundingMode.HALF_UP );
+                          .divide( BigDecimal.valueOf( k ).multiply( x.pow( k-1 ) ), 2*getPrecision() , RoundingMode.HALF_UP );
         }
         return round(x);
     }
