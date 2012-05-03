@@ -36,7 +36,7 @@ public class Matrix {
         }
     }
     
-    
+    // xgd
     public Matrix(BigDecimal[][] values) {
         this.rows = values.length;
         this.cols = values[0].length;
