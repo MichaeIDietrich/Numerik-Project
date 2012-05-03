@@ -13,12 +13,12 @@ import numerik.ui.Recorder;
 
 public class Matrix {
 
-    private int rows;
-    private int cols;
-    private boolean normalized = false;                        // wenn wahr, dann gilt Summe = sum( abs(a_ij), i=0..k, j=0..m ) = 1
-    public String name;                                        // Name der Matrix für Ausgabe
+    private int     rows;
+    private int     cols;
+    public  String  name;                                        // Name der Matrix für Ausgabe
     
-    Recorder recorder = Recorder.getInstance();
+    LatexFormula formula  = new LatexFormula();
+    Recorder     recorder = Recorder.getInstance();
     
     BigDecimal[][] values;
 
@@ -36,7 +36,7 @@ public class Matrix {
         }
     }
     
-    // Tescomment
+    
     public Matrix(BigDecimal[][] values) {
         this.rows = values.length;
         this.cols = values[0].length;
@@ -206,7 +206,7 @@ public class Matrix {
         
         for(int zeile=0; zeile<rows; zeile++) {
                 for(int j=0; j<vector.getLength(); j++) {
-                    sum = sum.add( values[zeile][j].multiply( vector.get(j) ));
+                    sum = MathLib.round( sum.add( MathLib.round( values[zeile][j].multiply( vector.get(j) ))));
                 }
                 newVector.set(zeile, sum);
                 sum = BigDecimal.ZERO;
@@ -227,11 +227,12 @@ public class Matrix {
                     BigDecimal sum = BigDecimal.ZERO;
                     
                     for (int j2 = 0; j2 < cols; j2++) {
-                        sum = sum.add( values[i][j2].multiply( x.get(j2, j) ));
+                        sum = MathLib.round( sum.add( MathLib.round( values[i][j2].multiply( x.get(j2, j) ))));
                     }
                     v[i][j] = sum;
                 }
             }
+            
             return new Matrix(v);
         }
     }
@@ -265,20 +266,26 @@ public class Matrix {
         
         Matrix inverse = new Matrix( rows, rows ).identity();
         
-        if(!isQuadratic()) {
+        if(!isQuadratic()) 
+        {
             return null;
-        } else {
+        } 
+        else 
+        {
             BigDecimal temp = BigDecimal.ZERO;
             Matrix    clone = clone();
             
-            for(int col=0; col<rows-1; col++) {                 // überführt A aus (A|E) in obere Dreiecksmatrix, Umformungen in A parallel in E -
-                for(int row=col; row<rows-1; row++) {
+            for(int col=0; col<rows-1; col++) 
+            { // überführt A aus (A|E) in obere Dreiecksmatrix, Umformungen in A parallel in E
+                for(int row=col; row<rows-1; row++) 
+                {
 
                     temp = clone.values[row+1][col].divide( 
                            clone.values[col][col].negate(), MathLib.getInversePrecision(), RoundingMode.FLOOR );    
                     
 
-                    for(int i=0; i<this.values.length; i++) {
+                    for(int i=0; i<this.values.length; i++) 
+                    {
                           clone.values[row+1][i] =   clone.values[row+1][i].add( temp.multiply(   clone.values[col][i] ));
                         inverse.values[row+1][i] = inverse.values[row+1][i].add( temp.multiply( inverse.values[col][i] ));
                     }
@@ -286,19 +293,25 @@ public class Matrix {
                 }
             }
             
-            for(int row=0; row<rows; row++) {                   // normiert Spur von A auf 1, Rechenschritte parallel auch in E durchführen
+            for(int row=0; row<rows; row++) 
+            { // normiert Spur von A auf 1, Rechenschritte parallel auch in E durchführen
                 temp = clone.values[row][row];
-                for(int col=0; col<rows; col++) {
+                for(int col=0; col<rows; col++) 
+                {
                     inverse.values[row][col] = inverse.values[row][col].divide( temp, MathLib.getInversePrecision(), RoundingMode.HALF_UP );
                       clone.values[row][col] =   clone.values[row][col].divide( temp, MathLib.getInversePrecision(), RoundingMode.HALF_UP );
                 }
             }
             
-            for(int t=rows-1; t>=1; t--) {                      // überführe A in Einheitsmatrix E, dann (A|E) -> (E|A^(-1)) -
-                for(int row=rows-1; row>=0; row--) {
-                    if(row<t) {
+            for(int t=rows-1; t>=1; t--) 
+            { // überführe A in Einheitsmatrix E, dann (A|E) -> (E|A^(-1))
+                for(int row=rows-1; row>=0; row--) 
+                {
+                    if(row<t) 
+                    {
                         temp = clone.values[row][t].negate();
-                        for(int i=0; i<rows; i++) {
+                        for(int i=0; i<rows; i++) 
+                        {
                             inverse.values[row][i] = inverse.values[row][i].add( temp.multiply( inverse.values[t][i] ));
                         }
                     }
@@ -308,25 +321,16 @@ public class Matrix {
         return inverse;
     }
     
-    
-    public boolean isNormalized() {
-        return normalized;
-    }
 
-    
-    public void setNormalized(boolean normalized) {
-        this.normalized = normalized;
-    }
-    
-
-    public Vector determineX(Vector b) {
-
+    public Vector determineX(Vector b) 
+    {
         Vector clone_b = b.clone();
         
         recorder.setActive( false );
-        Matrix L = getL(b.clone());
+        Matrix L = getL( b.clone());
+        
         recorder.setActive( true );
-        Matrix U = getU(clone_b);
+        Matrix U = getU( clone_b );
     
         Vector y = substitution( L, clone_b, "forward"  );
         Vector x = substitution( U, y,       "backward" );
@@ -337,61 +341,37 @@ public class Matrix {
     
     
     public Matrix getL(Vector b) {
-        return doLUDecomposition(0, b); // 0 liefert L zurück
+        
+        return doLUDecomposition( 0, b );
     }
     
     
     
     public Matrix getU(Vector b) {
-        return doLUDecomposition(1, b); // 1 liefert U zurück
+        
+        return doLUDecomposition( 1, b );
     }
     
     
     
     private Matrix doLUDecomposition(int what_matrix, Vector b) {
         
-        BigDecimal      temp = BigDecimal.ZERO;
-        Matrix             U = clone();
-        Matrix             L = new Matrix( rows, rows ).identity();
-        Vector         koeff = new Vector( rows );
-        LatexFormula formula = new LatexFormula();
+        BigDecimal temp = BigDecimal.ZERO;
+        Matrix        U = clone();
+        Matrix        L = identity();
+             
+        if(  name == null)   name = "A";
+        if(b.name == null) b.name = "b";
         
-        
-        if (normalized && b!=null) 
-        { // Normalisiere Matrix, teile Zeilenelement durch Absolutbetrag der Zeilensumme
-            for(int row=0; row<rows; row++) {
-                for(int col=0; col<U.getCols(); col++) 
-                {
-                    koeff.set(row, koeff.get(row).add( U.values[row][col].abs() ));
-                }
-                koeff.set(row, BigDecimal.ONE.divide( koeff.get(row), 12, RoundingMode.HALF_UP ));
-                
-                for(int col=0; col<U.getCols(); col++) 
-                {
-                    U.values[row][col] = MathLib.round( koeff.get(row).multiply( U.values[row][col] ));
-                }
-                b.set(row, MathLib.round( koeff.get(row).multiply( b.get(row) )));
-            }
-            
-            if (recorder.isActive()) 
-            {
-                formula.addNewLine(2).addSolidLine().addNewLine(1);
-                formula.addText("Normalisierte Matrix mit Vektor:").addNewLine(2);
-                formula.addText( name +" = ").addMatrix(U).addText(", "+ b.name +" = ").addVector(b).addNewLine(1);
-            }
-        }
-        
-        if (b!=null && recorder.isActive() && !normalized ) 
+        if (b!=null && recorder.isActive()) 
         {
             formula.addNewLine(2).addSolidLine().addNewLine(1);
-//            formula.addText( name +" = ").addMatrix(U).addText(", "+ b.name +" = ").addVector(b).addNewLine(1);
+            formula.addText("LU-Zerlegung").addNewLine(2);
         }
         
         for(int row=0; row<L.rows; row++) 
         { // Pivotisierung + Gaussschritte, reduzierte Zeilenstufenform
-            
-            if (MathLib.isPivotStrategy() && b!=null) 
-                U = pivotColumnStrategy( U, b, row ); 
+            if (MathLib.isPivotStrategy()) U = pivotColumnStrategy( U, b, row ); 
             
             for(int t=row; t<U.rows-1; t++) 
             {
@@ -405,7 +385,7 @@ public class Matrix {
                 
                 if (b!=null && recorder.isActive()) 
                     formula.addTildeText( name ).addText(" = ").addMatrix(U).addText(", ")
-                           .addTildeText( b.name ).addText(" = ").addVector(b).addNewLine(1);
+                           .addTildeText(b.name).addText(" = ").addVector(b).addNewLine(1);
             }
         }
         
@@ -413,23 +393,25 @@ public class Matrix {
         { // Trenne Matizen U und L voneinander
             for(int col=0; col<L.cols; col++) 
             {
-                  if (row>col) {
-                      L.values[row][col] = U.values[row][col];
-                      U.values[row][col] = BigDecimal.ZERO;
-                  }
+                if (row>col) {
+                    L.values[row][col] = U.values[row][col];
+                    U.values[row][col] = BigDecimal.ZERO;
+                }
             }   
         }
         
         if (b!=null && recorder.isActive()) 
         {  
-            formula.addTildeText("L").addText(" = ").addMatrix(L).addNewLine(1)
-                   .addTildeText("U").addText(" = ").addMatrix(U).addNewLine(2);
-            formula.addText("Probe: ").addTildeText("L").addSymbol("*").addTildeText("U").addText(" = ").addMatrix(L.mult(U)).addNewLine(2);
-            formula.addSolidLine().addNewLine(2);
+            formula.addTildeText("L").addText(" = ").addMatrix(L).addNewLine(1);
+            formula.addTildeText("U").addText(" = ").addMatrix(U).addNewLine(2);
+            formula.addText("Probe: ").addTildeText("L").addSymbol("*").addTildeText("U")
+                   .addText(" = ").addMatrix(L.mult(U)).addNewLine(2);
+            formula.addSolidLine().addNewLine(1);
             recorder.add(formula);
         }
         
-        if(what_matrix==0) {
+        if(what_matrix==0) 
+        {
             return L;           
         } else {
             return U;
@@ -438,42 +420,58 @@ public class Matrix {
     
     
     
-    public Vector substitution( Matrix matrix, Vector b, String str ) {
-        
+    public Vector substitution( Matrix matrix, Vector b, String str ) 
+    {
         BigDecimal term0 = BigDecimal.ZERO;
         BigDecimal term1 = BigDecimal.ZERO;                     
         BigDecimal term2 = BigDecimal.ZERO;
         Vector         y = new Vector( b.getLength());
         
-        
-        if ( str.equals("forward") ) {
-            y.set( 0, b.get(0) );         // y_0 = b_0
+        if ( str.equals("forward")) 
+        {
+            y.set( 0, b.get(0) );
             
-            for(int row=1; row<matrix.rows; row++) {
+            for(int row=1; row<matrix.rows; row++) 
+            {
                 term0 = BigDecimal.ZERO;
-                for(int i=0; i<y.getLength()-1; i++) {
-                    term0 = MathLib.round( MathLib.round( matrix.values[row][i].multiply( y.get(i) )).add( term0 ));
+                
+                for(int i=0; i<y.getLength()-1; i++) 
+                {
+                    term0 = MathLib.round( matrix.values[row][i].multiply( y.get(i) )).add( term0 );
                 }
-                term1 = MathLib.round(b.get(row).subtract( term0 ));
-                term2 = MathLib.round( term1.divide( matrix.values[row][row], MathLib.getPrecision(), RoundingMode.HALF_UP ));
-                y.set(row, term2);
+                term1 = MathLib.round( b.get(row).subtract( term0 ));
+                term2 = MathLib.round( term1.divide( matrix.values[row][row], MathLib.getInversePrecision(), RoundingMode.HALF_UP ));
+                
+                y.set( row, term2);
+            }
+            
+            if (b!=null && recorder.isActive()) 
+            {  
+                formula.clear();
+                formula.addText("Vorwärtssubstitution").addNewLine(2);
+                formula.addText("y = ").addVector(y).addNewLine(2);
+                formula.addSolidLine().addNewLine(2);
+                recorder.add(formula);
             }
         }
+
         
-        
-        if ( str.equals("backward") ) {
+        if ( str.equals("backward") ) 
+        {
             int dim = matrix.getRows()-1;
 
             y.set(dim, MathLib.round( b.get(dim).divide( matrix.values[dim][dim], MathLib.getPrecision(), RoundingMode.HALF_UP )));
 
-            for(int row=dim; row>=0; row--) {
+            for(int row=dim; row>=0; row--) 
+            {
                 term0 = BigDecimal.ZERO;
-                for(int i=0; i<dim-row; i++) {
+                for(int i=0; i<dim-row; i++) 
+                {
                     term0 = MathLib.round( term0.add( MathLib.round( matrix.values[row][dim-i].multiply( y.get(dim-i) ))));
                 }
-                term1 = MathLib.round( b.get(row).subtract( term0 ) );
-                term2 = MathLib.round( term1.divide( matrix.values[row][row], MathLib.getPrecision(), RoundingMode.HALF_UP ) );
-                y.set(row, term2);
+                term1 = MathLib.round( b.get(row).subtract( term0 ));
+                term2 = MathLib.round( term1.divide( matrix.values[row][row], MathLib.getPrecision(), RoundingMode.HALF_UP ));
+                y.set( row, term2);
             }
         }
         
@@ -482,33 +480,40 @@ public class Matrix {
     
     
     
-    public Matrix pivotColumnStrategy( Matrix matrix, Vector b, int row ) {
-        
+    public Matrix pivotColumnStrategy( Matrix matrix, Vector b, int row ) 
+    {
         BigDecimal maximum = BigDecimal.ZERO;
         BigDecimal    temp = BigDecimal.ZERO;
         int    rowposition = 0;
         boolean    rowswap = false;
         
-        for(int t=0; t<matrix.getRows()-row; t++) {                              
-            for(int i=row+t; i<matrix.getCols(); i++) {                            
-                if ( matrix.values[i][row].abs().compareTo( maximum ) == 1 ) {  
+        for(int t=0; t<matrix.getRows()-row; t++) 
+        {                              
+            for(int i=row+t; i<matrix.getCols(); i++) 
+            {                            
+                if ( matrix.values[i][row].abs().compareTo( maximum ) == 1 ) 
+                {  
                     rowposition = i;                                             // Markiere Zeile mit Maximum
                     maximum     = matrix.values[i][row].abs();
                     rowswap     = true;
                 }
             }
             
-            if (rowswap && rowposition!=row ) {
-                for(int col=0; col<matrix.getCols(); col++) {                    // Zeilenvertauschung der Matrix   
+            if (rowswap && rowposition!=row ) 
+            {
+                for(int col=0; col<matrix.getCols(); col++) 
+                { // Zeilenvertauschung der Matrix   
                     temp                            = matrix.values[row][col];
                     matrix.values[row][col]         = matrix.values[rowposition][col];      
                     matrix.values[rowposition][col] = temp;
                 }
-                       
-                temp = b.get(row);                                               // Zeilenvertauschung des Vektors
-                b.set(row, b.get(rowposition));                             
-                b.set(rowposition, temp);
-
+                
+                if(b!=null) 
+                {
+                    temp = b.get(row);                                               // Zeilenvertauschung des Vektors
+                    b.set(row, b.get(rowposition));                             
+                    b.set(rowposition, temp);
+                }
                 rowswap = false;
             }
         }
@@ -517,19 +522,41 @@ public class Matrix {
     
     
     
-    public BigDecimal zsnorm() {
-                      
+    public BigDecimal zsnorm() 
+    {              
         BigDecimal sum = BigDecimal.ZERO;
         BigDecimal max = BigDecimal.ZERO;
         
-        for(int t=0; t<rows; t++) {
-            for(int i=0; i<rows; i++) {
+        for(int t=0; t<rows; t++) 
+        {
+            for(int i=0; i<rows; i++) 
+            {
                 sum = sum.add( values[t][i].abs() );
             }
             if ( max.compareTo( sum ) == -1 ) max = sum;
+            
             sum = BigDecimal.ZERO;
         } 
         return MathLib.round( max );
+    }
+    
+    
+    public Matrix getScaleOf() 
+    {
+        Matrix scaledMatrix = identity();
+        Vector        koeff = new Vector( rows );
+        
+        for(int row=0; row < rows; row++) 
+        {
+            for(int col=0; col<getCols(); col++) 
+            {
+                koeff.set(row, koeff.get(row).add( values[row][col].abs() ));
+            }
+            koeff.set(row, BigDecimal.ONE.divide( koeff.get(row), MathLib.getInversePrecision(), RoundingMode.HALF_UP ));
+            
+            scaledMatrix.values[row][row] = koeff.get(row).multiply( scaledMatrix.values[row][row] );
+        }
+        return scaledMatrix;
     }
 }
 
