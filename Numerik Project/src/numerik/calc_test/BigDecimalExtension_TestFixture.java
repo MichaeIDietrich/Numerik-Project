@@ -3,6 +3,7 @@ package numerik.calc_test;
 import numerik.calc.*;
 import java.math.BigDecimal;
 import org.junit.*;
+
 import static org.junit.Assert.*;
 
 public class BigDecimalExtension_TestFixture
