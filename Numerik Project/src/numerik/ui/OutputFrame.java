@@ -2,6 +2,7 @@ package numerik.ui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -35,6 +36,10 @@ public class OutputFrame extends JFrame implements KeyListener
         JButton btnNewMatrix = new JButton(new ImageIcon("icons/new_matrix16.png"));
         btnNewMatrix.setToolTipText("Neue Matrix erzeugen");
         toolBar.add(btnNewMatrix);
+        toolBar.addSeparator();
+        JButton btnRun = new JButton(new ImageIcon("icons/run16.png"));
+        btnRun.setToolTipText("Ausdrücke auswerten");
+        toolBar.add(btnRun);
         
         this.add(toolBar, BorderLayout.PAGE_START);
         
@@ -48,7 +53,25 @@ public class OutputFrame extends JFrame implements KeyListener
         pnlExpressionOutput.setBackground(Color.WHITE);
         
         txtExpressionInput = new JTextArea();
-        txtExpressionInput.setBorder(new LineBorder(Color.BLACK));
+        try
+        {
+            StringBuilder buffer = new StringBuilder();
+            BufferedReader br = new BufferedReader(new FileReader("Input.txt"));
+            while (br.ready())
+            {
+                buffer.append(br.readLine());
+                buffer.append('\n');
+            }
+            br.close();
+            txtExpressionInput.setText(buffer.toString());
+            txtExpressionInput.setSelectionStart(txtExpressionInput.getText().length());
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        
+        txtExpressionInput.setBorder(new LineBorder(Color.DARK_GRAY));
         txtExpressionInput.setBackground(new Color(255, 255, 100));
         txtExpressionInput.addKeyListener(this);
         
