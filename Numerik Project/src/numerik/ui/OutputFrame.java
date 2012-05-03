@@ -1,202 +1,81 @@
 package numerik.ui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import numerik.calc.MathLib;
+import numerik.calc.Matrix;
+import numerik.calc.Vector;
 
-import javax.swing.*;
-import javax.swing.border.LineBorder;
+public class OutputFrame extends JFrame {
+  
+  public OutputFrame() throws IOException {
+      
+    super("Numerik");
+    
+    Recorder recorder = Recorder.getInstance();
+    
+    // ####### Alle Berechnungen werden mit niedriger Präzision ausgeführt #########
+    
+    MathLib.setPrecision( 5 );
+    MathLib.setPivotStrategy( true );
+    MathLib.setRoundingMode( MathLib.exact );
+    MathLib.setInversePrecision( 20 );
+    
+    Matrix A = new Matrix("Matrix1.txt");
+    Matrix P = A.getScaleOf();
+    A.name   = "A";
 
-import numerik.expression.*;
-import numerik.expression.Value.ValueType;
+    BigDecimal[] data = {new BigDecimal(6.5),new BigDecimal(-5.3),new BigDecimal(2.9),new BigDecimal(1.9),new BigDecimal(1.9)};
+    Vector b = new Vector( data );
+    b.name = "b";
+    
+    Matrix   scA = A;
+    Vector   scb = b;
+    Vector     x = scA.determineX(scb);
+    
+    
+    // ####### Alle folgenden Berechnungen werden mit höherer Präzision ausgeführt #########
+    
+    MathLib.setPrecision( 20 );
+    Matrix  invA = scA.getInverse();
+    Matrix AinvA = scA.mult(invA); 
+    Vector invAb = invA.mult(scb);
+    Vector     r = scA.mult(x).sub(scb);
+    BigDecimal kappa = invA.zsnorm().multiply( scA.zsnorm() );
+    BigDecimal relFehler = kappa.multiply( r.zsnorm().divide( scb.zsnorm(), MathLib.getPrecision(), RoundingMode.HALF_UP) );
+    
+    
+    // ####### Ausgabe wieder mit niedriger Präzision / Achtung! Ausgabe sollte Mantissengenauigkeit haben. #########
+    
+    final LatexFormula formula = new LatexFormula();
+       
+    MathLib.setPrecision( 5 );
+    formula.addNewLine(2).addText("scA = ").addMatrix(scA).addText(", scb = ").addVector(scb).addNewLine(2);
+    formula.addFormula( recorder.get( true ) );
+    formula.addText("x = ").addVector(x).addText(",     Exakt: (A)^{-1}").addSymbol("*").addText("b = ").addVector(invAb).addNewLine(2);
+    formula.addText("A^{-1} = ").addMatrix(invA).addNewLine(2);
 
-public class OutputFrame extends JFrame implements KeyListener
-{
     
-    private JTabbedPane tabMain;
+    MathLib.setRoundingMode( MathLib.normal );
+    formula.addText("A").addSymbol("*").addText("A^{-1} = ").addMatrix(AinvA).addNewLine(3);
+    formula.addSymbol("kappa").addText("(A) = ").addNormVariable("A").addSymbol("*").addNormVariable("A^{-1}").addText(" = "+kappa).addNewLine(2);
+    formula.addRelError("x").addText(" = ").addSymbol("kappa").addText("(A)").addSymbol("*").addNormXdivY("r","b").addText( " = "+relFehler );
     
-    private ExpressionEngine solver;
-    private JTextArea txtExpressionInput;
-    private JPanel pnlExpressionOutput;
     
-    private JPanel pnlStaticCode;
     
-    public OutputFrame()
-    {
-        super("Numerik");
-        
-        solver = new ExpressionEngine();
-        
-        initLookAndFeel();
-        
-        // --- Toolbar ---
-        
-        JToolBar toolBar = new JToolBar();
-        toolBar.setFloatable(false);
-        JButton btnNewMatrix = new JButton(new ImageIcon("icons/new_matrix16.png"));
-        btnNewMatrix.setToolTipText("Neue Matrix erzeugen");
-        toolBar.add(btnNewMatrix);
-        toolBar.addSeparator();
-        JButton btnRun = new JButton(new ImageIcon("icons/run16.png"));
-        btnRun.setToolTipText("Ausdrücke auswerten");
-        toolBar.add(btnRun);
-        
-        this.add(toolBar, BorderLayout.PAGE_START);
-        
-        // --- Expression-Panel ---
-        
-        JPanel pnlExpression = new JPanel(new BorderLayout());
-        
-        pnlExpressionOutput = new JPanel();
-        BoxLayout box = new BoxLayout(pnlExpressionOutput, BoxLayout.Y_AXIS);
-        pnlExpressionOutput.setLayout(box);
-        pnlExpressionOutput.setBackground(Color.WHITE);
-        
-        txtExpressionInput = new JTextArea();
-        try
-        {
-            StringBuilder buffer = new StringBuilder();
-            BufferedReader br = new BufferedReader(new FileReader("Input.txt"));
-            while (br.ready())
-            {
-                buffer.append(br.readLine());
-                buffer.append('\n');
-            }
-            br.close();
-            txtExpressionInput.setText(buffer.toString());
-            txtExpressionInput.setSelectionStart(txtExpressionInput.getText().length());
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        
-        txtExpressionInput.setBorder(new LineBorder(Color.DARK_GRAY));
-        txtExpressionInput.setBackground(new Color(255, 255, 100));
-        txtExpressionInput.addKeyListener(this);
-        
-        JScrollPane scrExpressionOutput = new JScrollPane(pnlExpressionOutput);
-        scrExpressionOutput.getVerticalScrollBar().setUnitIncrement(10);
-        
-        pnlExpression.add(scrExpressionOutput);
-        pnlExpression.add(txtExpressionInput, BorderLayout.PAGE_END);
-        
-        // --- Static-Code-Panel ---
-        
-        pnlStaticCode = new JPanel();
-        
-        // --- Tab-Pane ---
-        
-        tabMain = new JTabbedPane(JTabbedPane.BOTTOM);
-        tabMain.addTab("Expression", pnlExpression);
-        tabMain.addTab("Statischer Code", pnlStaticCode);
-        
-        this.add(tabMain);
-        
-        this.setSize(640, 480);
-        this.setLocationRelativeTo(null);
-        
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setVisible(true);
-        
-        txtExpressionInput.requestFocusInWindow();
-    }
+    JScrollPane scrollpane = new JScrollPane( new ImageComponent(formula.toImage(18)) );
+    scrollpane.getVerticalScrollBar().setUnitIncrement(20);
+    this.add(scrollpane);
     
-    @Override
-    public void keyPressed(KeyEvent e) { }
+    this.setSize(640, 480);
+    this.setLocationRelativeTo(null);
     
-    @Override
-    public void keyReleased(KeyEvent e)
-    {
-        
-        if (e.getKeyCode() == KeyEvent.VK_ENTER)
-        {
-            pnlExpressionOutput.removeAll();
-            LatexFormula formula = new LatexFormula();
-            
-            for (String line : txtExpressionInput.getText().split("\n"))
-            {
-                System.out.println("Line: " + line);
-                if (line.equals("\n") || line.equals(""))
-                    continue;
-                
-                formula.addText(line);
-                pnlExpressionOutput.add(new ImageComponent(formula.toImage(10)));
-                formula.clear();
-                
-                Value res;
-                try
-                {
-                    res = solver.solve(line);
-                    
-                    if (solver.getAssignedVariable() != null)
-                    {
-                        formula.addText(solver.getAssignedVariable());
-                    }
-                    
-                    if (res.getType() != ValueType.TEXT)
-                    {
-                        formula.addText(" = ");
-                    }
-                    
-                    if (res.getType() == ValueType.MATRIX)
-                    {
-                        formula.addMatrix(res.toMatrix());
-                    }
-                    else
-                    {
-                        formula.addText(res.toObject().toString());
-                    }
-                    pnlExpressionOutput.add(new ImageComponent(formula.toImage()));
-                    
-                    if (!Recorder.getInstance().isEmpty())
-                    {
-                        formula.clear();
-                        formula.addFormula(Recorder.getInstance().get(true));
-                        pnlExpressionOutput.add(new ExpandButton(new ImageComponent(formula.toImage(15))));
-                    }
-                    
-                }
-                catch (InvalidExpressionException ex)
-                {
-                    formula.addText(ex.getMessage());
-                    pnlExpressionOutput.add(new ImageComponent(formula.toImage(12, Color.RED)));
-                }
-                
-                pnlExpressionOutput.add(new HorizontalLine());
-                formula.clear();
-                
-            }
-            
-            this.validate();
-        }
-        
-    }
+    this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+    this.setVisible(true);
     
-    @Override
-    public void keyTyped(KeyEvent e) { }
-    
-    private void initLookAndFeel()
-    {
-        try
-        {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        }
-        catch (ClassNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-        catch (InstantiationException e)
-        {
-            e.printStackTrace();
-        }
-        catch (IllegalAccessException e)
-        {
-            e.printStackTrace();
-        }
-        catch (UnsupportedLookAndFeelException e)
-        {
-            e.printStackTrace();
-        }
-    }
+    System.out.println( A.det() );
+  }
 }
