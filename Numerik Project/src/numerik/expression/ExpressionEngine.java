@@ -31,6 +31,8 @@ public class ExpressionEngine
     private String lastVariable;
     private String lastFunction;
     
+    public String test = "";
+    
     private String assignedVariable = null;
     
     private LatexFormula calcSteps;
