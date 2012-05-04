@@ -15,7 +15,7 @@ public class ExpressionEngine
     
     private enum Token
     {
-        NONE, EQUALS, PLUS, MINUS, TIMES, DIVISION, POW, LGROUP, RGROUP, KOMMA, FUNCTION, NUMERIC, VARIABLE, LMATRIX, RMATRIX
+        NONE, EQUAL, UNEQUAL, GREATER, LESS, GREATEREQ, LESSEQ, ASSIGN, PLUS, MINUS, TIMES, DIVISION, POW, LGROUP, RGROUP, KOMMA, FUNCTION, NUMERIC, VARIABLE, LMATRIX, RMATRIX
     }
     
     private final char END_OF_INPUT = 0;
@@ -40,7 +40,7 @@ public class ExpressionEngine
         tokenRelationMap = new HashMap<Token, Token[]>();
         
         tokenRelationMap.put(Token.NONE, new Token[] { Token.MINUS, Token.LGROUP, Token.FUNCTION, Token.NUMERIC, Token.VARIABLE, Token.LMATRIX });
-        tokenRelationMap.put(Token.EQUALS, new Token[] { Token.MINUS, Token.LGROUP, Token.FUNCTION, Token.NUMERIC, Token.VARIABLE, Token.LMATRIX });
+        tokenRelationMap.put(Token.ASSIGN, new Token[] { Token.MINUS, Token.LGROUP, Token.FUNCTION, Token.NUMERIC, Token.VARIABLE, Token.LMATRIX });
         tokenRelationMap.put(Token.PLUS, new Token[] { Token.MINUS, Token.LGROUP, Token.FUNCTION, Token.NUMERIC, Token.VARIABLE, Token.LMATRIX });
         tokenRelationMap.put(Token.MINUS, new Token[] { Token.MINUS, Token.LGROUP, Token.FUNCTION, Token.NUMERIC, Token.VARIABLE, Token.LMATRIX });
         tokenRelationMap.put(Token.TIMES, new Token[] { Token.MINUS, Token.LGROUP, Token.FUNCTION, Token.NUMERIC, Token.VARIABLE, Token.LMATRIX });
@@ -51,7 +51,7 @@ public class ExpressionEngine
         tokenRelationMap.put(Token.KOMMA, new Token[] { Token.MINUS, Token.LGROUP, Token.FUNCTION, Token.NUMERIC, Token.VARIABLE, Token.LMATRIX });
         tokenRelationMap.put(Token.FUNCTION, new Token[] { Token.LGROUP });
         tokenRelationMap.put(Token.NUMERIC, new Token[] { Token.NONE, Token.PLUS, Token.MINUS, Token.TIMES, Token.DIVISION, Token.POW, Token.KOMMA, Token.RGROUP, Token.RMATRIX });
-        tokenRelationMap.put(Token.VARIABLE, new Token[] { Token.NONE, Token.EQUALS, Token.PLUS, Token.MINUS, Token.TIMES, Token.DIVISION, Token.POW, Token.KOMMA, Token.RGROUP, Token.RMATRIX });
+        tokenRelationMap.put(Token.VARIABLE, new Token[] { Token.NONE, Token.ASSIGN, Token.PLUS, Token.MINUS, Token.TIMES, Token.DIVISION, Token.POW, Token.KOMMA, Token.RGROUP, Token.RMATRIX });
         tokenRelationMap.put(Token.LMATRIX, new Token[] { Token.MINUS, Token.LGROUP, Token.FUNCTION, Token.NUMERIC, Token.VARIABLE, Token.LMATRIX });
         tokenRelationMap.put(Token.RMATRIX, new Token[] { Token.NONE, Token.PLUS, Token.MINUS, Token.TIMES, Token.DIVISION, Token.POW, Token.KOMMA, Token.RGROUP, Token.LMATRIX, Token.RMATRIX });
     }
@@ -115,82 +115,93 @@ public class ExpressionEngine
         
         if (c == '=')
         {
-            index++;
-            return Token.EQUALS;
-            
+            if (input[++index] == '=')
+            {
+                return Token.EQUAL;
+            }
+            return Token.ASSIGN;
+        }
+        if (c == '!')
+        {
+            if (input[++index] == '=')
+            {
+                return Token.UNEQUAL;
+            }
+        }
+        if (c == '>')
+        {
+            if (input[++index] == '=')
+            {
+                return Token.GREATEREQ;
+            }
+            return Token.GREATER;
+        }
+        if (c == '<')
+        {
+            if (input[++index] == '=')
+            {
+                return Token.LESSEQ;
+            }
+            return Token.LESS;
         }
         if (c == '+')
         {
             index++;
             return Token.PLUS;
-            
         }
         else if (c == '-')
         {
             index++;
             return Token.MINUS;
-            
         }
         else if (c == '*')
         {
             index++;
             return Token.TIMES;
-            
         }
         else if (c == '/')
         {
             index++;
             return Token.DIVISION;
-            
         }
         else if (c == '(')
         {
             index++;
             return Token.LGROUP;
-            
         }
         else if (c == ')')
         {
             index++;
             return Token.RGROUP;
-            
         }
         else if (c == ',')
         {
             index++;
             return Token.KOMMA;
-            
         }
         else if (c == '^')
         {
             index++;
             return Token.POW;
-            
         }
         else if (c == '[')
         {
             index++;
             return Token.LMATRIX;
-            
         }
         else if (c == ']')
         {
             index++;
             return Token.RMATRIX;
-            
         }
         else if (isDigit(c))
         {
             int numBegin = index;
-            while (isDigit(input[++index]))
-            {
-            }
+            while (isDigit(input[++index]));
             
             if (input[index] == '.')
             {
-                while (isDigit(input[++index]))
-                {
-                }
+                while (isDigit(input[++index]));
             }
             
             if (input[index] == 'e' || input[index] == 'E')
@@ -204,9 +215,7 @@ public class ExpressionEngine
                 {
                     throw new InvalidExpressionException("Fehlerhafter Dezimalwert: Exponent fehlt.");
                 }
-                while (isDigit(input[++index]))
-                {
-                }
+                while (isDigit(input[++index]));
             }
             
             lastNumeric = new BigDecimal(new String(input, numBegin, index - numBegin));
@@ -221,7 +230,6 @@ public class ExpressionEngine
             
             if (input[index] == '(')
             {
-                
                 lastFunction = new String(input, strBegin, index - strBegin);
                 return Token.FUNCTION;
             }
@@ -232,7 +240,6 @@ public class ExpressionEngine
         }
         else
         {
-            
             throw new InvalidExpressionException("Unbekanntes Zeichen: " + input[index] + "(" + (int) input[index] + ").");
         }
     }
@@ -261,12 +268,23 @@ public class ExpressionEngine
         
         switch (priority)
         {
-        
+            
+            /*case 0:
+                
+                vars.add(expression(priority + 1));
+                
+                while (lastToken == Token.EQUAL || lastToken == Token.GREATER || lastToken == Token.LESS ||
+                       lastToken == Token.UNEQUAL || lastToken == Token.GREATEREQ || lastToken == Token.LESSEQ)
+                {
+                    
+                }
+                break;*/
+                
             case 0:
                 
                 vars.add(expression(priority + 1));
                 
-                if (lastToken == Token.EQUALS)
+                if (lastToken == Token.ASSIGN)
                 {
                     
                     lastToken = getNextToken();
@@ -522,18 +540,39 @@ public class ExpressionEngine
             
             switch (operation)
             {
-                case PLUS:
+                case EQUAL:
+                    return new Value(var1.toDecimal().equals(var2.toObject()));
                     
+                case UNEQUAL:
+                    return new Value(!var1.toDecimal().equals(var2.toObject()));
+                    
+                case GREATER:
+                    return new Value(var1.toDecimal().compareTo(var2.toDecimal()) == 1);
+                    
+                case LESS:
+                    return new Value(var1.toDecimal().compareTo(var2.toDecimal()) == -1);
+                    
+                case GREATEREQ:
+                    return new Value(var1.toDecimal().compareTo(var2.toDecimal()) == 1 ||
+                                     var1.toDecimal().equals(var2.toObject()));
+                    
+                case LESSEQ:
+                    return new Value(var1.toDecimal().compareTo(var2.toDecimal()) == -1||
+                                     var1.toDecimal().equals(var2.toObject()));
+                    
+                
+                case PLUS:
                     calcSteps.addLatexString(var1.toDecimal() + " + " + var2.toDecimal() + " &=& ");
                     value = new Value(var1.toDecimal().add(var2.toDecimal()));
                     calcSteps.addText(value.toDecimal().toString()).addNewLine();
                     return value;
-                case MINUS:
                     
+                case MINUS:
                     calcSteps.addLatexString(var1.toDecimal() + " - " + var2.toDecimal() + " &=& ");
                     value = new Value(var1.toDecimal().subtract(var2.toDecimal()));
                     calcSteps.addText(value.toDecimal().toString()).addNewLine();
                     return value;
+                    
                 case TIMES:
                     
                     calcSteps.addLatexString(var1.toDecimal() + " ⋅ " + var2.toDecimal() + " &=& ");
@@ -541,17 +580,17 @@ public class ExpressionEngine
                     calcSteps.addText(value.toDecimal().toString()).addNewLine();
                     return value;
                 case DIVISION:
-                    
                     calcSteps.addLatexString(var1.toDecimal() + " : " + var2.toDecimal() + " &=& ");
                     value = new Value(var1.toDecimal().divide(var2.toDecimal()));
                     calcSteps.addText(value.toDecimal().toString()).addNewLine();
                     return value;
-                case POW:
                     
+                case POW:
                     calcSteps.addLatexString(var1.toDecimal() + " ^ " + var2.toDecimal() + " &=& ");
                     value = new Value(var1.toDecimal().pow(var2.toDecimal().intValue()));
                     calcSteps.addText(value.toDecimal().toString()).addNewLine();
                     return value;
+                    
             }
             
         }
@@ -561,23 +600,23 @@ public class ExpressionEngine
             switch (operation)
             {
                 case PLUS:
-                    
                     calcSteps.addMatrix(var1.toMatrix()).addText(" + ").addMatrix(var2.toMatrix()).addLatexString(" &=& ");
                     value = new Value(var1.toMatrix().add(var2.toMatrix()));
                     calcSteps.addMatrix(value.toMatrix()).addNewLine();
                     return value;
-                case MINUS:
                     
+                case MINUS:
                     calcSteps.addMatrix(var1.toMatrix()).addText(" - ").addMatrix(var2.toMatrix()).addLatexString(" &=& ");
                     value = new Value(var1.toMatrix().add(var2.toMatrix().mult(new BigDecimal(-1))));
                     calcSteps.addMatrix(value.toMatrix()).addNewLine();
                     return value;
-                case TIMES:
                     
+                case TIMES:
                     calcSteps.addMatrix(var1.toMatrix()).addText(" ⋅ ").addMatrix(var2.toMatrix()).addLatexString(" &=& ");
                     value = new Value(var1.toMatrix().mult(var2.toMatrix()));
                     calcSteps.addMatrix(value.toMatrix()).addNewLine();
                     return value;
+                    
             }
             
         }
@@ -587,7 +626,6 @@ public class ExpressionEngine
             switch (operation)
             {
                 case MINUS:
-                    
                     return new Value(var1.toDecimal().negate());
             }
             
@@ -598,7 +636,6 @@ public class ExpressionEngine
             switch (operation)
             {
                 case TIMES:
-                    
                     return new Value(var1.toMatrix().mult(new BigDecimal(-1)));
             }
             
@@ -609,11 +646,11 @@ public class ExpressionEngine
             switch (operation)
             {
                 case TIMES:
-                    
                     return new Value(var2.toMatrix().mult(var1.toDecimal()));
-                case DIVISION:
                     
+                case DIVISION:
                     return new Value(var2.toMatrix().getInverse().mult(var2.toDecimal()));
+                    
             }
             
         }
@@ -623,18 +660,18 @@ public class ExpressionEngine
             switch (operation)
             {
                 case TIMES:
-                    
                     return new Value(var1.toMatrix().mult(var2.toDecimal()));
+                    
                 case DIVISION:
-                    
                     return new Value(var1.toMatrix().mult(BigDecimal.ONE.divide(var2.toDecimal())));
-                case POW:
                     
+                case POW:
                     if (!var2.toDecimal().equals(BigDecimal.ONE.negate()))
                     {
                         throw new InvalidExpressionException("Momentan ist nur -1 als Exponent für Matrizen implementiert.");
                     }
                     return new Value(var1.toMatrix().getInverse());
+                    
             }
             
         }

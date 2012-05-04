@@ -9,7 +9,7 @@ public class Value
     
     public enum ValueType
     {
-        NULL, MATRIX, VECTOR, DECIMAL, VARIABLE, TEXT
+        NULL, MATRIX, VECTOR, DECIMAL, VARIABLE, TEXT, BOOLEAN
     }
     
     public static Value EMPTY = new Value();
@@ -19,6 +19,7 @@ public class Value
     private Vector vector = null;
     private Variable variable = null;
     private String text = null;
+    private Boolean bool = null;
     
     private ValueType type = ValueType.NULL;
     
@@ -56,6 +57,12 @@ public class Value
         this.text = text;
         type = ValueType.TEXT;
     }
+
+    public Value(Boolean bool)
+    {
+        this.bool = bool;
+        type = ValueType.BOOLEAN;
+    }
     
     public ValueType getType()
     {
@@ -87,6 +94,11 @@ public class Value
         return text;
     }
     
+    public Boolean toBoolean()
+    {
+        return bool;
+    }
+    
     public Object toObject()
     {
         switch (type)
@@ -101,6 +113,8 @@ public class Value
                 return variable;
             case TEXT:
                 return text;
+            case BOOLEAN:
+                return bool;
         }
         return null;
     }
