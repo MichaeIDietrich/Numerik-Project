@@ -51,7 +51,7 @@ public class ExpressionEngine
         tokenRelationMap.put(Token.KOMMA, new Token[] { Token.MINUS, Token.LGROUP, Token.FUNCTION, Token.NUMERIC, Token.VARIABLE, Token.LMATRIX });
         tokenRelationMap.put(Token.FUNCTION, new Token[] { Token.LGROUP });
         tokenRelationMap.put(Token.NUMERIC, new Token[] { Token.NONE, Token.PLUS, Token.MINUS, Token.TIMES, Token.DIVISION, Token.POW, Token.KOMMA, Token.RGROUP, Token.RMATRIX });
-        tokenRelationMap.put(Token.VARIABLE, new Token[] { Token.NONE, Token.EQUALS, Token.PLUS, Token.MINUS, Token.TIMES, Token.DIVISION, Token.POW, Token.RGROUP, Token.RMATRIX });
+        tokenRelationMap.put(Token.VARIABLE, new Token[] { Token.NONE, Token.EQUALS, Token.PLUS, Token.MINUS, Token.TIMES, Token.DIVISION, Token.POW, Token.KOMMA, Token.RGROUP, Token.RMATRIX });
         tokenRelationMap.put(Token.LMATRIX, new Token[] { Token.MINUS, Token.LGROUP, Token.FUNCTION, Token.NUMERIC, Token.VARIABLE, Token.LMATRIX });
         tokenRelationMap.put(Token.RMATRIX, new Token[] { Token.NONE, Token.PLUS, Token.MINUS, Token.TIMES, Token.DIVISION, Token.POW, Token.KOMMA, Token.RGROUP, Token.LMATRIX, Token.RMATRIX });
     }
@@ -442,16 +442,26 @@ public class ExpressionEngine
                     
                     lastToken = getNextToken();
                     
-                    vars.add(expression(1));
-                    
-                    while (lastToken == Token.KOMMA)
+                    if (lastToken == Token.LGROUP)
                     {
-                        
                         lastToken = getNextToken();
                         
                         vars.add(expression(1));
+                        
+                        while (lastToken == Token.KOMMA)
+                        {
+                            
+                            lastToken = getNextToken();
+                            
+                            vars.add(expression(1));
+                        }
+                        
+                        if (lastToken == Token.RGROUP)
+                        {
+                            
+                        }
+                        lastToken = getNextToken();
                     }
-                    
                     Value res = callFunc(funcName, vars.toArray(new Value[vars.size()]));
                     vars.clear();
                     vars.add(res);
@@ -640,12 +650,11 @@ public class ExpressionEngine
             
             if (args.length == 1 && args[0].getType() == ValueType.VARIABLE)
             {
-                
                 variables.remove(args[0].toVariable().toString());
                 return new Value("Variable '" + args[0].toVariable() + "' wurde gelöscht.");
             }
             
-            throw new InvalidExpressionException("Bitte Eingabe überprüfen, Funktion nimmt als Parameter eine Variable.");
+            throw new InvalidExpressionException("Bitte Eingabe überprüfen, delete() nimmt als Parameter eine Variable.");
             
         }
         else if (funcName.equals("L"))
@@ -653,18 +662,16 @@ public class ExpressionEngine
             
             if (args.length == 1)
             {
-                
                 args[0] = resolveVariable(args[0]);
                 
                 if (args[0].getType() == ValueType.MATRIX)
                 {
-                    
                     return new Value(args[0].toMatrix().getL());
                 }
                 
             }
             
-            throw new InvalidExpressionException("Bitte Eingabe überprüfen, Funktion nimmt als Parameter eine Matrix.");
+            throw new InvalidExpressionException("Bitte Eingabe überprüfen, L() nimmt als Parameter eine Matrix.");
             
         }
         else if (funcName.equals("U"))
@@ -672,18 +679,53 @@ public class ExpressionEngine
             
             if (args.length == 1)
             {
-                
                 args[0] = resolveVariable(args[0]);
                 
                 if (args[0].getType() == ValueType.MATRIX)
                 {
-                    
                     return new Value(args[0].toMatrix().getU());
                 }
                 
             }
             
-            throw new InvalidExpressionException("Bitte Eingabe überprüfen, Funktion nimmt als Parameter eine Matrix.");
+            throw new InvalidExpressionException("Bitte Eingabe überprüfen, U() nimmt als Parameter eine Matrix.");
+        }
+        else if (funcName.equals("solve"))
+        {
+            if (args.length == 2)
+            {
+                args[0] = resolveVariable(args[0]);
+                args[1] = resolveVariable(args[1]);
+                
+                if (args[0].getType() == ValueType.MATRIX && args[1].getType() == ValueType.VECTOR)
+                {
+                    return new Value(args[0].toMatrix().determineX(args[1].toVector()));
+                }
+            }
+            throw new InvalidExpressionException("Bitte Eingabe überprüfen, solve() nimmt als Parameter eine Matrix und einen Vektor.");
+        }
+        else if (funcName.equals("get"))
+        {
+            
+            if (args.length == 3)
+            {
+                args[0] = resolveVariable(args[0]);
+                
+                if (args[0].getType() == ValueType.MATRIX && args[0].getType() == ValueType.DECIMAL)
+                {
+                    return new Value(args[0].toMatrix().get(args[1].toDecimal().intValue(), args[2].toDecimal().intValue()));
+                }
+            }
+            else if (args.length == 2)
+            {
+                args[0] = resolveVariable(args[0]);
+                
+                if (args[0].getType() == ValueType.VECTOR && args[0].getType() == ValueType.DECIMAL)
+                {
+                    return new Value(args[0].toVector().get(args[1].toDecimal().intValue()));
+                }
+            }
+            throw new InvalidExpressionException("Bitte Eingabe überprüfen, get() nimmt als Parameter eine Matrix und zwei Indizes ooder einen Vektor und ein Index.");
         }
         
         throw new InvalidExpressionException("Funktion '" + funcName + "' existiert nicht.");

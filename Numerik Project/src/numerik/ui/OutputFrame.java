@@ -3,6 +3,9 @@ package numerik.ui;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.math.BigDecimal;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -111,62 +114,7 @@ public class OutputFrame extends JFrame implements KeyListener
         
         if (e.getKeyCode() == KeyEvent.VK_ENTER)
         {
-            pnlExpressionOutput.removeAll();
-            LatexFormula formula = new LatexFormula();
-            
-            for (String line : txtExpressionInput.getText().split("\n"))
-            {
-                System.out.println("Line: " + line);
-                if (line.equals("\n") || line.equals(""))
-                    continue;
-                
-                formula.addText(line);
-                pnlExpressionOutput.add(new ImageComponent(formula.toImage(10)));
-                formula.clear();
-                
-                Value res;
-                try
-                {
-                    res = solver.solve(line);
-                    
-                    if (solver.getAssignedVariable() != null)
-                    {
-                        formula.addText(solver.getAssignedVariable());
-                    }
-                    
-                    if (res.getType() != ValueType.TEXT)
-                    {
-                        formula.addText(" = ");
-                    }
-                    
-                    if (res.getType() == ValueType.MATRIX)
-                    {
-                        formula.addMatrix(res.toMatrix());
-                    }
-                    else
-                    {
-                        formula.addText(res.toObject().toString());
-                    }
-                    pnlExpressionOutput.add(new ImageComponent(formula.toImage()));
-                    
-                    if (!Recorder.getInstance().isEmpty())
-                    {
-                        formula.clear();
-                        formula.addFormula(Recorder.getInstance().get(true));
-                        pnlExpressionOutput.add(new ExpandButton(new ImageComponent(formula.toImage(15))));
-                    }
-                    
-                }
-                catch (InvalidExpressionException ex)
-                {
-                    formula.addText(ex.getMessage());
-                    pnlExpressionOutput.add(new ImageComponent(formula.toImage(12, Color.RED)));
-                }
-                
-                pnlExpressionOutput.add(new HorizontalLine());
-                formula.clear();
-                
-            }
+            runExpressions();
             
             this.validate();
         }
@@ -197,6 +145,105 @@ public class OutputFrame extends JFrame implements KeyListener
         catch (UnsupportedLookAndFeelException e)
         {
             e.printStackTrace();
+        }
+    }
+    
+    
+    private void runExpressions()
+    {
+        pnlExpressionOutput.removeAll();
+        LatexFormula formula = new LatexFormula();
+        
+        Queue<Integer> whileIndices = new LinkedList<Integer>();
+        String[] lines = txtExpressionInput.getText().split("\n");
+        
+        for (int lineIndex = 0; lineIndex < lines.length; lineIndex++)
+        {
+            String line = lines[lineIndex];
+            
+            System.out.println("Line: " + line);
+            if (line.equals("\n") || line.equals("") || line.startsWith("#") || line.startsWith("\n#"))
+                continue;
+            
+            if (line.equals("do"))
+            {
+                if (!whileIndices.contains(lineIndex))
+                {
+                    whileIndices.add(lineIndex);
+                    pnlExpressionOutput.add(new ImageComponent(new LatexFormula("\\text{Do}").toImage(20, Color.BLUE)));
+                    pnlExpressionOutput.add(new HorizontalLine());
+                }
+                continue;
+            }
+            if (line.startsWith("while "))
+            {
+                String var = line.substring(6);
+                
+                if (solver.getVariableTable().get(var) != null && !solver.getVariableTable().get(var).toDecimal().equals(BigDecimal.ZERO))
+                {
+                    lineIndex = whileIndices.peek() - 1;
+                }
+                else
+                {
+                    whileIndices.poll();
+                    pnlExpressionOutput.add(new ImageComponent(new LatexFormula("\\text{While}").toImage(20, Color.BLUE)));
+                    pnlExpressionOutput.add(new HorizontalLine());
+                }
+                continue;
+            }
+            
+            
+            formula.addText(line);
+            pnlExpressionOutput.add(new ImageComponent(formula.toImage(10)));
+            formula.clear();
+            
+            Value res;
+            
+            try
+            {
+                res = solver.solve(line);
+                
+                if (solver.getAssignedVariable() != null)
+                {
+                    formula.addText(solver.getAssignedVariable());
+                }
+                
+                if (res.getType() != ValueType.TEXT)
+                {
+                    formula.addText(" = ");
+                }
+                
+                if (res.getType() == ValueType.MATRIX)
+                {
+                    formula.addMatrix(res.toMatrix());
+                }
+                else if (res.getType() == ValueType.VECTOR)
+                {
+                    formula.addVector(res.toVector());
+                }
+                else
+                {
+                    formula.addText(res.toObject().toString());
+                }
+                pnlExpressionOutput.add(new ImageComponent(formula.toImage()));
+                
+                if (!Recorder.getInstance().isEmpty())
+                {
+                    formula.clear();
+                    formula.addFormula(Recorder.getInstance().get(true));
+                    pnlExpressionOutput.add(new ExpandButton(new ImageComponent(formula.toImage(15))));
+                }
+                
+            }
+            catch (InvalidExpressionException ex)
+            {
+                formula.addText(ex.getMessage());
+                pnlExpressionOutput.add(new ImageComponent(formula.toImage(12, Color.RED)));
+            }
+            
+            pnlExpressionOutput.add(new HorizontalLine());
+            formula.clear();
+            
         }
     }
 }
