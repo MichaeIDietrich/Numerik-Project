@@ -5,14 +5,17 @@ import java.math.*;
 
 public class MathLib
 {
-    private static boolean pivotstrategy = false;
-    private static boolean        active = true;
-    private static int         precision = 5;
-    private static int inverse_precision = 20;
-    private static int      roundingmode = 0;
-    public  static final int       exact = 0;
-    public  static final int      normal = 1;
-        
+    private static boolean      pivotstrategy = false;
+    private static boolean             active = true;
+    private static int              precision = 5;
+    private static int      inverse_precision = 20;
+    private static int           roundingmode = 0;
+    public  static final int            exact = 0;
+    public  static final int           normal = 1;
+    public  static final int ZeilensummenNorm = 0;
+    public  static final int    FroEuklidNorm = 1;
+    private static int                   norm = 0;
+
     
     public static BigDecimal round(BigDecimal value)
     {
@@ -162,6 +165,7 @@ public class MathLib
         return root_n_Of(root, 2);
     }
     
+    
     public static BigDecimal root_n_Of(BigDecimal root, int k) {
         
         BigDecimal a = root.add(BigDecimal.valueOf(1));
@@ -169,12 +173,39 @@ public class MathLib
         BigDecimal comparand  = BigDecimal.ONE.divide( BigDecimal.TEN.pow( getPrecision() ));
         
         // a, x siehe Wikipedia Wurzelberechnung nach Heron
-        
-        while( a.subtract(x).compareTo( comparand )==1 ) {
-            a = x;
-            x = BigDecimal.valueOf( k-1 ).multiply( x.pow( k ) ).add( root )
-                          .divide( BigDecimal.valueOf( k ).multiply( x.pow( k-1 ) ), 2*getPrecision() , RoundingMode.HALF_UP );
+        if(root.compareTo( BigDecimal.ZERO ) != 0) {
+            while( (a.subtract(x)).abs().compareTo( comparand )==1 ) {
+                a = x;
+                x = BigDecimal.valueOf( k-1 ).multiply( x.pow( k )).add( root )
+                              .divide( BigDecimal.valueOf( k ).multiply( x.pow( k-1 ) ), 2*getPrecision() , RoundingMode.HALF_UP );
+            }
+        } else {
+            return root;
         }
         return round(x);
+    }
+    
+    
+    public static Vector doubleArrayToVector( Double[] f ) {
+        
+        Vector x = new Vector(f.length);
+        
+        for(int i=0; i<=f.length; i++) {
+            x.set(i, BigDecimal.valueOf( f[i] ) );
+        }
+        
+        return null;
+    }
+    
+    
+    public static int getNorm()
+    {
+        return norm;
+    }
+
+
+    public static void setNorm(int norm)
+    {
+        MathLib.norm = norm;
     }
 }

@@ -21,8 +21,8 @@ public class LatexFormula
         // weitere Sonderzeichen hinzufügen
         
         characterTable = new HashMap<String, String>();
-        characterTable.put("mal", "\\cdot");
-        characterTable.put("*", "\\cdot");
+        characterTable.put( "mal", "\\cdot" );
+        characterTable.put( "*",   "\\cdot" );
         
     }
     
@@ -76,6 +76,16 @@ public class LatexFormula
         return this;
     }
     
+    public LatexFormula addTextBold(String str)
+    {
+        return addText(str, true, false, false);
+    }
+    
+    public LatexFormula addTextUL(String str)
+    {
+        return addText(str, false, false, true);
+    }
+    
     public LatexFormula addExponent(String exponent)
     {
         formula.append("^{");
@@ -122,7 +132,7 @@ public class LatexFormula
     public LatexFormula addTildeText(String text)
     {
         
-        formula.append("\\tilde{");
+        formula.append("\\widetilde{");
         formula.append(text);
         formula.append("}");
         
@@ -132,24 +142,42 @@ public class LatexFormula
     public LatexFormula addRelError(String text)
     {
         
-        addNormXdivY("\\Delta{" + text + "}", text);
+        addVektornormXdivY("\\Delta{" + text + "}", text, false);
         
         return this;
     }
     
-    public LatexFormula addNormXdivY(String x, String y)
+    public LatexFormula addVektornormXdivY(String x, String y, boolean showindex)
     {
-        
+        String index = "";
+        if (showindex) {
+            if(MathLib.getNorm()==0) index = "g";
+            if(MathLib.getNorm()==1) index = "2";
+        }
+
         formula.append("\\frac{");
         
         formula.append("\\lVert{");
         formula.append(x);
-        formula.append("}\\rVert}");
-        formula.append("{\\lVert{");
+        formula.append("}\\rVert_{"+index);
+        formula.append("}}{\\lVert{");
         formula.append(y);
-        formula.append("}\\rVert");
+        formula.append("}\\rVert_{"+index);
         
-        formula.append("}");
+        formula.append("}}");
+        
+        return this;
+    }
+    
+    public LatexFormula addMatrixNorm(String variable)
+    {
+        String index = "";
+        if(MathLib.getNorm()==0) index = "z";
+        if(MathLib.getNorm()==1) index = "f";
+        
+        formula.append("\\lVert{");
+        formula.append(variable);
+        formula.append("}\\rVert_"+index);
         
         return this;
     }
@@ -224,16 +252,7 @@ public class LatexFormula
         addMatrix(vector.toMatrix());
         return this;
     }
-    
-    public LatexFormula addNormVariable(String variable)
-    {
-        formula.append("\\lVert{");
-        formula.append(variable);
-        formula.append("}\\rVert");
-        
-        return this;
-    }
-    
+      
     public LatexFormula addFormula(LatexFormula formula)
     {
         this.formula.append(formula.formula.toString());
@@ -298,6 +317,7 @@ public class LatexFormula
         return b;
     }
     
+    
     @Override
     public String toString()
     {
@@ -305,4 +325,13 @@ public class LatexFormula
         return formula.toString();
     }
     
+    
+    public LatexFormula jakobiMatrix() {
+        formula.append("\\begin{pmatrix}" +
+                "\\frac{\\partial{f_1}}{\\partial{x_1}}&\\hdots&\\frac{\\partial{f_1}}{\\partial{x_n}}\\\\" +
+                "\\vdots&\\ddots&\\vdots\\\\" +
+                "\\frac{\\partial{f_n}}{\\partial{x_1}}&\\hdots&\\frac{\\partial{f_n}}{\\partial{x_n}}" +
+                "\\end{pmatrix}").append("\\text{  }\\equiv\\text{Jakobi-Matrix}");
+        return this;
+    }  
 }

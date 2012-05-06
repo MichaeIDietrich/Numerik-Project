@@ -72,26 +72,38 @@ public class Matrix {
         }
     }
 
-    public Matrix(String file) {
+
+    public Matrix(String file, String name) {
 
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
 
             String line;
+            boolean transmit = false;
             ArrayList<ArrayList<BigDecimal>> entries = new ArrayList<ArrayList<BigDecimal>>();
-            while ((line = br.readLine()) != null && !line.equals("")) {
-
-                ArrayList<BigDecimal> entry = new ArrayList<BigDecimal>();
-                entries.add(entry);
-
-                for (String number : line.split(",")) {
-                    entry.add(new BigDecimal(number));
+            while ((line = br.readLine()) != null) {
+ 
+                if(line.contains("Matrix#"+name) || line.equals("") ) 
+                    transmit = false;
+                
+                if (transmit) 
+                {
+                    ArrayList<BigDecimal> entry = new ArrayList<BigDecimal>();
+                    entries.add(entry);
+                
+                    for (String number : line.split(",")) {
+                        entry.add(new BigDecimal(number));
+                    }
                 }
+                
+                if(line.contains("Matrix#"+name)) 
+                    transmit = true;
             }
 
             rows = entries.size();
             cols = entries.get(0).size();
-
+            this.name = name;
+            
             values = new BigDecimal[rows][cols];
 
             for (int n = 0; n < rows; n++) {
@@ -99,14 +111,13 @@ public class Matrix {
                     values[n][m] = entries.get(n).get(m);
                 }
             }
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
+    
     // getters
     public int getRows() {
         return rows;
@@ -212,6 +223,8 @@ public class Matrix {
                 newVector.set(zeile, sum);
                 sum = BigDecimal.ZERO;
         }
+        
+        newVector.name = vector.name;
         
         return newVector;
     }
@@ -323,7 +336,7 @@ public class Matrix {
     }
     
 
-    public Vector determineX(Vector b) 
+    public Vector solveX(Vector b) 
     {
         Vector clone_b = b.clone();
         
@@ -531,27 +544,7 @@ public class Matrix {
         }
         return matrix;
     }
-    
-    
-    
-    public BigDecimal zsnorm() 
-    {              
-        BigDecimal sum = BigDecimal.ZERO;
-        BigDecimal max = BigDecimal.ZERO;
-        
-        for(int t=0; t<rows; t++) 
-        {
-            for(int i=0; i<rows; i++) 
-            {
-                sum = sum.add( values[t][i].abs() );
-            }
-            if ( max.compareTo( sum ) == -1 ) max = sum;
-            
-            sum = BigDecimal.ZERO;
-        } 
-        return MathLib.round( max );
-    }
-    
+      
     
     public Matrix getScaleOf() 
     {
@@ -617,6 +610,57 @@ public class Matrix {
             }
         }
         return sum;
+    }
+    
+    public Matrix jakobiMatrix(Vector vector) {
+        
+        Double[] x = vector.toDouble();  // x[0] = x_1 ; x[1] = x_2 ; usw.
+        
+        values[0][0] = BigDecimal.valueOf(   2*x[0]      );
+        values[0][1] = BigDecimal.valueOf(   2*x[1]+0.6  );
+        values[1][0] = BigDecimal.valueOf(   2*x[0]+1    );
+        values[1][1] = BigDecimal.valueOf(  -2*x[1]-1.6  );
+        
+        return this;
+    }
+    
+    public BigDecimal norm() {
+        if( MathLib.getNorm()==0 ) return  zsnorm();
+        if( MathLib.getNorm()==1 ) return fronorm();
+        
+        return null;
+    }
+    
+    private BigDecimal zsnorm() 
+    {              
+        BigDecimal sum = BigDecimal.ZERO;
+        BigDecimal max = BigDecimal.ZERO;
+        
+        for(int t=0; t<rows; t++) 
+        {
+            for(int i=0; i<rows; i++) 
+            {
+                sum = sum.add( values[t][i].abs() );
+            }
+            if ( max.compareTo( sum ) == -1 ) max = sum;
+            
+            sum = BigDecimal.ZERO;
+        } 
+        return MathLib.round( max );
+    }
+    
+    private BigDecimal fronorm() {
+        
+        BigDecimal     sum = BigDecimal.ZERO;
+        
+        for(int row=0; row<rows; row++) 
+        {
+            for(int col=0; col<cols; col++) 
+            {
+                sum = sum.add( values[row][col].multiply( values[row][col] ) );
+            }
+        }
+        return MathLib.sqrt( sum );
     }
 }
 

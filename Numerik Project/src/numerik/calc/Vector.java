@@ -1,6 +1,12 @@
 package numerik.calc;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import numerik.calc.Matrix;
@@ -9,12 +15,13 @@ public final class Vector
 {
     
     private boolean transposed;
-    private int length;
-    public String name;
-    
-    
+    public   String name;
+    private     int length;
+    private     int rows;
+    private     int cols;
+
     BigDecimal[] values;
-    
+
     public Vector(int rows)
     {
         this(new BigDecimal[rows]);
@@ -28,9 +35,49 @@ public final class Vector
     
     public Vector(BigDecimal[] values, boolean transposed)
     {
-        this.values = values;
+        this.values     = values;
         this.transposed = transposed;
-        this.length = values.length;
+        this.length     = values.length;
+    }
+    
+    public Vector(String file, String name) {
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+
+            String line;
+            boolean transmit = false;
+            ArrayList<BigDecimal> entry = new ArrayList<BigDecimal>();
+            while ((line = br.readLine()) != null) {
+ 
+                if(line.contains("Vector#"+name) || line.equals("") ) 
+                    transmit = false;
+
+                if (transmit) 
+                {
+                    for (String number : line.split(",")) {
+                        entry.add(new BigDecimal(number));
+                    }
+                }
+                
+                if(line.contains("Vector#"+name)) 
+                    transmit = true;
+            }
+            
+            rows   = entry.size();
+            length = rows;
+            this.name = name;
+            
+            values = new BigDecimal[rows];
+
+            for (int n = 0; n < rows; n++) {
+                    values[n] = entry.get(n);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     
     public boolean isTransposed()
@@ -126,7 +173,14 @@ public final class Vector
         return copy;
     }
     
-    public BigDecimal zsnorm() {
+    public BigDecimal norm() {
+        if( MathLib.getNorm()==0 ) return zsnorm();
+        if( MathLib.getNorm()==1 ) return eunorm();
+        
+        return null;
+    }
+    
+    private BigDecimal zsnorm() {
         
         BigDecimal sum = BigDecimal.ZERO;
         BigDecimal max = BigDecimal.ZERO;
@@ -136,5 +190,38 @@ public final class Vector
             if ( max.compareTo( sum ) == -1 ) max = sum;
         }
         return MathLib.round( max );
+    }
+    
+    private BigDecimal eunorm() {
+        
+        BigDecimal euklidNorm = BigDecimal.ZERO;
+        BigDecimal        sum = BigDecimal.ZERO;
+        
+        for(int i=0; i<length; i++)    sum = sum.add( get(i).multiply( get(i) ));
+
+        euklidNorm = MathLib.sqrt( sum );
+        
+        return euklidNorm;
+    }
+    
+    
+    public Double[] toDouble() {
+        
+        Double x[] = new Double[ length ];
+        for(int i=0; i<=length-1; i++) x[i] = get(i).doubleValue();
+        
+        return x;
+    }
+    
+    
+    public Vector getEquationsValue() {
+        
+        Vector   f = new Vector( getLength() );
+        Double[] x = toDouble();                  // x[0] = x_1 ; x[1] = x_2 ; usw.
+        
+        f.set(0, BigDecimal.valueOf(     x[0]*x[0] +x[1]*x[1]       +0.6*x[1] -0.16     ).negate());
+        f.set(1, BigDecimal.valueOf(     x[0]*x[0] -x[1]*x[1] +x[0] -1.6*x[1] -0.14     ).negate());
+        
+        return f;
     }
 }
