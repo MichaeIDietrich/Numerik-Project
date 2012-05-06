@@ -145,6 +145,9 @@ public class OutputFrame extends JFrame implements KeyListener, ExpressionListen
     }
     
     @Override
+    public void keyTyped(KeyEvent e) { }
+    
+    @Override
     public void keyPressed(KeyEvent e) { }
     
     @Override
@@ -246,6 +249,30 @@ public class OutputFrame extends JFrame implements KeyListener, ExpressionListen
         {
             runExpressions();
             this.validate();
+        }
+    }
+    
+    private void initLookAndFeel()
+    {
+        try
+        {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        }
+        catch (ClassNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        catch (InstantiationException e)
+        {
+            e.printStackTrace();
+        }
+        catch (IllegalAccessException e)
+        {
+            e.printStackTrace();
+        }
+        catch (UnsupportedLookAndFeelException e)
+        {
+            e.printStackTrace();
         }
     }
 }

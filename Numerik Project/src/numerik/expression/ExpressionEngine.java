@@ -791,7 +791,7 @@ public class ExpressionEngine
                 
                 if (args[0].getType() == ValueType.MATRIX && args[1].getType() == ValueType.VECTOR)
                 {
-                    return new Value(args[0].toMatrix().determineX(args[1].toVector()));
+                    return new Value(args[0].toMatrix().solveX(args[1].toVector()));
                 }
             }
             throw new InvalidExpressionException("Bitte Eingabe überprüfen, solve() nimmt als Parameter eine Matrix und einen Vektor.");
