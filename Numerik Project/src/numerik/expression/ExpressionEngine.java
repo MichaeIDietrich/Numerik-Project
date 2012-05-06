@@ -13,12 +13,14 @@ import numerik.ui.*;
 public class ExpressionEngine
 {
     
-    private enum Token
+    enum Token
     {
         NONE, EQUAL, UNEQUAL, GREATER, LESS, GREATEREQ, LESSEQ, ASSIGN, PLUS, MINUS, TIMES, DIVISION, POW, LGROUP, RGROUP, KOMMA, FUNCTION, NUMERIC, VARIABLE, LMATRIX, RMATRIX
     }
     
     private final char END_OF_INPUT = 0;
+    
+    private ArrayList<TokenListener> tokenListeners;
     
     private static HashMap<Token, Token[]> tokenRelationMap;
     private HashMap<String, Value> variables;
@@ -31,6 +33,8 @@ public class ExpressionEngine
     private String lastVariable;
     private String lastFunction;
     
+    private Value parsedValue;
+    
     private String assignedVariable = null;
     
     private LatexFormula calcSteps;
@@ -40,6 +44,14 @@ public class ExpressionEngine
         tokenRelationMap = new HashMap<Token, Token[]>();
         
         tokenRelationMap.put(Token.NONE, new Token[] { Token.MINUS, Token.LGROUP, Token.FUNCTION, Token.NUMERIC, Token.VARIABLE, Token.LMATRIX });
+        
+        tokenRelationMap.put(Token.EQUAL, new Token[] { Token.MINUS, Token.LGROUP, Token.FUNCTION, Token.NUMERIC, Token.VARIABLE, Token.LMATRIX });
+        tokenRelationMap.put(Token.UNEQUAL, new Token[] { Token.MINUS, Token.LGROUP, Token.FUNCTION, Token.NUMERIC, Token.VARIABLE, Token.LMATRIX });
+        tokenRelationMap.put(Token.GREATER, new Token[] { Token.MINUS, Token.LGROUP, Token.FUNCTION, Token.NUMERIC, Token.VARIABLE, Token.LMATRIX });
+        tokenRelationMap.put(Token.LESS, new Token[] { Token.MINUS, Token.LGROUP, Token.FUNCTION, Token.NUMERIC, Token.VARIABLE, Token.LMATRIX });
+        tokenRelationMap.put(Token.GREATEREQ, new Token[] { Token.MINUS, Token.LGROUP, Token.FUNCTION, Token.NUMERIC, Token.VARIABLE, Token.LMATRIX });
+        tokenRelationMap.put(Token.LESSEQ, new Token[] { Token.MINUS, Token.LGROUP, Token.FUNCTION, Token.NUMERIC, Token.VARIABLE, Token.LMATRIX });
+        
         tokenRelationMap.put(Token.ASSIGN, new Token[] { Token.MINUS, Token.LGROUP, Token.FUNCTION, Token.NUMERIC, Token.VARIABLE, Token.LMATRIX });
         tokenRelationMap.put(Token.PLUS, new Token[] { Token.MINUS, Token.LGROUP, Token.FUNCTION, Token.NUMERIC, Token.VARIABLE, Token.LMATRIX });
         tokenRelationMap.put(Token.MINUS, new Token[] { Token.MINUS, Token.LGROUP, Token.FUNCTION, Token.NUMERIC, Token.VARIABLE, Token.LMATRIX });
@@ -47,10 +59,10 @@ public class ExpressionEngine
         tokenRelationMap.put(Token.DIVISION, new Token[] { Token.MINUS, Token.LGROUP, Token.FUNCTION, Token.NUMERIC, Token.VARIABLE, Token.LMATRIX });
         tokenRelationMap.put(Token.POW, new Token[] { Token.MINUS, Token.LGROUP, Token.FUNCTION, Token.NUMERIC, Token.VARIABLE });
         tokenRelationMap.put(Token.LGROUP, new Token[] { Token.MINUS, Token.LGROUP, Token.FUNCTION, Token.NUMERIC, Token.VARIABLE, Token.LMATRIX });
-        tokenRelationMap.put(Token.RGROUP, new Token[] { Token.NONE, Token.PLUS, Token.MINUS, Token.TIMES, Token.DIVISION, Token.POW, Token.KOMMA, Token.RGROUP, Token.RMATRIX });
+        tokenRelationMap.put(Token.RGROUP, new Token[] { Token.NONE, Token.EQUAL, Token.UNEQUAL, Token.GREATER, Token.LESS, Token.GREATEREQ, Token.LESSEQ, Token.PLUS, Token.MINUS, Token.TIMES, Token.DIVISION, Token.POW, Token.KOMMA, Token.RGROUP, Token.RMATRIX });
         tokenRelationMap.put(Token.KOMMA, new Token[] { Token.MINUS, Token.LGROUP, Token.FUNCTION, Token.NUMERIC, Token.VARIABLE, Token.LMATRIX });
         tokenRelationMap.put(Token.FUNCTION, new Token[] { Token.LGROUP });
-        tokenRelationMap.put(Token.NUMERIC, new Token[] { Token.NONE, Token.PLUS, Token.MINUS, Token.TIMES, Token.DIVISION, Token.POW, Token.KOMMA, Token.RGROUP, Token.RMATRIX });
+        tokenRelationMap.put(Token.NUMERIC, new Token[] { Token.NONE, Token.EQUAL, Token.UNEQUAL, Token.GREATER, Token.LESS, Token.GREATEREQ, Token.LESSEQ, Token.PLUS, Token.MINUS, Token.TIMES, Token.DIVISION, Token.POW, Token.KOMMA, Token.RGROUP, Token.RMATRIX });
         tokenRelationMap.put(Token.VARIABLE, new Token[] { Token.NONE, Token.ASSIGN, Token.PLUS, Token.MINUS, Token.TIMES, Token.DIVISION, Token.POW, Token.KOMMA, Token.RGROUP, Token.RMATRIX });
         tokenRelationMap.put(Token.LMATRIX, new Token[] { Token.MINUS, Token.LGROUP, Token.FUNCTION, Token.NUMERIC, Token.VARIABLE, Token.LMATRIX });
         tokenRelationMap.put(Token.RMATRIX, new Token[] { Token.NONE, Token.PLUS, Token.MINUS, Token.TIMES, Token.DIVISION, Token.POW, Token.KOMMA, Token.RGROUP, Token.LMATRIX, Token.RMATRIX });
@@ -58,6 +70,7 @@ public class ExpressionEngine
     
     public ExpressionEngine()
     {
+        tokenListeners = new ArrayList<TokenListener>();
         variables = new HashMap<String, Value>();
         calcSteps = new LatexFormula("");
     }
@@ -93,8 +106,19 @@ public class ExpressionEngine
         return assignedVariable;
     }
     
+    public void addTokenListener(TokenListener tokenListener)
+    {
+        tokenListeners.add(tokenListener);
+    }
+    
+    public void removeTokenListener(TokenListener tokenListener)
+    {
+        tokenListeners.remove(tokenListener);
+    }
+    
     private Token parseNextToken() throws InvalidExpressionException
     {
+        parsedValue = null;
         
         if (input[index] == END_OF_INPUT)
         {
@@ -117,6 +141,7 @@ public class ExpressionEngine
         {
             if (input[++index] == '=')
             {
+                index++;
                 return Token.EQUAL;
             }
             return Token.ASSIGN;
@@ -125,6 +150,7 @@ public class ExpressionEngine
         {
             if (input[++index] == '=')
             {
+                index++;
                 return Token.UNEQUAL;
             }
         }
@@ -132,6 +158,7 @@ public class ExpressionEngine
         {
             if (input[++index] == '=')
             {
+                index++;
                 return Token.GREATEREQ;
             }
             return Token.GREATER;
@@ -140,6 +167,7 @@ public class ExpressionEngine
         {
             if (input[++index] == '=')
             {
+                index++;
                 return Token.LESSEQ;
             }
             return Token.LESS;
@@ -219,6 +247,7 @@ public class ExpressionEngine
             }
             
             lastNumeric = new BigDecimal(new String(input, numBegin, index - numBegin));
+            parsedValue = new Value(new BigDecimal(new String(input, numBegin, index - numBegin)));
             return Token.NUMERIC;
             
         }
@@ -231,10 +260,12 @@ public class ExpressionEngine
             if (input[index] == '(')
             {
                 lastFunction = new String(input, strBegin, index - strBegin);
+                parsedValue = new Value(new String(input, strBegin, index - strBegin));
                 return Token.FUNCTION;
             }
             
             lastVariable = new String(input, strBegin, index - strBegin);
+            parsedValue = new Value(new String(input, strBegin, index - strBegin));
             return Token.VARIABLE;
             
         }
@@ -253,6 +284,10 @@ public class ExpressionEngine
         {
             if (token == nextToken)
             {
+                for (TokenListener tokenListener : tokenListeners)
+                {
+                    tokenListener.tokenParsed(nextToken, parsedValue);
+                }
                 return nextToken;
             }
         }
@@ -262,25 +297,26 @@ public class ExpressionEngine
     
     private Value expression(int priority) throws InvalidExpressionException
     {
-        
         Queue<Value> vars = new LinkedList<Value>();
         Token token;
         
         switch (priority)
         {
-            
-            /*case 0:
+            case 0:
                 
                 vars.add(expression(priority + 1));
                 
                 while (lastToken == Token.EQUAL || lastToken == Token.GREATER || lastToken == Token.LESS ||
                        lastToken == Token.UNEQUAL || lastToken == Token.GREATEREQ || lastToken == Token.LESSEQ)
                 {
+                    token = lastToken;
                     
+                    lastToken = getNextToken();
+                    vars.add(calc(vars.poll(), expression(priority + 1), token));
                 }
-                break;*/
+                break;
                 
-            case 0:
+            case 1:
                 
                 vars.add(expression(priority + 1));
                 
@@ -301,7 +337,7 @@ public class ExpressionEngine
                 }
                 break;
             
-            case 1:
+            case 2:
                 
                 vars.add(expression(priority + 1));
                 
@@ -316,8 +352,8 @@ public class ExpressionEngine
                     
                 }
                 break;
-            
-            case 2:
+                
+            case 3:
                 
                 vars.add(expression(priority + 1));
                 
@@ -332,8 +368,8 @@ public class ExpressionEngine
                     
                 }
                 break;
-            
-            case 3:
+                
+            case 4:
                 
                 vars.add(expression(priority + 1));
                 
@@ -347,8 +383,8 @@ public class ExpressionEngine
                     
                 }
                 break;
-            
-            case 4:
+                
+            case 5:
                 
                 if (lastToken == Token.MINUS)
                 {
@@ -433,7 +469,12 @@ public class ExpressionEngine
                             }
                         }
                         
-                        vars.add(new Value(new Matrix(values.toArray(new BigDecimal[values.size()]), values.size() / rows)));
+                        parsedValue = new Value(new Matrix(values.toArray(new BigDecimal[values.size()]), values.size() / rows));
+                        for (TokenListener tokenListener : tokenListeners)
+                        {
+                            tokenListener.matrixParsed(parsedValue.toMatrix());
+                        }
+                        vars.add(parsedValue);
                         
                     }
                     else
@@ -441,7 +482,12 @@ public class ExpressionEngine
                         
                         values.addAll(fetchArgs());
                         
-                        vars.add(new Value(new Vector(values.toArray(new BigDecimal[values.size()]))));
+                        parsedValue = new Value(new Vector(values.toArray(new BigDecimal[values.size()])));
+                        for (TokenListener tokenListener : tokenListeners)
+                        {
+                            tokenListener.vectorParsed(parsedValue.toVector());
+                        }
+                        vars.add(parsedValue);
                     }
                     
                     if (lastToken != Token.RMATRIX)
@@ -560,7 +606,6 @@ public class ExpressionEngine
                     return new Value(var1.toDecimal().compareTo(var2.toDecimal()) == -1||
                                      var1.toDecimal().equals(var2.toObject()));
                     
-                
                 case PLUS:
                     calcSteps.addLatexString(var1.toDecimal() + " + " + var2.toDecimal() + " &=& ");
                     value = new Value(var1.toDecimal().add(var2.toDecimal()));
@@ -681,8 +726,18 @@ public class ExpressionEngine
     
     private Value callFunc(String funcName, Value... args) throws InvalidExpressionException
     {
-        
-        if (funcName.equals("delete") || funcName.equals("del"))
+        if (funcName.equals("setPrecision"))
+        {
+            if (args.length == 1 && args[0].getType() == ValueType.DECIMAL)
+            {
+                MathLib.setPrecision(args[0].toDecimal().intValue());
+                return new Value("Genauigkeit auf " + args[0].toDecimal().intValue() + " gesetzt.");
+            }
+            
+            throw new InvalidExpressionException("Bitte Eingabe überprüfen, setPrecision() nimmt als Parameter einen Integer.");
+            
+        }
+        else if (funcName.equals("delete") || funcName.equals("del"))
         {
             
             if (args.length == 1 && args[0].getType() == ValueType.VARIABLE)

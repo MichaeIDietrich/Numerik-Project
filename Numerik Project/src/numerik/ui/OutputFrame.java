@@ -3,22 +3,26 @@ package numerik.ui;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.math.BigDecimal;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
+import numerik.calc.Matrix;
 import numerik.expression.*;
 import numerik.expression.Value.ValueType;
 
-public class OutputFrame extends JFrame implements KeyListener
+public class OutputFrame extends JFrame implements KeyListener, ExpressionListener, ActionListener
 {
+    
+    private final String NEW_MATRIX = "NEW_MATRIX";
+    private final String RUN_PAUSE = "RUN_PAUSE";
+    private final String STOP = "STOP";
     
     private JTabbedPane tabMain;
     
-    private ExpressionEngine solver;
+    //private ExpressionEngine solver;
     private JTextArea txtExpressionInput;
     private JPanel pnlExpressionOutput;
     
@@ -27,8 +31,15 @@ public class OutputFrame extends JFrame implements KeyListener
     public OutputFrame()
     {
         super("Numerik");
+        List<Image> icons = new ArrayList<Image>();
+        icons.add(new ImageIcon("icons/app16.png").getImage());
+        icons.add(new ImageIcon("icons/app32.png").getImage());
+        icons.add(new ImageIcon("icons/app48.png").getImage());
+        icons.add(new ImageIcon("icons/app64.png").getImage());
+        icons.add(new ImageIcon("icons/app128.png").getImage());
+        this.setIconImages(icons);
         
-        solver = new ExpressionEngine();
+        //solver = new ExpressionEngine();
         
         initLookAndFeel();
         
@@ -38,11 +49,20 @@ public class OutputFrame extends JFrame implements KeyListener
         toolBar.setFloatable(false);
         JButton btnNewMatrix = new JButton(new ImageIcon("icons/new_matrix16.png"));
         btnNewMatrix.setToolTipText("Neue Matrix erzeugen");
+        btnNewMatrix.setActionCommand(NEW_MATRIX);
+        btnNewMatrix.addActionListener(this);
         toolBar.add(btnNewMatrix);
         toolBar.addSeparator();
         JButton btnRun = new JButton(new ImageIcon("icons/run16.png"));
         btnRun.setToolTipText("Ausdrücke auswerten");
+        btnRun.setActionCommand(RUN_PAUSE);
+        btnRun.addActionListener(this);
         toolBar.add(btnRun);
+        JButton btnStop = new JButton(new ImageIcon("icons/stop16.png"));
+        btnStop.setToolTipText("Ausführung anhalten");
+        btnStop.setActionCommand(STOP);
+        btnStop.addActionListener(this);
+        toolBar.add(btnStop);
         
         this.add(toolBar, BorderLayout.PAGE_START);
         
@@ -112,7 +132,7 @@ public class OutputFrame extends JFrame implements KeyListener
     public void keyReleased(KeyEvent e)
     {
         
-        if (e.getKeyCode() == KeyEvent.VK_ENTER)
+        if (e.getKeyCode() == KeyEvent.VK_ENTER && e.isControlDown())
         {
             runExpressions();
             
@@ -148,102 +168,92 @@ public class OutputFrame extends JFrame implements KeyListener
         }
     }
     
-    
     private void runExpressions()
     {
         pnlExpressionOutput.removeAll();
+        
+        ScriptEngine engine = new ScriptEngine();
+        
+        engine.addExpressionListener(this);
+        engine.run(txtExpressionInput.getText());
+    }
+    
+    @Override
+    public void expressionParsed(ExpressionEngine expression, Value result)
+    {
         LatexFormula formula = new LatexFormula();
         
-        Queue<Integer> whileIndices = new LinkedList<Integer>();
-        String[] lines = txtExpressionInput.getText().split("\n");
-        
-        for (int lineIndex = 0; lineIndex < lines.length; lineIndex++)
+        if (expression.getAssignedVariable() != null)
         {
-            String line = lines[lineIndex];
-            
-            System.out.println("Line: " + line);
-            if (line.equals("\n") || line.equals("") || line.startsWith("#") || line.startsWith("\n#"))
-                continue;
-            
-            if (line.equals("do"))
-            {
-                if (!whileIndices.contains(lineIndex))
-                {
-                    whileIndices.add(lineIndex);
-                    pnlExpressionOutput.add(new ImageComponent(new LatexFormula("\\text{Do}").toImage(20, Color.BLUE)));
-                    pnlExpressionOutput.add(new HorizontalLine());
-                }
-                continue;
-            }
-            if (line.startsWith("while "))
-            {
-                String var = line.substring(6);
-                
-                if (solver.getVariableTable().get(var) != null && !solver.getVariableTable().get(var).toDecimal().equals(BigDecimal.ZERO))
-                {
-                    lineIndex = whileIndices.peek() - 1;
-                }
-                else
-                {
-                    whileIndices.poll();
-                    pnlExpressionOutput.add(new ImageComponent(new LatexFormula("\\text{While}").toImage(20, Color.BLUE)));
-                    pnlExpressionOutput.add(new HorizontalLine());
-                }
-                continue;
-            }
-            
-            
-            formula.addText(line);
-            pnlExpressionOutput.add(new ImageComponent(formula.toImage(10)));
+            formula.addText(expression.getAssignedVariable());
+        }
+        
+        if (result.getType() != ValueType.TEXT)
+        {
+            formula.addText(" = ");
+        }
+        
+        if (result.getType() == ValueType.MATRIX)
+        {
+            formula.addMatrix(result.toMatrix());
+        }
+        else if (result.getType() == ValueType.VECTOR)
+        {
+            formula.addVector(result.toVector());
+        }
+        else
+        {
+            formula.addText(result.toObject().toString());
+        }
+        pnlExpressionOutput.add(new ImageComponent(formula.toImage()));
+        
+        if (!Recorder.getInstance().isEmpty())
+        {
             formula.clear();
-            
-            Value res;
-            
-            try
+            formula.addFormula(Recorder.getInstance().get(true));
+            pnlExpressionOutput.add(new ExpandButton(new ImageComponent(formula.toImage(15))));
+        }
+        pnlExpressionOutput.add(new HorizontalLine());
+    }
+
+    @Override
+    public void actionParsed(ActionType action, String data)
+    {
+        switch (action)
+        {
+            case DO:
+            case WHILE:
+                pnlExpressionOutput.add(new ImageComponent(new LatexFormula("\\text{" + data + "}").toImage(20, Color.BLUE)));
+                pnlExpressionOutput.add(new HorizontalLine());
+                break;
+            case STARTPARSING:
+                pnlExpressionOutput.add(new ImageComponent(new LatexFormula().addText(data).toImage(10)));
+                break;
+            case BADEXPRESSION:
+                pnlExpressionOutput.add(new ImageComponent(new LatexFormula().addText(data).toImage(12, Color.RED)));
+                pnlExpressionOutput.add(new HorizontalLine());
+                break;
+            case PARSEDEXPRESSION:
+                //pnlExpressionOutput.add(new ImageComponent(new LatexFormula(data).toImage(10)));
+                break;
+        }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e)
+    {
+        if (e.getActionCommand().equals(NEW_MATRIX))
+        {
+            Matrix matrix = NewMatrixWindow.createNewMatrix(this, MouseInfo.getPointerInfo().getLocation());
+            if (matrix != null)
             {
-                res = solver.solve(line);
-                
-                if (solver.getAssignedVariable() != null)
-                {
-                    formula.addText(solver.getAssignedVariable());
-                }
-                
-                if (res.getType() != ValueType.TEXT)
-                {
-                    formula.addText(" = ");
-                }
-                
-                if (res.getType() == ValueType.MATRIX)
-                {
-                    formula.addMatrix(res.toMatrix());
-                }
-                else if (res.getType() == ValueType.VECTOR)
-                {
-                    formula.addVector(res.toVector());
-                }
-                else
-                {
-                    formula.addText(res.toObject().toString());
-                }
-                pnlExpressionOutput.add(new ImageComponent(formula.toImage()));
-                
-                if (!Recorder.getInstance().isEmpty())
-                {
-                    formula.clear();
-                    formula.addFormula(Recorder.getInstance().get(true));
-                    pnlExpressionOutput.add(new ExpandButton(new ImageComponent(formula.toImage(15))));
-                }
-                
+                txtExpressionInput.insert(matrix.toString(), txtExpressionInput.getSelectionStart());
             }
-            catch (InvalidExpressionException ex)
-            {
-                formula.addText(ex.getMessage());
-                pnlExpressionOutput.add(new ImageComponent(formula.toImage(12, Color.RED)));
-            }
-            
-            pnlExpressionOutput.add(new HorizontalLine());
-            formula.clear();
-            
+        }
+        else if (e.getActionCommand().equals(RUN_PAUSE))
+        {
+            runExpressions();
+            this.validate();
         }
     }
 }
