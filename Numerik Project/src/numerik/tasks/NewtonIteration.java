@@ -24,8 +24,8 @@ public class NewtonIteration
         double  a = -128;
            
         // Ausgabe 
-        formula.addText("Newton-Verfahren zur Bestimmung  ").addLatexString("x = \\sqrt[k]{a}").addNewLine(2);
-        formula.addText("1. Forme dazu  ").addLatexString("x = \\sqrt[k]{a}").addText(" derart um, dass ").addLatexString("f(x)=0").addText(" entsteht.").addNewLine(1);
+        formula.addText("Newton-Verfahren zur Bestimmung  ").addLatexString("x = \\sqrt[k\\hspace{0.8mm}]{a}").addNewLine(2);
+        formula.addText("1. Forme dazu  ").addLatexString("x = \\sqrt[k\\hspace{1mm}]{a}").addText(" derart um, dass ").addLatexString("f(x)=0").addText(" entsteht.").addNewLine(1);
         formula.addText("    In diesem Fall:  ").addLatexString("f(x) = x^{k}-a = 0").addNewLine(1);
         formula.addText("2. Bilde ").addLatexString("f'(x)").addText(" und setze beides in die Newton-Iteration ein.").addNewLine(4);
         formula.addText("geg: ").addNewLine(1);
