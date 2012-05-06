@@ -12,4 +12,5 @@ public class HorizontalLine extends JSeparator
         super();
         this.setMaximumSize(new Dimension(10000, 5));
     }
+    
 }
