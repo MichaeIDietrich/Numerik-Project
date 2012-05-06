@@ -118,6 +118,25 @@ public class Matrix {
         }
     }
     
+    public Matrix(ArrayList<BigDecimal> values, int cols)
+    {
+        this.cols = cols;
+        this.rows = values.size() / cols;
+        
+        this.values = new BigDecimal[rows][cols];
+        
+        int m = 0, n = 0;
+        for (BigDecimal v : values) {
+            this.values[m][n] = v;
+            
+            n++;
+            if (n == cols) {
+                n = 0;
+                m++;
+            }
+        }
+    }
+    
     // getters
     public int getRows() {
         return rows;
@@ -388,7 +407,7 @@ public class Matrix {
         if(  name == null)   name = "A";
         if(b.name == null) b.name = "b";
         
-        if (b!=null && recorder.isActive()) 
+        if (b!=null && recorder.isActive())
         {
             formula.addNewLine(2).addSolidLine().addNewLine(1);
             formula.addText("LU-Zerlegung").addNewLine(2);
@@ -402,7 +421,7 @@ public class Matrix {
             {
                 temp = MathLib.round( U.values[t+1][row].divide( U.values[row][row], MathLib.getInversePrecision(), RoundingMode.HALF_UP ));
                 
-                for(int i=row; i<U.rows; i++) 
+                for(int i=row; i<U.rows; i++)
                 { 
                     U.values[t+1][i] = MathLib.round( U.values[t+1][i].subtract( MathLib.round( temp.multiply( U.values[row][i] ) )));
                 }  
@@ -435,10 +454,12 @@ public class Matrix {
             recorder.add(formula);
         }
         
-        if(which_matrix==0) 
+        if(which_matrix == 0) 
         {
-            return L;           
-        } else {
+            return L;
+        } 
+        else 
+        {
             return U;
         }
     }
@@ -448,7 +469,7 @@ public class Matrix {
     public Vector substitution( Matrix matrix, Vector b, String str ) 
     {
         BigDecimal term0 = BigDecimal.ZERO;
-        BigDecimal term1 = BigDecimal.ZERO;                     
+        BigDecimal term1 = BigDecimal.ZERO;
         BigDecimal term2 = BigDecimal.ZERO;
         Vector         y = new Vector( b.getLength());
         
@@ -662,9 +683,30 @@ public class Matrix {
         }
         return MathLib.sqrt( sum );
     }
+    
+    @Override
+    public String toString()
+    {
+        StringBuilder buffer = new StringBuilder();
+        buffer.append("[");
+        for (int row = 0; row < rows; row++)
+        {
+            buffer.append("[");
+            for (int col = 0; col < cols; col++)
+            {
+                buffer.append(values[row][col].toPlainString());
+                if (col < cols - 1)
+                {
+                    buffer.append(",");
+                }
+            }
+            buffer.append("]");
+            if (row < rows - 1)
+            {
+                buffer.append(",");
+            }
+        }
+        buffer.append("]");
+        return buffer.toString();
+    }
 }
-
-
-
-
-

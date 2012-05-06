@@ -31,11 +31,7 @@ public class MathLib
                 value = value.setScale( precision, RoundingMode.HALF_UP );
             }
         }
-        if (BigDecimalExtension.equals(value, BigDecimal.ZERO))
-        {
-            return BigDecimal.ZERO;
-        }
-        return value.stripTrailingZeros();
+        return stripTrailingZeros(value);
     }
    
     
