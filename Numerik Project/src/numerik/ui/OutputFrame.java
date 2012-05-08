@@ -8,16 +8,19 @@ import java.util.List;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import numerik.calc.Matrix;
 import numerik.expression.*;
 import numerik.expression.Value.ValueType;
 
+import numerik.tasks.GaussIntegrationOrder4;
 import numerik.tasks.LUDecomposition;
 import numerik.tasks.NewtonIteration;
 import numerik.tasks.SolveNonLinearEquation;
 
-public class OutputFrame extends JFrame implements KeyListener, ExpressionListener, ActionListener
+public class OutputFrame extends JFrame implements KeyListener, ExpressionListener, ActionListener, MouseListener, ChangeListener
 {
     
     private final String NEW_MATRIX = "NEW_MATRIX";
@@ -29,8 +32,12 @@ public class OutputFrame extends JFrame implements KeyListener, ExpressionListen
     //private ExpressionEngine solver;
     private JTextArea txtExpressionInput;
     private JPanel pnlExpressionOutput;
-    
     private JPanel pnlStaticCode;
+    
+    private JToolBar toolBar;
+    private JButton btnNewMatrix;
+    private JButton btnRun;
+    private JButton btnStop;
     
     public OutputFrame()
     {
@@ -49,26 +56,29 @@ public class OutputFrame extends JFrame implements KeyListener, ExpressionListen
         
         // --- Toolbar ---
         
-        JToolBar toolBar = new JToolBar();
+        toolBar = new JToolBar();
         toolBar.setFloatable(false);
-        JButton btnNewMatrix = new JButton(new ImageIcon("icons/new_matrix16.png"));
+        
+        btnNewMatrix = new JButton(new ImageIcon("icons/new_matrix16.png"));
         btnNewMatrix.setToolTipText("Neue Matrix erzeugen");
         btnNewMatrix.setActionCommand(NEW_MATRIX);
         btnNewMatrix.addActionListener(this);
         toolBar.add(btnNewMatrix);
         toolBar.addSeparator();
-        JButton btnRun = new JButton(new ImageIcon("icons/run16.png"));
+        
+        btnRun = new JButton(new ImageIcon("icons/run16.png"));
         btnRun.setToolTipText("Ausdrücke auswerten");
         btnRun.setActionCommand(RUN_PAUSE);
         btnRun.addActionListener(this);
         toolBar.add(btnRun);
-        JButton btnStop = new JButton(new ImageIcon("icons/stop16.png"));
+        
+        btnStop = new JButton(new ImageIcon("icons/stop16.png"));
         btnStop.setToolTipText("Ausführung anhalten");
         btnStop.setActionCommand(STOP);
         btnStop.addActionListener(this);
         toolBar.add(btnStop);
         
-        this.add(toolBar, BorderLayout.PAGE_START);
+        this.add(toolBar, BorderLayout.NORTH);
         
         // --- Expression-Panel ---
         
@@ -111,31 +121,30 @@ public class OutputFrame extends JFrame implements KeyListener, ExpressionListen
         // --- Static-Code-Panel ---
         
         pnlStaticCode = new JPanel();
-        
-        LUDecomposition luDecomp = new LUDecomposition();
-        NewtonIteration newtonIter = new NewtonIteration();
-        SolveNonLinearEquation nonLinEqu = new SolveNonLinearEquation();
-        
-//        LatexFormula formula = luDecomp.getFormula();
-        LatexFormula formula = newtonIter.getFormula();
-//        LatexFormula formula = nonLinEqu.getFormula();
-        
-        ImageComponent imgcomp = new ImageComponent( formula.toImage( 18 ));
-        JScrollPane scrollpane = new JScrollPane( imgcomp );
-        scrollpane.getVerticalScrollBar().setUnitIncrement( 25 );
-        
-        
-        pnlStaticCode.add(scrollpane);
+
+        NiceScrollPane lu_decompos  = new NiceScrollPane( new LUDecomposition().getFormula() ); 
+        NiceScrollPane newton_iter  = new NiceScrollPane( new NewtonIteration().getFormula() ); 
+        NiceScrollPane non_lin_equ  = new NiceScrollPane( new SolveNonLinearEquation().getFormula() ); 
+        NiceScrollPane gauss_int4o  = new NiceScrollPane( new GaussIntegrationOrder4().getFormula() );
+        NiceScrollPane rungkutta4o  = new NiceScrollPane( new GaussIntegrationOrder4().getFormula() );
         
         // --- Tab-Pane ---
         
         tabMain = new JTabbedPane(JTabbedPane.BOTTOM);
         tabMain.addTab("Expression", pnlExpression);
-        tabMain.addTab("Statischer Code", pnlStaticCode);
+        tabMain.addTab("LU-Zerlegung",    lu_decompos);
+        tabMain.addTab("Newton Wurzel",   newton_iter);
+        tabMain.addTab("Non-Lin-GS",      non_lin_equ);
+        tabMain.addTab("Gauss Int. 4",    gauss_int4o);
+        tabMain.addTab("Runge Kutta 4",   rungkutta4o);
         
-        this.add(tabMain);
+        tabMain.addChangeListener(changeListener);
         
-        this.setSize(640, 480);
+        System.out.println( tabMain.getName() );
+        
+        this.add( tabMain );
+        
+        this.setSize(600, 720);
         this.setLocationRelativeTo(null);
         
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -218,8 +227,8 @@ public class OutputFrame extends JFrame implements KeyListener, ExpressionListen
         {
             case DO:
             case WHILE:
-                pnlExpressionOutput.add(new ImageComponent(new LatexFormula("\\text{" + data + "}").toImage(20, Color.BLUE)));
-                pnlExpressionOutput.add(new HorizontalLine());
+                pnlExpressionOutput.add( new ImageComponent(new LatexFormula("\\text{" + data + "}").toImage(20, Color.BLUE)) );
+                pnlExpressionOutput.add( new HorizontalLine() );
                 break;
             case STARTPARSING:
                 pnlExpressionOutput.add(new ImageComponent(new LatexFormula().addText(data).toImage(10)));
@@ -252,6 +261,45 @@ public class OutputFrame extends JFrame implements KeyListener, ExpressionListen
         }
     }
     
+    ChangeListener changeListener = new ChangeListener() {
+        @Override
+        public void stateChanged(ChangeEvent changeEvent)
+        {
+            JTabbedPane sourceTabbedPane = (JTabbedPane) changeEvent.getSource();
+            int index = sourceTabbedPane.getSelectedIndex();
+            
+            switch (index)
+            {
+                case 0: {
+                            btnRun.setVisible(true);
+                            btnStop.setVisible(true);
+                            toolBar.setVisible(true);
+                        }
+                
+                case 1: {
+                            btnRun.setVisible(false);
+                            btnStop.setVisible(false);
+                        }
+                
+                case 2: {
+                    
+                        }
+                
+                case 3: {
+                    
+                        }
+                
+                case 4: {
+                    
+                        }
+                
+                case 5: {
+                    
+                        }
+            }
+        }
+      };
+    
     private void initLookAndFeel()
     {
         try
@@ -275,4 +323,22 @@ public class OutputFrame extends JFrame implements KeyListener, ExpressionListen
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void stateChanged(ChangeEvent arg0) {}
+
+    @Override
+    public void mouseClicked(MouseEvent arg0) {}
+
+    @Override
+    public void mouseEntered(MouseEvent arg0) {}
+
+    @Override
+    public void mouseExited(MouseEvent arg0) {}
+
+    @Override
+    public void mousePressed(MouseEvent arg0) {}
+
+    @Override
+    public void mouseReleased(MouseEvent arg0) {}
 }

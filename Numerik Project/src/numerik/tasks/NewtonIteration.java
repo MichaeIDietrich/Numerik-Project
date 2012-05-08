@@ -9,10 +9,15 @@ public class NewtonIteration
 {
     LatexFormula formula = new LatexFormula();
     
-    public NewtonIteration() {
-        
+    public NewtonIteration() 
+    {
+        init();
+    }
+    
+    public void init()
+    {
         MathLib.setPrecision( 20 );
-        MathLib.setRoundingMode( MathLib.exact );
+        MathLib.setRoundingMode( MathLib.EXACT );
         
         int counter = 0;
         
@@ -20,8 +25,8 @@ public class NewtonIteration
         double  f , df;
         double  x = 12800;         // Achtung bei df(x)=0 -> Division durch Null
         double ox = x+1;
-        int     k = 3;
-        double  a = -128;
+        int     k = 10;
+        double  a = 1024;
            
         // Ausgabe 
         formula.addText("Newton-Verfahren zur Bestimmung  ").addLatexString("x = \\sqrt[k\\hspace{0.8mm}]{a}").addNewLine(2);

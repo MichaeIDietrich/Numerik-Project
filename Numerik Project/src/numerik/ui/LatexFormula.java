@@ -310,7 +310,7 @@ public class LatexFormula
         }
         else
         {
-            icon.setForeground(foregroundColor);
+            icon.setForeground(null);
             icon.paintIcon(null, b.getGraphics(), 0, 0);
         }
         

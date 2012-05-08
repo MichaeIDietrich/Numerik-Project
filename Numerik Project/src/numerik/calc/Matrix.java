@@ -505,7 +505,7 @@ public class Matrix {
         if ( str.equals("backward") ) 
         {
             int dim = matrix.getRows()-1;
-
+            
             y.set(dim, MathLib.round( b.get(dim).divide( matrix.values[dim][dim], MathLib.getPrecision(), RoundingMode.HALF_UP )));
 
             for(int row=dim; row>=0; row--) 
@@ -520,7 +520,7 @@ public class Matrix {
                 y.set( row, term2);
             }
         }
-        
+
         return y;
     }
     

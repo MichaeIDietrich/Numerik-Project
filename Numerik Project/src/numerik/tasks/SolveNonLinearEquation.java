@@ -3,6 +3,7 @@ package numerik.tasks;
 
 import java.math.BigDecimal;
 
+import numerik.calc.MathLib;
 import numerik.calc.Matrix;
 import numerik.calc.Vector;
 import numerik.ui.LatexFormula;
@@ -11,9 +12,15 @@ public class SolveNonLinearEquation
 {
     LatexFormula formula = new LatexFormula();
     
-    public SolveNonLinearEquation() {
-        
+    public SolveNonLinearEquation() 
+    {
+        init();
+    }
+    
+    public void init()
+    {
         Vector x;
+        MathLib.setPrecision( 5 );
         
         // Lösen nichtlinearer Gleichungssysteme
         BigDecimal[] startvector = {new BigDecimal(-0.7) , new BigDecimal(-0.5)};
