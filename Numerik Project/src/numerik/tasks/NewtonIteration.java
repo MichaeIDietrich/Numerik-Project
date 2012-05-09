@@ -25,8 +25,8 @@ public class NewtonIteration
         double  f , df;
         double  x = 12800;         // Achtung bei df(x)=0 -> Division durch Null
         double ox = x+1;
-        int     k = 10;
-        double  a = 1024;
+        int     k = 5;
+        double  a = 18;
            
         // Ausgabe 
         formula.addText("Newton-Verfahren zur Bestimmung  ").addLatexString("x = \\sqrt[k\\hspace{0.8mm}]{a}").addNewLine(2);

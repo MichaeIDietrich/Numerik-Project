@@ -1,7 +1,11 @@
 package numerik.tasks;
 
+import java.awt.BorderLayout;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+
+import javax.swing.JPanel;
+
 import numerik.calc.MathLib;
 import numerik.calc.Matrix;
 import numerik.calc.Vector;
@@ -12,7 +16,8 @@ public class LUDecomposition
 {
     
     LatexFormula formula = new LatexFormula();
-    
+    Matrix A;
+    Vector b;
     
     public LUDecomposition() 
     {

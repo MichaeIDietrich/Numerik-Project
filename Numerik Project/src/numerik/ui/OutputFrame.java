@@ -20,7 +20,7 @@ import numerik.tasks.LUDecomposition;
 import numerik.tasks.NewtonIteration;
 import numerik.tasks.SolveNonLinearEquation;
 
-public class OutputFrame extends JFrame implements KeyListener, ExpressionListener, ActionListener, MouseListener, ChangeListener
+public class OutputFrame extends JFrame implements KeyListener, ExpressionListener, ActionListener
 {
     
     private final String NEW_MATRIX = "NEW_MATRIX";
@@ -122,25 +122,22 @@ public class OutputFrame extends JFrame implements KeyListener, ExpressionListen
         
         pnlStaticCode = new JPanel();
 
-        NiceScrollPane lu_decompos  = new NiceScrollPane( new LUDecomposition().getFormula() ); 
-        NiceScrollPane newton_iter  = new NiceScrollPane( new NewtonIteration().getFormula() ); 
-        NiceScrollPane non_lin_equ  = new NiceScrollPane( new SolveNonLinearEquation().getFormula() ); 
-        NiceScrollPane gauss_int4o  = new NiceScrollPane( new GaussIntegrationOrder4().getFormula() );
-        NiceScrollPane rungkutta4o  = new NiceScrollPane( new GaussIntegrationOrder4().getFormula() );
+        TaskPane lu_decompos = new TaskPane( new LUDecomposition().getFormula() ); 
+        TaskPane newton_iter = new TaskPane( new NewtonIteration().getFormula() ); 
+        TaskPane non_lin_equ = new TaskPane( new SolveNonLinearEquation().getFormula() ); 
+        TaskPane gauss_int4o = new TaskPane( new GaussIntegrationOrder4().getFormula() );
+        TaskPane rungkutta4o = new TaskPane( new GaussIntegrationOrder4().getFormula() );
         
         // --- Tab-Pane ---
         
-        tabMain = new JTabbedPane(JTabbedPane.BOTTOM);
+        tabMain = new JTabbedPane( JTabbedPane.BOTTOM );
+
         tabMain.addTab("Expression", pnlExpression);
         tabMain.addTab("LU-Zerlegung",    lu_decompos);
         tabMain.addTab("Newton Wurzel",   newton_iter);
         tabMain.addTab("Non-Lin-GS",      non_lin_equ);
         tabMain.addTab("Gauss Int. 4",    gauss_int4o);
         tabMain.addTab("Runge Kutta 4",   rungkutta4o);
-        
-        tabMain.addChangeListener(changeListener);
-        
-        System.out.println( tabMain.getName() );
         
         this.add( tabMain );
         
@@ -261,45 +258,6 @@ public class OutputFrame extends JFrame implements KeyListener, ExpressionListen
         }
     }
     
-    ChangeListener changeListener = new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent changeEvent)
-        {
-            JTabbedPane sourceTabbedPane = (JTabbedPane) changeEvent.getSource();
-            int index = sourceTabbedPane.getSelectedIndex();
-            
-            switch (index)
-            {
-                case 0: {
-                            btnRun.setVisible(true);
-                            btnStop.setVisible(true);
-                            toolBar.setVisible(true);
-                        }
-                
-                case 1: {
-                            btnRun.setVisible(false);
-                            btnStop.setVisible(false);
-                        }
-                
-                case 2: {
-                    
-                        }
-                
-                case 3: {
-                    
-                        }
-                
-                case 4: {
-                    
-                        }
-                
-                case 5: {
-                    
-                        }
-            }
-        }
-      };
-    
     private void initLookAndFeel()
     {
         try
@@ -323,22 +281,4 @@ public class OutputFrame extends JFrame implements KeyListener, ExpressionListen
             e.printStackTrace();
         }
     }
-
-    @Override
-    public void stateChanged(ChangeEvent arg0) {}
-
-    @Override
-    public void mouseClicked(MouseEvent arg0) {}
-
-    @Override
-    public void mouseEntered(MouseEvent arg0) {}
-
-    @Override
-    public void mouseExited(MouseEvent arg0) {}
-
-    @Override
-    public void mousePressed(MouseEvent arg0) {}
-
-    @Override
-    public void mouseReleased(MouseEvent arg0) {}
 }
