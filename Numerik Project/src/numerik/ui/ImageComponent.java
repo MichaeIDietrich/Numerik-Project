@@ -11,6 +11,9 @@ class ImageComponent extends JComponent
 {
     private static final long serialVersionUID = 8055865896136562197L;
     
+    int width;
+    int height;
+    
     private Image image;
     
     public ImageComponent(Image image)
@@ -20,9 +23,11 @@ class ImageComponent extends JComponent
     
     public void setImage(Image image)
     {
-        System.out.println("width: " + image.getWidth(null));
-        this.setPreferredSize(new Dimension(image.getWidth(null), image.getHeight(null)));
-        this.setMaximumSize(new Dimension(10000, image.getHeight(null)));
+        this.width  = image.getWidth(null);
+        this.height = image.getHeight(null);
+        
+        this.setPreferredSize(new Dimension( this.width, this.height) );
+        this.setMaximumSize(new Dimension( 10000, this.height) );
         this.image = image;
         
         invalidate();
@@ -39,5 +44,15 @@ class ImageComponent extends JComponent
         }
         //g.setColor(Color.BLACK);
         //g.drawRect(0, 0, g.getClipBounds().width - 1, g.getClipBounds().height - 1);
+    }
+    
+    public int width()
+    {
+        return width;
+    }
+
+    public int height()
+    {
+        return height;
     }
 }

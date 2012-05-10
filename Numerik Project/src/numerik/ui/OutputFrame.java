@@ -8,11 +8,14 @@ import java.util.List;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import numerik.calc.Matrix;
 import numerik.expression.*;
 import numerik.expression.Value.ValueType;
 
+import numerik.tasks.GaussIntegrationOrder4;
 import numerik.tasks.LUDecomposition;
 import numerik.tasks.NewtonIteration;
 import numerik.tasks.SolveNonLinearEquation;
@@ -29,8 +32,12 @@ public class OutputFrame extends JFrame implements KeyListener, ExpressionListen
     //private ExpressionEngine solver;
     private JTextArea txtExpressionInput;
     private JPanel pnlExpressionOutput;
-    
     private JPanel pnlStaticCode;
+    
+    private JToolBar toolBar;
+    private JButton btnNewMatrix;
+    private JButton btnRun;
+    private JButton btnStop;
     
     public OutputFrame()
     {
@@ -49,26 +56,29 @@ public class OutputFrame extends JFrame implements KeyListener, ExpressionListen
         
         // --- Toolbar ---
         
-        JToolBar toolBar = new JToolBar();
+        toolBar = new JToolBar();
         toolBar.setFloatable(false);
-        JButton btnNewMatrix = new JButton(new ImageIcon("icons/new_matrix16.png"));
+        
+        btnNewMatrix = new JButton(new ImageIcon("icons/new_matrix16.png"));
         btnNewMatrix.setToolTipText("Neue Matrix erzeugen");
         btnNewMatrix.setActionCommand(NEW_MATRIX);
         btnNewMatrix.addActionListener(this);
         toolBar.add(btnNewMatrix);
         toolBar.addSeparator();
-        JButton btnRun = new JButton(new ImageIcon("icons/run16.png"));
+        
+        btnRun = new JButton(new ImageIcon("icons/run16.png"));
         btnRun.setToolTipText("Ausdrücke auswerten");
         btnRun.setActionCommand(RUN_PAUSE);
         btnRun.addActionListener(this);
         toolBar.add(btnRun);
-        JButton btnStop = new JButton(new ImageIcon("icons/stop16.png"));
+        
+        btnStop = new JButton(new ImageIcon("icons/stop16.png"));
         btnStop.setToolTipText("Ausführung anhalten");
         btnStop.setActionCommand(STOP);
         btnStop.addActionListener(this);
         toolBar.add(btnStop);
         
-        this.add(toolBar, BorderLayout.PAGE_START);
+        this.add(toolBar, BorderLayout.NORTH);
         
         // --- Expression-Panel ---
         
@@ -111,31 +121,27 @@ public class OutputFrame extends JFrame implements KeyListener, ExpressionListen
         // --- Static-Code-Panel ---
         
         pnlStaticCode = new JPanel();
-        
-        LUDecomposition luDecomp = new LUDecomposition();
-        NewtonIteration newtonIter = new NewtonIteration();
-        SolveNonLinearEquation nonLinEqu = new SolveNonLinearEquation();
-        
-//        LatexFormula formula = luDecomp.getFormula();
-        LatexFormula formula = newtonIter.getFormula();
-//        LatexFormula formula = nonLinEqu.getFormula();
-        
-        ImageComponent imgcomp = new ImageComponent( formula.toImage( 18 ));
-        JScrollPane scrollpane = new JScrollPane( imgcomp );
-        scrollpane.getVerticalScrollBar().setUnitIncrement( 25 );
-        
-        
-        pnlStaticCode.add(scrollpane);
+
+        TaskPane lu_decompos = new TaskPane( new LUDecomposition().getFormula() ); 
+        TaskPane newton_iter = new TaskPane( new NewtonIteration().getFormula() ); 
+        TaskPane non_lin_equ = new TaskPane( new SolveNonLinearEquation().getFormula() ); 
+        TaskPane gauss_int4o = new TaskPane( new GaussIntegrationOrder4().getFormula() );
+        TaskPane rungkutta4o = new TaskPane( new GaussIntegrationOrder4().getFormula() );
         
         // --- Tab-Pane ---
         
-        tabMain = new JTabbedPane(JTabbedPane.BOTTOM);
+        tabMain = new JTabbedPane( JTabbedPane.BOTTOM );
+
         tabMain.addTab("Expression", pnlExpression);
-        tabMain.addTab("Statischer Code", pnlStaticCode);
+        tabMain.addTab("LU-Zerlegung",    lu_decompos);
+        tabMain.addTab("Newton Wurzel",   newton_iter);
+        tabMain.addTab("Non-Lin-GS",      non_lin_equ);
+        tabMain.addTab("Gauss Int. 4",    gauss_int4o);
+        tabMain.addTab("Runge Kutta 4",   rungkutta4o);
         
-        this.add(tabMain);
+        this.add( tabMain );
         
-        this.setSize(640, 480);
+        this.setSize(600, 720);
         this.setLocationRelativeTo(null);
         
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -219,8 +225,8 @@ public class OutputFrame extends JFrame implements KeyListener, ExpressionListen
         {
             case DO:
             case WHILE:
-                pnlExpressionOutput.add(new ImageComponent(new LatexFormula("\\text{" + data + "}").toImage(20, Color.BLUE)));
-                pnlExpressionOutput.add(new HorizontalLine());
+                pnlExpressionOutput.add( new ImageComponent(new LatexFormula("\\text{" + data + "}").toImage(20, Color.BLUE)) );
+                pnlExpressionOutput.add( new HorizontalLine() );
                 break;
             case STARTPARSING:
                 pnlExpressionOutput.add(new ImageComponent(new LatexFormula().addText(data).toImage(10)));

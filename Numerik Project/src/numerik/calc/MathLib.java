@@ -5,33 +5,36 @@ import java.math.*;
 
 public class MathLib
 {
-    private static boolean      pivotstrategy = false;
-    private static boolean             active = true;
-    private static int              precision = 5;
-    private static int      inverse_precision = 20;
-    private static int           roundingmode = 0;
-    public  static final int            exact = 0;
-    public  static final int           normal = 1;
-    public  static final int ZeilensummenNorm = 0;
-    public  static final int    FroEuklidNorm = 1;
-    private static int                   norm = 0;
+    private static boolean         pivotstrategy = false;
+    private static boolean                active = true;
+    private static int                 precision = 5;
+    private static int         inverse_precision = 20;
+    private static int              roundingmode = 0;
+    public  static final int               EXACT = 0;
+    public  static final int              NORMAL = 1;
+    public  static final int    ZEILENSUMMENNORM = 0;
+    public  static final int FROBENIUSEUKILDNORM = 1;
+    private static int                      norm = 0;
 
     
     public static BigDecimal round(BigDecimal value)
     {
         if (active)
         {
-            if (MathLib.getRoundingMode() == MathLib.exact ) 
+            if (MathLib.getRoundingMode() == MathLib.EXACT ) 
             {
                 value = value.round(new MathContext( precision, RoundingMode.HALF_UP ));
             }
             
-            if (MathLib.getRoundingMode() == MathLib.normal ) 
+            if (MathLib.getRoundingMode() == MathLib.NORMAL ) 
             {
                 value = value.setScale( precision, RoundingMode.HALF_UP );
             }
         }
-        return stripTrailingZeros(value);
+        
+        if(value.compareTo(BigDecimal.ZERO)==0) return BigDecimal.ZERO;
+        
+        return value.stripTrailingZeros();
     }
    
     
