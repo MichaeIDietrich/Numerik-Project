@@ -103,7 +103,7 @@ public class OutputFrame extends JFrame implements KeyListener, ExpressionListen
         txtExpressionInput.addKeyListener(this);
         
         JScrollPane scrExpressionOutput = new JScrollPane(pnlExpressionOutput);
-        scrExpressionOutput.getVerticalScrollBar().setUnitIncrement(10);
+        scrExpressionOutput.getVerticalScrollBar().setUnitIncrement(25);
         
         pnlExpression.add(scrExpressionOutput);
         pnlExpression.add(txtExpressionInput, BorderLayout.PAGE_END);
@@ -166,6 +166,7 @@ public class OutputFrame extends JFrame implements KeyListener, ExpressionListen
     private void runExpressions()
     {
         pnlExpressionOutput.removeAll();
+        Recorder.getInstance().clear();
         
         ScriptEngine engine = new ScriptEngine();
         
