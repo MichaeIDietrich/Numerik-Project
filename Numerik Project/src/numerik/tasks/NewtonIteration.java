@@ -23,7 +23,7 @@ public class NewtonIteration
         
         // Berechne k-te Wurzel aus a;  --> x = a^(1/k);  df ist Ableitung von f
         double  f , df;
-        double  x = 12800;         // Achtung bei df(x)=0 -> Division durch Null
+        double  x = 5;         // Achtung bei df(x)=0 -> Division durch Null
         double ox = x+1;
         int     k = 5;
         double  a = 18;
@@ -58,6 +58,7 @@ public class NewtonIteration
                 df = k * Math.pow(x, k-1);
                  x = MathLib.round( BigDecimal.valueOf(     x - f/df       )).doubleValue();
             }
+            formula.addNewLine(1);
         }
     }
     

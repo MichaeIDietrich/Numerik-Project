@@ -5,16 +5,11 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
 import numerik.calc.Matrix;
 import numerik.expression.*;
 import numerik.expression.Value.ValueType;
-
 import numerik.tasks.GaussIntegrationOrder4;
 import numerik.tasks.LUDecomposition;
 import numerik.tasks.NewtonIteration;
@@ -133,11 +128,12 @@ public class OutputFrame extends JFrame implements KeyListener, ExpressionListen
         tabMain = new JTabbedPane( JTabbedPane.BOTTOM );
 
         tabMain.addTab("Expression", pnlExpression);
-        tabMain.addTab("LU-Zerlegung",    lu_decompos);
-        tabMain.addTab("Newton Wurzel",   newton_iter);
-        tabMain.addTab("Non-Lin-GS",      non_lin_equ);
-        tabMain.addTab("Gauss Int. 4",    gauss_int4o);
-        tabMain.addTab("Runge Kutta 4",   rungkutta4o);
+        tabMain.addTab("LU Decomposition", lu_decompos);
+        tabMain.addTab("Newton Root",      newton_iter);
+        tabMain.addTab("Non-Lin-EQ",       non_lin_equ);
+        tabMain.addTab("Gauss Integr 4",   gauss_int4o);
+        tabMain.addTab("Runge Kutta 4",    rungkutta4o);
+
         
         this.add( tabMain );
         
