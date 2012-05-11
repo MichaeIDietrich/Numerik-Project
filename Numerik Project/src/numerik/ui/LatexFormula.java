@@ -321,16 +321,16 @@ public class LatexFormula
     @Override
     public String toString()
     {
-        
         return formula.toString();
     }
     
     
     public LatexFormula jakobiMatrix() {
         formula.append("\\begin{pmatrix}" +
-                "\\frac{\\partial{f_1}}{\\partial{x_1}}&\\hdots&\\frac{\\partial{f_1}}{\\partial{x_n}}\\\\" +
-                "\\vdots&\\ddots&\\vdots\\\\" +
-                "\\frac{\\partial{f_n}}{\\partial{x_1}}&\\hdots&\\frac{\\partial{f_n}}{\\partial{x_n}}" +
+                "\\frac{\\partial{f_1}}{\\partial{x_1}}&\\hdots&\\frac{\\partial{f_1}}{" +
+                "\\partial{x_n}}\\\\\\vdots&\\ddots&\\vdots\\\\" +
+                "\\frac{\\partial{f_n}}{\\partial{x_1}}&\\hdots&\\frac{\\partial{f_n}}{" +
+                "\\partial{x_n}}" +
                 "\\end{pmatrix}").append("\\text{  }\\equiv\\text{Jakobi-Matrix}");
         return this;
     }  

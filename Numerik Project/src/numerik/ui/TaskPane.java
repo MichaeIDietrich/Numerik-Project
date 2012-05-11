@@ -1,8 +1,6 @@
 package numerik.ui;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Vector;
@@ -23,7 +21,8 @@ public class TaskPane extends JPanel
     JComboBox       combobox;
     
     public TaskPane( LatexFormula formula ) 
-    {            
+    {   
+        this.setLayout(new BorderLayout());
         this.setBackground( Color.getHSBColor(100, 50, 25) );
         this.setBorder(new javax.swing.border.EtchedBorder());
         
@@ -50,10 +49,10 @@ public class TaskPane extends JPanel
         
         scrollpane = new TaskScrollPane( formula );
         
-        this.add( toolBar );
+        this.add( toolBar, BorderLayout.PAGE_START );
         this.add( scrollpane );
         
-        BoxLayout box = new BoxLayout( this , BoxLayout.Y_AXIS);
-        setLayout( box );
+        //BoxLayout box = new BoxLayout( this , BoxLayout.Y_AXIS);
+        //setLayout( box );
     }
 }
