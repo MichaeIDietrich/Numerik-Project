@@ -607,33 +607,33 @@ public class ExpressionEngine
                                      var1.toDecimal().equals(var2.toObject()));
                     
                 case PLUS:
-                    calcSteps.addLatexString(var1.toDecimal() + " + " + var2.toDecimal() + " &=& ");
-                    value = new Value(var1.toDecimal().add(var2.toDecimal()));
-                    calcSteps.addText(value.toDecimal().toString()).addNewLine();
+                    calcSteps.addLatexString(var1.toDecimal().toPlainString() + " + " + var2.toDecimal().toPlainString() + " &=& ");
+                    value = new Value(MathLib.round(var1.toDecimal().add(var2.toDecimal())));
+                    calcSteps.addText(value.toDecimal().toPlainString()).addNewLine();
                     return value;
                     
                 case MINUS:
-                    calcSteps.addLatexString(var1.toDecimal() + " - " + var2.toDecimal() + " &=& ");
-                    value = new Value(var1.toDecimal().subtract(var2.toDecimal()));
-                    calcSteps.addText(value.toDecimal().toString()).addNewLine();
+                    calcSteps.addLatexString(var1.toDecimal().toPlainString() + " - " + var2.toDecimal().toPlainString() + " &=& ");
+                    value = new Value(MathLib.round(var1.toDecimal().subtract(var2.toDecimal())));
+                    calcSteps.addText(value.toDecimal().toPlainString()).addNewLine();
                     return value;
                     
                 case TIMES:
-                    
-                    calcSteps.addLatexString(var1.toDecimal() + " ⋅ " + var2.toDecimal() + " &=& ");
-                    value = new Value(var1.toDecimal().multiply(var2.toDecimal()));
-                    calcSteps.addText(value.toDecimal().toString()).addNewLine();
+                    calcSteps.addLatexString(var1.toDecimal().toPlainString() + " ⋅ " + var2.toDecimal().toPlainString() + " &=& ");
+                    value = new Value(MathLib.round(var1.toDecimal().multiply(var2.toDecimal())));
+                    calcSteps.addText(value.toDecimal().toPlainString()).addNewLine();
                     return value;
+                    
                 case DIVISION:
-                    calcSteps.addLatexString(var1.toDecimal() + " : " + var2.toDecimal() + " &=& ");
-                    value = new Value(var1.toDecimal().divide(var2.toDecimal()));
-                    calcSteps.addText(value.toDecimal().toString()).addNewLine();
+                    calcSteps.addLatexString(var1.toDecimal().toPlainString() + " : " + var2.toDecimal().toPlainString() + " &=& ");
+                    value = new Value(MathLib.round(var1.toDecimal().divide(var2.toDecimal())));
+                    calcSteps.addText(value.toDecimal().toPlainString()).addNewLine();
                     return value;
                     
                 case POW:
-                    calcSteps.addLatexString(var1.toDecimal() + " ^ " + var2.toDecimal() + " &=& ");
-                    value = new Value(var1.toDecimal().pow(var2.toDecimal().intValue()));
-                    calcSteps.addText(value.toDecimal().toString()).addNewLine();
+                    calcSteps.addLatexString(var1.toDecimal().toPlainString() + " ^ " + var2.toDecimal().toPlainString() + " &=& ");
+                    value = new Value(MathLib.round(var1.toDecimal().pow(var2.toDecimal().intValue())));
+                    calcSteps.addText(value.toDecimal().toPlainString()).addNewLine();
                     return value;
                     
             }
@@ -819,6 +819,44 @@ public class ExpressionEngine
             }
             throw new InvalidExpressionException("Bitte Eingabe überprüfen, get() nimmt als Parameter eine Matrix und zwei Indizes ooder einen Vektor und ein Index.");
         }
+        
+        // mathematische Standardfunktionen mit double-Genauigkeit
+        else if (funcName.equals("ln"))
+        {
+            args[0] = resolveVariable(args[0]);
+            
+            double d = Math.log(args[0].toDecimal().doubleValue());
+            return new Value(MathLib.round(new BigDecimal(d)));
+        }
+        else if (funcName.equals("sqrt"))
+        {
+            args[0] = resolveVariable(args[0]);
+            
+            double d = Math.sqrt(args[0].toDecimal().doubleValue());
+            return new Value(MathLib.round(new BigDecimal(d)));
+        }
+        else if (funcName.equals("sin"))
+        {
+            args[0] = resolveVariable(args[0]);
+            
+            double d = Math.sin(args[0].toDecimal().doubleValue());
+            return new Value(MathLib.round(new BigDecimal(d)));
+        }
+        else if (funcName.equals("cos"))
+        {
+            args[0] = resolveVariable(args[0]);
+            
+            double d = Math.cos(args[0].toDecimal().doubleValue());
+            return new Value(MathLib.round(new BigDecimal(d)));
+        }
+        else if (funcName.equals("tan"))
+        {
+            args[0] = resolveVariable(args[0]);
+            
+            double d = Math.tan(args[0].toDecimal().doubleValue());
+            return new Value(MathLib.round(new BigDecimal(d)));
+        }
+        
         
         throw new InvalidExpressionException("Funktion '" + funcName + "' existiert nicht.");
     }
