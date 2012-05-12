@@ -1,7 +1,6 @@
 package numerik.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
@@ -11,8 +10,8 @@ import numerik.calc.Matrix;
 import numerik.calc.Vector;
 import numerik.expression.Value;
 import numerik.io.DocumentLoader;
-import numerik.tasks.Argument;
-import numerik.tasks.Task;
+import numerik.tasks.*;
+import numerik.tasks.Argument.ArgType;
 
     
 public final class TaskPane extends JPanel implements ActionListener
@@ -46,12 +45,13 @@ public final class TaskPane extends JPanel implements ActionListener
         
         JComboBox combo;
         JTextField text;
+        JCheckBox check;
         JButton button;
         
         args = arguments;
         for (Argument arg : arguments)
         {
-            if (arg.getName() != null)
+            if (arg.getName() != null && arg.getArgumentType() != ArgType.BOOLEAN)
             {
                 toolBar.add(new JLabel(arg.getName()));
             }
@@ -59,18 +59,21 @@ public final class TaskPane extends JPanel implements ActionListener
             {
                 case MATRIX:
                     combo = new JComboBox(matrices);
+                    combo.setMaximumSize(new Dimension(100, combo.getPreferredSize().height));
                     arg.setRelatedControl(combo);
                     toolBar.add(combo);
                     break;
                     
                 case VECTOR:
                     combo = new JComboBox(vectors);
+                    combo.setMaximumSize(new Dimension(100, combo.getPreferredSize().height));
                     arg.setRelatedControl(combo);
                     toolBar.add(combo);
                     break;
                     
                 case DECIMAL:
                     text = new JTextField(arg.getDefaultValue());
+                    text.setMaximumSize(new Dimension(100, text.getPreferredSize().height));
                     arg.setRelatedControl(text);
                     toolBar.add(text);
                     break;
@@ -79,6 +82,12 @@ public final class TaskPane extends JPanel implements ActionListener
                     text = new JTextField(arg.getDefaultValue());
                     arg.setRelatedControl(text);
                     toolBar.add(text);
+                    break;
+                    
+                case BOOLEAN:
+                    check = new JCheckBox(arg.getName() ,arg.getDefaultValue().equals("true"));
+                    arg.setRelatedControl(check);
+                    toolBar.add(check);
                     break;
                     
                 case RUN_BUTTON:
@@ -107,18 +116,24 @@ public final class TaskPane extends JPanel implements ActionListener
             JLabel label = new JLabel(ex.getMessage());
             label.setForeground(Color.RED);
             setViewPortView(label);
+            
+            ex.printStackTrace();
         }
         catch (ArithmeticException ex)
         {
             JLabel label = new JLabel(ex.getMessage());
             label.setForeground(Color.RED);
             setViewPortView(label);
+            
+            ex.printStackTrace();
         }
         catch (IndexOutOfBoundsException ex)
         {
             JLabel label = new JLabel(ex.getMessage());
             label.setForeground(Color.RED);
             setViewPortView(label);
+            
+            ex.printStackTrace();
         }
     }
     
@@ -159,6 +174,10 @@ public final class TaskPane extends JPanel implements ActionListener
                         
                     case INTEGER:
                         parameters.add(new Value(new BigDecimal(Integer.parseInt(((JTextField)arg.getRelatedControl()).getText()))));
+                        break;
+                        
+                    case BOOLEAN:
+                        parameters.add(new Value(((JCheckBox)arg.getRelatedControl()).isSelected()));
                 }
             }
             catch (NullPointerException ex)

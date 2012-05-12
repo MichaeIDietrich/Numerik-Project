@@ -4,9 +4,10 @@ import javax.swing.JComponent;
 
 public class Argument
 {
-    public enum ArgType { MATRIX, VECTOR, DECIMAL, INTEGER, RUN_BUTTON }
+    public enum ArgType { MATRIX, VECTOR, DECIMAL, INTEGER, BOOLEAN, RUN_BUTTON }
     
     public final static Argument RUN_BUTTON = new Argument(null, ArgType.RUN_BUTTON); 
+    public final static Argument PRECISION = new Argument("Genauigkeit:", ArgType.INTEGER, "5"); 
     
     private String name;
     private ArgType argumentType;
