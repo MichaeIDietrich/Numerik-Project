@@ -100,5 +100,6 @@ public class OutputFrame extends JFrame
         {
             this.add(activeToolBar, BorderLayout.PAGE_START);
         }
+        this.repaint();
     }
 }
