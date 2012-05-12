@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import numerik.calc.*;
 
-public class Value
+public final class Value
 {
     
     public enum ValueType
