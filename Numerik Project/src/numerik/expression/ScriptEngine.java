@@ -9,7 +9,7 @@ import numerik.expression.ExpressionEngine.Token;
 import numerik.expression.ExpressionListener.ActionType;
 import numerik.ui.LatexFormula;
 
-public class ScriptEngine implements TokenListener
+public final class ScriptEngine implements TokenListener
 {
     
     ArrayList<ExpressionListener> expressionListeners;

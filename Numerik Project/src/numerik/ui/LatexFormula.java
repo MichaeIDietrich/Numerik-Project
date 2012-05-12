@@ -2,12 +2,14 @@ package numerik.ui;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import javax.swing.JLabel;
 import org.scilab.forge.jlatexmath.TeXConstants;
 import org.scilab.forge.jlatexmath.TeXFormula;
 import org.scilab.forge.jlatexmath.TeXIcon;
 import numerik.calc.*;
+import numerik.expression.Value;
 
 
 public class LatexFormula
@@ -15,6 +17,7 @@ public class LatexFormula
     private StringBuilder formula;
     
     private static HashMap<String, String> characterTable;
+    
     
     static
     {
@@ -26,20 +29,24 @@ public class LatexFormula
         
     }
     
+    
     public LatexFormula()
     {
         formula = new StringBuilder();
     }
+    
     
     public LatexFormula(String latexFormula)
     {
         formula = new StringBuilder(latexFormula);
     }
     
+    
     public void clear()
     {
         formula = new StringBuilder();
     }
+    
     
     public LatexFormula addLatexString(String latexFormula)
     {
@@ -47,6 +54,7 @@ public class LatexFormula
         
         return this;
     }
+    
     
     public LatexFormula addText(String text)
     {
@@ -56,6 +64,7 @@ public class LatexFormula
         
         return this;
     }
+    
     
     public LatexFormula addText(String str, boolean bold, boolean italic, boolean underline)
     {
@@ -76,15 +85,18 @@ public class LatexFormula
         return this;
     }
     
+    
     public LatexFormula addTextBold(String str)
     {
         return addText(str, true, false, false);
     }
     
+    
     public LatexFormula addTextUL(String str)
     {
         return addText(str, false, false, true);
     }
+    
     
     public LatexFormula addExponent(String exponent)
     {
@@ -95,6 +107,7 @@ public class LatexFormula
         return this;
     }
     
+    
     public LatexFormula addIndex(String index)
     {
         formula.append("_{");
@@ -103,6 +116,7 @@ public class LatexFormula
         
         return this;
     }
+    
     
     public LatexFormula addFraction(String upperPart, String lowerPart)
     {
@@ -115,6 +129,7 @@ public class LatexFormula
         return this;
     }
     
+    
     public LatexFormula addSolidLine()
     {
         formula.append("\\hline");
@@ -122,12 +137,14 @@ public class LatexFormula
         return this;
     }
     
+    
     public LatexFormula addFraction()
     {
         formula.append("\\frac");
         
         return this;
     }
+    
     
     public LatexFormula addTildeText(String text)
     {
@@ -139,6 +156,7 @@ public class LatexFormula
         return this;
     }
     
+    
     public LatexFormula addRelError(String text)
     {
         
@@ -147,6 +165,7 @@ public class LatexFormula
         return this;
     }
     
+    
     public LatexFormula addVektornormXdivY(String x, String y, boolean showindex)
     {
         String index = "";
@@ -154,7 +173,7 @@ public class LatexFormula
             if(MathLib.getNorm()==0) index = "g";
             if(MathLib.getNorm()==1) index = "2";
         }
-
+        
         formula.append("\\frac{");
         
         formula.append("\\lVert{");
@@ -169,6 +188,7 @@ public class LatexFormula
         return this;
     }
     
+    
     public LatexFormula addMatrixNorm(String variable)
     {
         String index = "";
@@ -182,6 +202,7 @@ public class LatexFormula
         return this;
     }
     
+    
     public LatexFormula startGroup()
     {
         formula.append("{");
@@ -189,12 +210,14 @@ public class LatexFormula
         return this;
     }
     
+    
     public LatexFormula endGroup()
     {
         formula.append("}");
         
         return this;
     }
+    
     
     public LatexFormula addSymbol(String name)
     {
@@ -211,12 +234,14 @@ public class LatexFormula
         return this;
     }
     
+    
     public LatexFormula addNewLine()
     {
         formula.append("\\\\");
         
         return this;
     }
+    
     
     public LatexFormula addNewLine(int lineCount)
     {
@@ -226,6 +251,7 @@ public class LatexFormula
         return this;
     }
     
+    
     public LatexFormula addMatrix(Matrix matrix)
     {
         formula.append("\\begin{pmatrix}");
@@ -233,7 +259,7 @@ public class LatexFormula
         {
             for (int m = 0; m < matrix.getCols(); m++)
             {
-                formula.append(MathLib.round(matrix.get(n, m)));
+                formula.append(MathLib.round(matrix.get(n, m)).toPlainString());
                 
                 if (m < matrix.getCols() - 1)
                     formula.append("&");
@@ -247,18 +273,56 @@ public class LatexFormula
         return this;
     }
     
+    
     public LatexFormula addVector(Vector vector)
     {
         addMatrix(vector.toMatrix());
         return this;
     }
-      
+    
+    
+    public LatexFormula addDecimal(BigDecimal value)
+    {
+        formula.append(MathLib.round(value).toPlainString());
+        
+        return this;
+    }
+    
+    
+    public LatexFormula addDecimal(double value)
+    {
+        return addDecimal(BigDecimal.valueOf(value));
+    }
+    
+    
+    public LatexFormula addValue(Value value)
+    {
+        switch (value.getType())
+        {
+            case DECIMAL:
+                addDecimal(value.toDecimal());
+                break;
+            case MATRIX:
+                addMatrix(value.toMatrix());
+                break;
+            case VECTOR:
+                addVector(value.toVector());
+                break;
+            default:
+                addText(value.toObject().toString());
+        }
+        
+        return this;
+    }
+    
+    
     public LatexFormula addFormula(LatexFormula formula)
     {
         this.formula.append(formula.formula.toString());
         
         return this;
     }
+    
     
     public LatexFormula startAlignedEquation()
     {
@@ -267,12 +331,14 @@ public class LatexFormula
         return this;
     }
     
+    
     public LatexFormula addAlignedEquation(String equation, String alignedChar)
     {
         formula.append(equation.replaceAll(new String(alignedChar), "&" + alignedChar + "&"));
         
         return this;
     }
+    
     
     public LatexFormula endAlignedEquation()
     {
@@ -281,20 +347,40 @@ public class LatexFormula
         return this;
     }
     
+    
+    public LatexFormula jakobiMatrix() {
+        formula.append("\\begin{pmatrix}" +
+                "\\frac{\\partial{f_1}}{\\partial{x_1}}&\\hdots&\\frac{\\partial{f_1}}{" +
+                "\\partial{x_n}}\\\\\\vdots&\\ddots&\\vdots\\\\" +
+                "\\frac{\\partial{f_n}}{\\partial{x_1}}&\\hdots&\\frac{\\partial{f_n}}{" +
+                "\\partial{x_n}}\\end{pmatrix}").append("\\text{  }\\equiv\\text{Jakobi-Matrix}");
+        return this;
+    }
+    
+    
+    public boolean isEmpty()
+    {
+        return formula.length() == 0;
+    }
+    
+    
     public Image toImage()
     {
         return toImage(20, null);
     }
+    
     
     public Image toImage(int fontSize)
     {
         return toImage(fontSize, null);
     }
     
+    
     public Image toImage(Color foregroundColor)
     {
         return toImage(20, foregroundColor);
     }
+    
     
     public Image toImage(int fontSize, Color foregroundColor)
     {
@@ -323,15 +409,4 @@ public class LatexFormula
     {
         return formula.toString();
     }
-    
-    
-    public LatexFormula jakobiMatrix() {
-        formula.append("\\begin{pmatrix}" +
-                "\\frac{\\partial{f_1}}{\\partial{x_1}}&\\hdots&\\frac{\\partial{f_1}}{" +
-                "\\partial{x_n}}\\\\\\vdots&\\ddots&\\vdots\\\\" +
-                "\\frac{\\partial{f_n}}{\\partial{x_1}}&\\hdots&\\frac{\\partial{f_n}}{" +
-                "\\partial{x_n}}" +
-                "\\end{pmatrix}").append("\\text{  }\\equiv\\text{Jakobi-Matrix}");
-        return this;
-    }  
 }

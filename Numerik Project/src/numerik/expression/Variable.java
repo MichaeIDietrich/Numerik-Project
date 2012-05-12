@@ -1,6 +1,6 @@
 package numerik.expression;
 
-public class Variable
+public final class Variable
 {
     
     private String name;

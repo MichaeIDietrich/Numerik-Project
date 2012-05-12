@@ -16,8 +16,6 @@ public final class Vector
     private boolean transposed;
     public   String name;
     private     int length;
-    private     int rows;
-    private     int cols;
 
     BigDecimal[] values;
 
@@ -63,13 +61,12 @@ public final class Vector
                     transmit = true;
             }
             
-            rows   = entry.size();
-            length = rows;
+            length    = entry.size();
             this.name = name;
             
-            values = new BigDecimal[rows];
+            values = new BigDecimal[length];
 
-            for (int n = 0; n < rows; n++) {
+            for (int n = 0; n < length; n++) {
                     values[n] = entry.get(n);
             }
         } catch (FileNotFoundException e) {
@@ -86,11 +83,21 @@ public final class Vector
     
     public BigDecimal get(int index)
     {
+        if (index >= length)
+        {
+            throw new IndexOutOfBoundsException("Vector.get-Funktion: Index out of Bounds: index=" + index);
+        }
+        
         return values[index];
     }
     
     public void set(int index, BigDecimal value)
     {
+        if (index >= length)
+        {
+            throw new IndexOutOfBoundsException("Vector.set-Funktion: Index out of Bounds: index=" + index);
+        }
+        
         values[index] = value;
     }
     
@@ -115,7 +122,7 @@ public final class Vector
     {
         if (vector.getLength() != length)
         {
-            return null;
+            throw new ArithmeticException("Die Länge der beiden Vektoren muss übereinstimmen.");
         }
         BigDecimal[] v = new BigDecimal[length];
         for (int i = 0; i < length; i++)
@@ -130,7 +137,7 @@ public final class Vector
     {
         if (vector.getLength() != length)
         {
-            return null;
+            throw new ArithmeticException("Die Länge der beiden Vektoren muss übereinstimmen.");
         }
         BigDecimal[] v = new BigDecimal[length];
         for (int i = 0; i < length; i++)
