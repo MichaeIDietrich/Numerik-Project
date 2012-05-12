@@ -83,11 +83,21 @@ public final class Vector
     
     public BigDecimal get(int index)
     {
+        if (index >= length)
+        {
+            throw new IndexOutOfBoundsException("Vector.get-Funktion: Index out of Bounds: index=" + index);
+        }
+        
         return values[index];
     }
     
     public void set(int index, BigDecimal value)
     {
+        if (index >= length)
+        {
+            throw new IndexOutOfBoundsException("Vector.set-Funktion: Index out of Bounds: index=" + index);
+        }
+        
         values[index] = value;
     }
     
@@ -112,7 +122,7 @@ public final class Vector
     {
         if (vector.getLength() != length)
         {
-            return null;
+            throw new ArithmeticException("Die Länge der beiden Vektoren muss übereinstimmen.");
         }
         BigDecimal[] v = new BigDecimal[length];
         for (int i = 0; i < length; i++)
@@ -127,7 +137,7 @@ public final class Vector
     {
         if (vector.getLength() != length)
         {
-            return null;
+            throw new ArithmeticException("Die Länge der beiden Vektoren muss übereinstimmen.");
         }
         BigDecimal[] v = new BigDecimal[length];
         for (int i = 0; i < length; i++)

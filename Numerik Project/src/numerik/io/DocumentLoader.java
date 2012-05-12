@@ -1,4 +1,4 @@
-package numerik.IO;
+package numerik.io;
 
 import java.io.*;
 import java.math.BigDecimal;

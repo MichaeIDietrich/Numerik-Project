@@ -56,6 +56,6 @@ public class SolveNonLinearEquation implements Task
         formula.addNewLine(2).addText("Start der Iteration des nicht-linearen Gleichungssystems mit").addNewLine(1);
         formula.addLatexString("x_{0}").addText(" = ").addVector(start).addNewLine(2).addText("Lösung:").addNewLine(1).addText("x = ").addVector(iter).addNewLine(2);
         
-        taskPane.add(new TaskScrollPane(formula));
+        taskPane.setViewPortView(new TaskScrollPane(formula));
     }
 }

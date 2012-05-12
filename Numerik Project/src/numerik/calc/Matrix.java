@@ -137,87 +137,106 @@ public class Matrix {
         }
     }
     
+    
     // getters
-    public int getRows() {
+    public int getRows()
+    {
         return rows;
     }
-
-    public int getCols() {
+    
+    
+    public int getCols()
+    {
         return cols;
     }
     
-    protected void setRows(int rows) {
+    
+    protected void setRows(int rows)
+    {
         this.rows = rows;
     }
-
-    protected void setCols(int cols) {
+    
+    
+    protected void setCols(int cols)
+    {
         this.cols = cols;
     }
-
-    public BigDecimal get(int row, int col) {
-        if (!isValidIndex(row, col)) {
-            System.err.println("Matrix.get-Funktion: Index out of Bounds: row="
-                    + row + ", col=" + col);
-            return BigDecimal.ZERO;
+    
+    
+    public BigDecimal get(int row, int col)
+    {
+        if (!isValidIndex(row, col))
+        {
+            throw new IndexOutOfBoundsException("Matrix.get-Funktion: Index out of Bounds: row=" + row + ", col=" + col);
         }
-
+        
         return values[row][col];
     }
-
-    public void set(int row, int col, BigDecimal value) {
-        if (!isValidIndex(row, col)) {
-            System.err.println("Matrix.set-Funktion: Index out of Bounds: row="
-                    + row + ", col=" + col);
+    
+    
+    public void set(int row, int col, BigDecimal value)
+    {
+        if (!isValidIndex(row, col))
+        {
+            throw new IndexOutOfBoundsException("Matrix.set-Funktion: Index out of Bounds: row=" + row + ", col=" + col);
         }
-
+        
         values[row][col] = value;
     }
-
+    
     
     // functions
     public boolean isQuadratic() {
         return rows == cols;
     }
-
-    public Matrix identity() {
+    
+    
+    public Matrix identity()
+    {
         // Einheitsmatrix muss quadratisch sein
-        if (!isQuadratic()) {
-            return null;
+        if (!isQuadratic())
+        {
+            throw new ArithmeticException("Die Matrix muss quadratisch sein");
         }
-
+        
         Matrix identity = new Matrix(rows, cols);
-        for (int i = 0; i < rows; i++) {
+        for (int i = 0; i < rows; i++)
+        {
             identity.set(i, i, BigDecimal.ONE);
         }
-
+        
         return identity;
     }
-
-    public Matrix getTransposed() {
+    
+    
+    public Matrix getTransposed()
+    {
         Matrix transposedMatrix = new Matrix(cols, rows);
-
+        
         for (int m = 0; m < rows; m++) {
             for (int n = 0; n < cols; n++) {
                 transposedMatrix.set(n, m, values[m][n]);
             }
         }
-
+        
         return transposedMatrix;
     }
-
+    
+    
     public Matrix add(Matrix x) {
         if (rows != x.getRows() || cols != x.getCols())
-            return null;
-        else {
-            BigDecimal[][] v = new BigDecimal[rows][cols];
-            for (int i = 0; i < values.length; i++) {
-                for (int j = 0; j < values[i].length; j++) {
-                    v[i][j] = values[i][j].add(x.get(i, j));
-                }
-            }
-            return new Matrix(v);
+        {
+            throw new ArithmeticException("Beide Matrizen müssen der Form mxn entsprechen!");
         }
+        BigDecimal[][] v = new BigDecimal[rows][cols];
+        for (int i = 0; i < values.length; i++) {
+            for (int j = 0; j < values[i].length; j++) {
+                v[i][j] = values[i][j].add(x.get(i, j));
+            }
+        }
+        return new Matrix(v);
     }
+    
     
     public Matrix mult(BigDecimal x) {
         BigDecimal[][] v = new BigDecimal[rows][cols];
@@ -231,12 +250,18 @@ public class Matrix {
     
     
     public Vector mult(Vector vector) {                       // Multipliziere Matrix und Vektor
-        
+        if(cols != vector.getLength())
+        {
+            throw new ArithmeticException("Matrizen sind nicht verkettet, Spaltenanzahl der Matrix muss gleich der Länge des Vektors sein.");
+        }
+
         BigDecimal   sum = BigDecimal.ZERO;
         Vector newVector = new Vector( rows );
         
-        for(int zeile=0; zeile<rows; zeile++) {
-                for(int j=0; j<vector.getLength(); j++) {
+        for(int zeile=0; zeile<rows; zeile++)
+        {
+                for(int j=0; j<vector.getLength(); j++)
+                {
                     sum = MathLib.round( sum.add( MathLib.round( values[zeile][j].multiply( vector.get(j) ))));
                 }
                 newVector.set(zeile, sum);
@@ -249,32 +274,37 @@ public class Matrix {
     }
     
     
-    public Matrix mult(Matrix x) {
-        if(cols != x.getRows())
-            return null;
-        else {
-            BigDecimal[][] v = new BigDecimal[rows][x.getCols()];
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < x.getCols(); j++) {
-                    
-                    BigDecimal sum = BigDecimal.ZERO;
-                    
-                    for (int j2 = 0; j2 < cols; j2++) {
-                        sum = MathLib.round( sum.add( MathLib.round( values[i][j2].multiply( x.get(j2, j) ))));
-                    }
-                    v[i][j] = sum;
-                }
-            }
-            
-            return new Matrix(v);
+    public Matrix mult(Matrix matrix)
+    {
+        if(cols != matrix.getRows())
+        {
+            throw new ArithmeticException("Matrizen sind nicht verkettet, Spaltenanzahl der 1. Matrix muss gleich der Zeilenanzahl der 2 Matrix sein.");
         }
+        
+        BigDecimal[][] v = new BigDecimal[rows][matrix.getCols()];
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < matrix.getCols(); j++)
+            {
+                
+                BigDecimal sum = BigDecimal.ZERO;
+                
+                for (int j2 = 0; j2 < cols; j2++)
+                {
+                    sum = MathLib.round( sum.add( MathLib.round( values[i][j2].multiply( matrix.get(j2, j) ))));
+                }
+                v[i][j] = sum;
+            }
+        }
+        
+        return new Matrix(v);
     }
-
     
     
     @Override
-    public Matrix clone() {
-
+    public Matrix clone()
+    {
+        
         Matrix copy = new Matrix(rows, cols);
         copy.name = name;
         
@@ -285,68 +315,64 @@ public class Matrix {
         }
         return copy;
     }
-
     
     
     // helper function
     private boolean isValidIndex(int row, int col) {
         return row >= 0 && row < rows && col >= 0 && col < cols;
     }
-
     
     
-    public Matrix getInverse() {
+    public Matrix getInverse()
+    {
+        if(!isQuadratic()) 
+        {
+            throw new ArithmeticException("Die Matrix muss quadratisch sein");
+        }
         
         Matrix inverse = new Matrix( rows, rows ).identity();
         
-        if(!isQuadratic()) 
-        {
-            return null;
-        } 
-        else 
-        {
-            BigDecimal temp = BigDecimal.ZERO;
-            Matrix    clone = clone();
-            
-            for(int col=0; col<rows-1; col++) 
-            { // überführt A aus (A|E) in obere Dreiecksmatrix, Umformungen in A parallel in E
-                for(int row=col; row<rows-1; row++) 
+        BigDecimal temp = BigDecimal.ZERO;
+        Matrix    clone = clone();
+        
+        for(int col=0; col<rows-1; col++) 
+        { // überführt A aus (A|E) in obere Dreiecksmatrix, Umformungen in A parallel in E
+            for(int row=col; row<rows-1; row++) 
+            {
+                
+                temp = clone.values[row+1][col].divide( 
+                       clone.values[col][col].negate(), MathLib.getInversePrecision(), RoundingMode.FLOOR );    
+                
+                
+                for(int i=0; i<this.values.length; i++) 
                 {
-
-                    temp = clone.values[row+1][col].divide( 
-                           clone.values[col][col].negate(), MathLib.getInversePrecision(), RoundingMode.FLOOR );    
-                    
-
-                    for(int i=0; i<this.values.length; i++) 
-                    {
-                          clone.values[row+1][i] =   clone.values[row+1][i].add( temp.multiply(   clone.values[col][i] ));
-                        inverse.values[row+1][i] = inverse.values[row+1][i].add( temp.multiply( inverse.values[col][i] ));
-                    }
-                    clone.values[row+1][col] = BigDecimal.ZERO;
+                      clone.values[row+1][i] =   clone.values[row+1][i].add( temp.multiply(   clone.values[col][i] ));
+                    inverse.values[row+1][i] = inverse.values[row+1][i].add( temp.multiply( inverse.values[col][i] ));
                 }
+                clone.values[row+1][col] = BigDecimal.ZERO;
             }
-            
-            for(int row=0; row<rows; row++) 
-            { // normiert Spur von A auf 1, Rechenschritte parallel auch in E durchführen
-                temp = clone.values[row][row];
-                for(int col=0; col<rows; col++) 
-                {
-                    inverse.values[row][col] = inverse.values[row][col].divide( temp, MathLib.getInversePrecision(), RoundingMode.HALF_UP );
-                      clone.values[row][col] =   clone.values[row][col].divide( temp, MathLib.getInversePrecision(), RoundingMode.HALF_UP );
-                }
+        }
+        
+        for(int row=0; row<rows; row++) 
+        { // normiert Spur von A auf 1, Rechenschritte parallel auch in E durchführen
+            temp = clone.values[row][row];
+            for(int col=0; col<rows; col++) 
+            {
+                inverse.values[row][col] = inverse.values[row][col].divide( temp, MathLib.getInversePrecision(), RoundingMode.HALF_UP );
+                  clone.values[row][col] =   clone.values[row][col].divide( temp, MathLib.getInversePrecision(), RoundingMode.HALF_UP );
             }
-            
-            for(int t=rows-1; t>=1; t--) 
-            { // überführe A in Einheitsmatrix E, dann (A|E) -> (E|A^(-1))
-                for(int row=rows-1; row>=0; row--) 
+        }
+        
+        for(int t=rows-1; t>=1; t--) 
+        { // überführe A in Einheitsmatrix E, dann (A|E) -> (E|A^(-1))
+            for(int row=rows-1; row>=0; row--) 
+            {
+                if(row<t) 
                 {
-                    if(row<t) 
+                    temp = clone.values[row][t].negate();
+                    for(int i=0; i<rows; i++) 
                     {
-                        temp = clone.values[row][t].negate();
-                        for(int i=0; i<rows; i++) 
-                        {
-                            inverse.values[row][i] = inverse.values[row][i].add( temp.multiply( inverse.values[t][i] ));
-                        }
+                        inverse.values[row][i] = inverse.values[row][i].add( temp.multiply( inverse.values[t][i] ));
                     }
                 }
             }
@@ -364,7 +390,7 @@ public class Matrix {
         
         recorder.setActive( true );
         Matrix U = getU( clone_b );
-    
+        
         Vector y = substitution( L, clone_b, "forward"  );
         Vector x = substitution( U, y,       "backward" );
         
@@ -372,30 +398,29 @@ public class Matrix {
     }
     
     
-    
-    public Matrix getL() {
+    public Matrix getL()
+    {
         return doLUDecomposition(0, null); // 0 liefert L zurück
     }
     
     
     
-    public Matrix getU() {
+    public Matrix getU()
+    {
         return doLUDecomposition(1, null); // 1 liefert U zurück
     }
     
     
-    public Matrix getL(Vector b) {
-        
+    public Matrix getL(Vector b)
+    {
         return doLUDecomposition( 0, b );
     }
     
     
-    
-    public Matrix getU(Vector b) {
-        
+    public Matrix getU(Vector b)
+    {
         return doLUDecomposition( 1, b );
     }
-    
     
     
     private Matrix doLUDecomposition(int which_matrix, Vector b) {
@@ -465,23 +490,22 @@ public class Matrix {
     }
     
     
-    
-    public Vector substitution( Matrix matrix, Vector b, String str ) 
+    public Vector substitution( Matrix matrix, Vector b, String str )
     {
         BigDecimal term0 = BigDecimal.ZERO;
         BigDecimal term1 = BigDecimal.ZERO;
         BigDecimal term2 = BigDecimal.ZERO;
         Vector         y = new Vector( b.getLength());
         
-        if ( str.equals("forward")) 
+        if ( str.equals("forward"))
         {
             y.set( 0, b.get(0) );
             
-            for(int row=1; row<matrix.rows; row++) 
+            for(int row=1; row<matrix.rows; row++)
             {
                 term0 = BigDecimal.ZERO;
                 
-                for(int i=0; i<y.getLength()-1; i++) 
+                for(int i=0; i<y.getLength()-1; i++)
                 {
                     term0 = MathLib.round( matrix.values[row][i].multiply( y.get(i) )).add( term0 );
                 }
@@ -491,7 +515,7 @@ public class Matrix {
                 y.set( row, term2);
             }
             
-            if (b!=null && recorder.isActive()) 
+            if (b!=null && recorder.isActive())
             {  
                 formula.clear();
                 formula.addText("Vorwärtssubstitution").addNewLine(2);
@@ -500,18 +524,18 @@ public class Matrix {
                 recorder.add(formula);
             }
         }
-
         
-        if ( str.equals("backward") ) 
+        
+        if ( str.equals("backward") )
         {
             int dim = matrix.getRows()-1;
             
             y.set(dim, MathLib.round( b.get(dim).divide( matrix.values[dim][dim], MathLib.getPrecision(), RoundingMode.HALF_UP )));
-
-            for(int row=dim; row>=0; row--) 
+            
+            for(int row=dim; row>=0; row--)
             {
                 term0 = BigDecimal.ZERO;
-                for(int i=0; i<dim-row; i++) 
+                for(int i=0; i<dim-row; i++)
                 {
                     term0 = MathLib.round( term0.add( MathLib.round( matrix.values[row][dim-i].multiply( y.get(dim-i) ))));
                 }
@@ -520,24 +544,23 @@ public class Matrix {
                 y.set( row, term2);
             }
         }
-
+        
         return y;
     }
     
     
-    
-    public Matrix pivotColumnStrategy( Matrix matrix, Vector b, int row ) 
+    public Matrix pivotColumnStrategy( Matrix matrix, Vector b, int row )
     {
         BigDecimal maximum = BigDecimal.ZERO;
         BigDecimal    temp = BigDecimal.ZERO;
         int    rowposition = 0;
         boolean    rowswap = false;
         
-        for(int t=0; t<matrix.getRows()-row; t++) 
+        for(int t=0; t<matrix.getRows()-row; t++)
         {                              
-            for(int i=row+t; i<matrix.getCols(); i++) 
+            for(int i=row+t; i<matrix.getCols(); i++)
             {                            
-                if ( matrix.values[i][row].abs().compareTo( maximum ) == 1 ) 
+                if ( matrix.values[i][row].abs().compareTo( maximum ) == 1 )
                 {  
                     rowposition = i;                                             // Markiere Zeile mit Maximum
                     maximum     = matrix.values[i][row].abs();
@@ -545,19 +568,19 @@ public class Matrix {
                 }
             }
             
-            if (rowswap && rowposition!=row ) 
+            if (rowswap && rowposition!=row )
             {
-                for(int col=0; col<matrix.getCols(); col++) 
-                { // Zeilenvertauschung der Matrix   
+                for(int col=0; col<matrix.getCols(); col++)
+                { // Zeilenvertauschung der Matrix
                     temp                            = matrix.values[row][col];
-                    matrix.values[row][col]         = matrix.values[rowposition][col];      
+                    matrix.values[row][col]         = matrix.values[rowposition][col];
                     matrix.values[rowposition][col] = temp;
                 }
                 
                 if(b!=null) 
                 {
                     temp = b.get(row);                                               // Zeilenvertauschung des Vektors
-                    b.set(row, b.get(rowposition));                             
+                    b.set(row, b.get(rowposition));
                     b.set(rowposition, temp);
                 }
                 rowswap = false;
@@ -567,14 +590,14 @@ public class Matrix {
     }
       
     
-    public Matrix getScaleOf() 
+    public Matrix getScaleOf()
     {
         Matrix scaledMatrix = identity();
         Vector        koeff = new Vector( rows );
         
-        for(int row=0; row < rows; row++) 
+        for(int row=0; row < rows; row++)
         {
-            for(int col=0; col<getCols(); col++) 
+            for(int col=0; col<getCols(); col++)
             {
                 koeff.set(row, koeff.get(row).add( values[row][col].abs() ));
             }
@@ -586,54 +609,54 @@ public class Matrix {
     }
     
     
-    public BigDecimal det() {
+    public BigDecimal det()
+    {
         
+        if (!isQuadratic() || (rows>3 && cols>3))
+        {
+            throw new ArithmeticException("Die Matrix muss quadratisch sein");
+        } 
         BigDecimal sum;
         
-        if (!isQuadratic() || (rows>3 && cols>3)) 
-        {
-            return null;
-        } 
-        else 
-        {
-            // Determinanten mittels Sarrus Regel für 2x2 und 3x3 Matrizen
-            int        dim = cols-1;
-            BigDecimal det = BigDecimal.ONE;
-                       sum = BigDecimal.ZERO;
-                       
-            for(int i=0; i<=dim; i++) 
-            { // Regel von Sarrus: Teil 1 - Addition
-                for(int t=0; t<=dim; t++)   
-                {
-                    if( i+t <= dim ) {
-                        det = det.multiply( values[t][t+i] );
-                    } else {
-                        det = det.multiply( values[t][t+i-dim-1] );
-                    }
+        // Determinanten mittels Sarrus Regel für 2x2 und 3x3 Matrizen
+        int        dim = cols-1;
+        BigDecimal det = BigDecimal.ONE;
+                   sum = BigDecimal.ZERO;
+                   
+        for(int i=0; i<=dim; i++) 
+        { // Regel von Sarrus: Teil 1 - Addition
+            for(int t=0; t<=dim; t++)
+            {
+                if( i+t <= dim ) {
+                    det = det.multiply( values[t][t+i] );
+                } else {
+                    det = det.multiply( values[t][t+i-dim-1] );
                 }
-                sum = sum.add( det );
-                det = BigDecimal.ONE;
             }
-            
-            
-            for(int i=dim; i>=0; i--) 
-            { // Regel von Sarrus: Teil 2 - Subtraktion
-                for(int t=dim; t>=0; t--) 
-                {
-                    if( t+i-dim >= 0 ) {
-                        det = det.multiply( values[dim-t][t+i-dim] );
-                    } else {
-                        det = det.multiply( values[dim-t][t+i+1] );
-                    }
-                sum = sum.subtract( det );
-                det = BigDecimal.ONE;
+            sum = sum.add( det );
+            det = BigDecimal.ONE;
+        }
+        
+        
+        for(int i=dim; i>=0; i--)
+        { // Regel von Sarrus: Teil 2 - Subtraktion
+            for(int t=dim; t>=0; t--)
+            {
+                if( t+i-dim >= 0 ) {
+                    det = det.multiply( values[dim-t][t+i-dim] );
+                } else {
+                    det = det.multiply( values[dim-t][t+i+1] );
                 }
+            sum = sum.subtract( det );
+            det = BigDecimal.ONE;
             }
         }
         return sum;
     }
     
-    public Matrix jakobiMatrix(Vector vector) {
+    
+    public Matrix jakobiMatrix(Vector vector)
+    {
         
         Double[] x = vector.toDouble();  // x[0] = x_1 ; x[1] = x_2 ; usw.
         
@@ -645,15 +668,18 @@ public class Matrix {
         return this;
     }
     
-    public BigDecimal norm() {
+    
+    public BigDecimal norm()
+    {
         if( MathLib.getNorm()==0 ) return  zsnorm();
         if( MathLib.getNorm()==1 ) return fronorm();
         
         return null;
     }
     
-    private BigDecimal zsnorm() 
-    {              
+    
+    private BigDecimal zsnorm()
+    {
         BigDecimal sum = BigDecimal.ZERO;
         BigDecimal max = BigDecimal.ZERO;
         
@@ -670,19 +696,22 @@ public class Matrix {
         return MathLib.round( max );
     }
     
-    private BigDecimal fronorm() {
+    
+    private BigDecimal fronorm()
+    {
         
         BigDecimal     sum = BigDecimal.ZERO;
         
-        for(int row=0; row<rows; row++) 
+        for(int row=0; row<rows; row++)
         {
-            for(int col=0; col<cols; col++) 
+            for(int col=0; col<cols; col++)
             {
                 sum = sum.add( values[row][col].multiply( values[row][col] ) );
             }
         }
         return MathLib.sqrt( sum );
     }
+    
     
     @Override
     public String toString()

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import numerik.calc.MathLib;
 import numerik.expression.Value;
+import numerik.tasks.Argument.ArgType;
 import numerik.ui.*;
 
 public class NewtonIteration implements Task
@@ -15,6 +16,8 @@ public class NewtonIteration implements Task
     public void init(OutputFrame frame, TaskPane taskPane)
     {
         this.taskPane = taskPane;
+        taskPane.createJToolBarByArguments(new Argument("k:", ArgType.INTEGER, "5"), new Argument("a:", ArgType.DECIMAL, "18"), 
+                new Argument("x_0:", ArgType.DECIMAL, "12800"), Argument.RUN_BUTTON);
     }
 
     @Override
@@ -27,10 +30,13 @@ public class NewtonIteration implements Task
         
         // Berechne k-te Wurzel aus a;  --> x = a^(1/k);  df ist Ableitung von f
         double  f , df;
-        double  x = 12800;         // Achtung bei df(x)=0 -> Division durch Null
+        //double  x = 12800;         // Achtung bei df(x)=0 -> Division durch Null
+        double x = values[2].toDecimal().doubleValue();
         double ox = x+1;
-        int     k = 5;
-        double  a = 18;
+        //int     k = 5;
+        int     k = values[0].toDecimal().intValue();
+        //double  a = 18;
+        double  a = values[1].toDecimal().doubleValue();
         
         LatexFormula formula = new LatexFormula();
         // Ausgabe 
@@ -65,6 +71,6 @@ public class NewtonIteration implements Task
             }
         }
         
-        taskPane.add(new TaskScrollPane(formula));
+        taskPane.setViewPortView(new TaskScrollPane(formula));
     }
 }

@@ -16,7 +16,6 @@ public class LUDecomposition implements Task
     Matrix A;
     Vector b;
     
-    
     TaskPane taskPane;
     
     
@@ -79,8 +78,6 @@ public class LUDecomposition implements Task
         formula.addSymbol("kappa").addText("("+A.name+") = ").addMatrixNorm(A.name).addSymbol("*").addMatrixNorm(A.name+"^{-1}").addText(" = "+kappa).addNewLine(2);
         formula.addRelError("x").addText(" = ").addSymbol("kappa").addText("("+A.name+")").addSymbol("*").addVektornormXdivY("r", b.name, true).addLatexString(" \\le ").addText( ""+relFehler );
         
-        taskPane.removeAll();
-        taskPane.add(new TaskScrollPane(formula));
-        taskPane.revalidate();
+        taskPane.setViewPortView(new TaskScrollPane(formula));
     }
 }

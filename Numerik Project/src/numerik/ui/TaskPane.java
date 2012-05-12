@@ -1,16 +1,18 @@
 package numerik.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import javax.swing.*;
 
-import numerik.IO.DocumentLoader;
 import numerik.calc.Matrix;
 import numerik.calc.Vector;
 import numerik.expression.Value;
+import numerik.io.DocumentLoader;
 import numerik.tasks.Argument;
 import numerik.tasks.Task;
 
@@ -99,29 +101,42 @@ public final class TaskPane extends JPanel implements ActionListener
         String[] vectors = docLoader.getAllVectorNames("Data.txt");
         
         JComboBox combo;
+        JTextField text;
         JButton button;
         
         args = arguments;
         for (Argument arg : arguments)
         {
+            if (arg.getName() != null)
+            {
+                toolBar.add(new JLabel(arg.getName()));
+            }
             switch (arg.getArgumentType())
             {
                 case MATRIX:
-                    toolBar.add(new JLabel(arg.getName()));
                     combo = new JComboBox(matrices);
                     arg.setRelatedControl(combo);
                     toolBar.add(combo);
                     break;
+                    
                 case VECTOR:
-                    toolBar.add(new JLabel(arg.getName()));
                     combo = new JComboBox(vectors);
                     arg.setRelatedControl(combo);
                     toolBar.add(combo);
-                    
                     break;
+                    
                 case DECIMAL:
-                    
+                    text = new JTextField(arg.getDefaultValue());
+                    arg.setRelatedControl(text);
+                    toolBar.add(text);
                     break;
+                    
+                case INTEGER:
+                    text = new JTextField(arg.getDefaultValue());
+                    arg.setRelatedControl(text);
+                    toolBar.add(text);
+                    break;
+                    
                 case RUN_BUTTON:
                     button = new JButton(new ImageIcon("icons/button_go_small.png"));
                     button.addActionListener(this);
@@ -137,14 +152,41 @@ public final class TaskPane extends JPanel implements ActionListener
     }
     
     
-    public void showTask()
+    public void runTask()
     {
-        frame.setJToolBar(toolBar);
-        task.run(getParameters());
+        try
+        {
+            task.run(getParameters());
+        }
+        catch (IllegalArgumentException ex)
+        {
+            JLabel label = new JLabel(ex.getMessage());
+            label.setForeground(Color.RED);
+            setViewPortView(label);
+        }
+        catch (ArithmeticException ex)
+        {
+            JLabel label = new JLabel(ex.getMessage());
+            label.setForeground(Color.RED);
+            setViewPortView(label);
+        }
+        catch (IndexOutOfBoundsException ex)
+        {
+            JLabel label = new JLabel(ex.getMessage());
+            label.setForeground(Color.RED);
+            setViewPortView(label);
+        }
     }
     
     
-    private Value[] getParameters()
+    public void showTask()
+    {
+        frame.setJToolBar(toolBar);
+        runTask();
+    }
+    
+    
+    private Value[] getParameters() throws IllegalArgumentException
     {
         if(args == null)
         {
@@ -155,14 +197,33 @@ public final class TaskPane extends JPanel implements ActionListener
         
         for (Argument arg : args)
         {
-            switch (arg.getArgumentType())
+            try
             {
-                case MATRIX:
-                    parameters.add(new Value(new Matrix("Data.txt", ((JComboBox)arg.getRelatedControl()).getSelectedItem().toString())));
-                    break;
-                case VECTOR:
-                    parameters.add(new Value(new Vector("Data.txt", ((JComboBox)arg.getRelatedControl()).getSelectedItem().toString())));
-                    break;
+                switch (arg.getArgumentType())
+                {
+                    case MATRIX:
+                        parameters.add(new Value(new Matrix("Data.txt", ((JComboBox)arg.getRelatedControl()).getSelectedItem().toString())));
+                        break;
+                        
+                    case VECTOR:
+                        parameters.add(new Value(new Vector("Data.txt", ((JComboBox)arg.getRelatedControl()).getSelectedItem().toString())));
+                        break;
+                        
+                    case DECIMAL:
+                        parameters.add(new Value(new BigDecimal(((JTextField)arg.getRelatedControl()).getText())));
+                        break;
+                        
+                    case INTEGER:
+                        parameters.add(new Value(new BigDecimal(Integer.parseInt(((JTextField)arg.getRelatedControl()).getText()))));
+                }
+            }
+            catch (NullPointerException ex)
+            {
+                throw new IllegalArgumentException("Überprüfen Sie die Eingabe von " + arg.getName());
+            }
+            catch (NumberFormatException ex)
+            {
+                throw new IllegalArgumentException(arg.getName() + " entspricht nicht der gewünschten Eingabe.");
             }
         }
         
@@ -173,7 +234,14 @@ public final class TaskPane extends JPanel implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        task.run(getParameters());
+        runTask();
     }
     
+    
+    public void setViewPortView(JComponent component)
+    {
+        this.removeAll();
+        this.add(component);
+        this.revalidate();
+    }
 }
