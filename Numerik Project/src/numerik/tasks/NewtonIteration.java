@@ -3,18 +3,22 @@ package numerik.tasks;
 import java.math.BigDecimal;
 
 import numerik.calc.MathLib;
-import numerik.ui.LatexFormula;
+import numerik.expression.Value;
+import numerik.ui.*;
 
-public class NewtonIteration
+public class NewtonIteration implements Task
 {
-    LatexFormula formula = new LatexFormula();
     
-    public NewtonIteration() 
+    TaskPane taskPane;
+    
+    @Override
+    public void init(OutputFrame frame, TaskPane taskPane)
     {
-        init();
+        this.taskPane = taskPane;
     }
-    
-    public void init()
+
+    @Override
+    public void run(Value... values)
     {
         MathLib.setPrecision( 20 );
         MathLib.setRoundingMode( MathLib.EXACT );
@@ -27,7 +31,8 @@ public class NewtonIteration
         double ox = x+1;
         int     k = 5;
         double  a = 18;
-           
+        
+        LatexFormula formula = new LatexFormula();
         // Ausgabe 
         formula.addText("Newton-Verfahren zur Bestimmung  ").addLatexString("x = \\sqrt[k\\hspace{0.8mm}]{a}").addNewLine(2);
         formula.addText("1. Forme dazu  ").addLatexString("x = \\sqrt[k\\hspace{1mm}]{a}").addText(" derart um, dass ").addLatexString("f(x)=0").addText(" entsteht.").addNewLine(1);
@@ -46,7 +51,7 @@ public class NewtonIteration
         if(a<0 && (k % 2)==0) {
             formula.addTextBold("Fehler: ").addText("Keine geradzahlige Wurzel aus einer negativen Zahl möglich!");
         } 
-          else 
+        else 
         {
             while( ox-x != 0 ) 
             {
@@ -54,14 +59,12 @@ public class NewtonIteration
                 counter++;
                 
                 ox = x;
-                 f = Math.pow(x, k) - a;
+                f = Math.pow(x, k) - a;
                 df = k * Math.pow(x, k-1);
-                 x = MathLib.round( BigDecimal.valueOf(     x - f/df       )).doubleValue();
+                x = MathLib.round( BigDecimal.valueOf(     x - f/df       )).doubleValue();
             }
         }
-    }
-    
-    public LatexFormula getFormula() {
-        return this.formula;
+        
+        taskPane.add(new TaskScrollPane(formula));
     }
 }

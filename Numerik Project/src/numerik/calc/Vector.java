@@ -16,8 +16,6 @@ public final class Vector
     private boolean transposed;
     public   String name;
     private     int length;
-    private     int rows;
-    private     int cols;
 
     BigDecimal[] values;
 
@@ -63,13 +61,12 @@ public final class Vector
                     transmit = true;
             }
             
-            rows   = entry.size();
-            length = rows;
+            length    = entry.size();
             this.name = name;
             
-            values = new BigDecimal[rows];
+            values = new BigDecimal[length];
 
-            for (int n = 0; n < rows; n++) {
+            for (int n = 0; n < length; n++) {
                     values[n] = entry.get(n);
             }
         } catch (FileNotFoundException e) {
