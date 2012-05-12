@@ -3,7 +3,6 @@ package numerik.ui;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.*;
 
 import numerik.tasks.*;
@@ -51,8 +50,7 @@ public class OutputFrame extends JFrame
         tabMain.addTab("LU-Zerlegung", new LUDecomposition());
         tabMain.addTab("Newton Wurzel", new NewtonIteration());
         tabMain.addTab("Non-Lin-GS", new SolveNonLinearEquation());
-        this.add(tabMain);
-        
+        this.add(tabMain);       
         
         this.setSize(600, 720);
         this.setLocationRelativeTo(null);

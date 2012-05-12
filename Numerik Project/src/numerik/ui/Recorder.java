@@ -32,7 +32,7 @@ public class Recorder
     public void clear()
     {
         isempty = true;
-        formula.clear();
+        formula = new LatexFormula();
     }
     
     

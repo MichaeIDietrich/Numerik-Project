@@ -6,9 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-
 import javax.swing.*;
-
 import numerik.calc.Matrix;
 import numerik.calc.Vector;
 import numerik.expression.Value;
@@ -16,60 +14,6 @@ import numerik.io.DocumentLoader;
 import numerik.tasks.Argument;
 import numerik.tasks.Task;
 
-/*import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Vector;
-
-import javax.swing.*;
-
-import numerik.tasks.Argument;
-import numerik.tasks.Task;
-
-public class TaskPane extends JPanel
-{
-    JButton         btnTest;
-    JToolBar        toolBar;
-    TaskScrollPane  scrollpane;
-    JComboBox       combobox;
-    
-    public TaskPane( LatexFormula formula ) 
-    {   
-        this.setLayout(new BorderLayout());
-        this.setBackground( Color.getHSBColor(100, 50, 25) );
-        this.setBorder(new javax.swing.border.EtchedBorder());
-        
-        btnTest = new JButton();
-        btnTest.setIcon(new ImageIcon("icons/button_go_small.png"));
-
-        Vector<String> list = new Vector<String>();
-        list.add("Matrix A");
-        list.add("Matrix B");
-        list.add("Matrix C");
-        list.add("Matrix D");
-        
-        JComboBox cb = new JComboBox( list );
-        cb.setMaximumSize(new Dimension(100,24));
-        
-        toolBar = new JToolBar();
-        toolBar.setFloatable( false );
-        toolBar.setBackground( Color.getHSBColor(100, 50, 25) );
-        
-        toolBar.add(cb);
-        toolBar.addSeparator( new Dimension( 12, 32) );
-        toolBar.add( btnTest );
-        
-        
-        scrollpane = new TaskScrollPane( formula );
-        
-        this.add( toolBar, BorderLayout.PAGE_START );
-        this.add( scrollpane );
-        
-        //BoxLayout box = new BoxLayout( this , BoxLayout.Y_AXIS);
-        //setLayout( box );
-    }
-    
-}*/
     
 public final class TaskPane extends JPanel implements ActionListener
 {

@@ -204,7 +204,7 @@ public final class Vector
         BigDecimal        sum = BigDecimal.ZERO;
         
         for(int i=0; i<length; i++)    sum = sum.add( get(i).multiply( get(i) ));
-
+        
         euklidNorm = MathLib.sqrt( sum );
         
         return euklidNorm;
@@ -229,5 +229,12 @@ public final class Vector
         f.set(1, BigDecimal.valueOf(     x[0]*x[0] -x[1]*x[1] +x[0] -1.6*x[1] -0.14     ).negate());
         
         return f;
+    }
+    
+    public Vector setUnitVector(Vector vector) {
+        for(int i=0; i<vector.length; i++) {
+            vector.set(i, BigDecimal.ONE);
+        }
+        return vector;
     }
 }
