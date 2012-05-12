@@ -27,6 +27,8 @@ public class SolveNonLinearEquation implements Task
     @Override
     public void run(Value... values)
     {
+        recorder.clear();
+        
         MathLib.setNorm( MathLib.FROBENIUSEUKILDNORM );
         MathLib.setPrecision( 16 );    // Achtung: Präzision>16 führt zu Endlosschleife!!!                  
         
@@ -65,7 +67,7 @@ public class SolveNonLinearEquation implements Task
 
         .addText("   und   ").addLatexString("x^{k+1} = x^{k} + \\Delta{x^{k+1}}").addText("  mit ").addNewLine(3).addLatexString("\\Phi( x ) = ");
         formula.jakobiMatrix();
-        formula.addNewLine(3).addText("Start der Iteration des nicht-linearen Gleichungssystems mit").addNewLine(1);
+        formula.addNewLine(3).addTextUL("Start der Iteration").addNewLine(1);
         formula.addFormula( recorder.get() ).addNewLine(2);
         
         taskPane.setViewPortView(new TaskScrollPane(formula));

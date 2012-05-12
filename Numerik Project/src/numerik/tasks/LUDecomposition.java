@@ -32,7 +32,7 @@ public class LUDecomposition implements Task
     public void run(Value... values)
     {
         Recorder recorder = Recorder.getInstance();
-        
+        recorder.clear();
         
         // ####### Alle Berechnungen werden mit niedriger Präzision ausgeführt #########
         
@@ -46,10 +46,13 @@ public class LUDecomposition implements Task
         //Vector b = new Vector("Data.txt", "a");
         Matrix A = values[0].toMatrix();
         Vector b = values[1].toVector();
-        Matrix P = A.getScaleOf();
         
-        A = P.mult(A);
-        b = P.mult(b);
+        A.mult(b); // Test
+        
+//        Matrix P = A.getScaleOf();
+//        A = P.mult(A);
+//        b = P.mult(b);
+        
         Vector x = A.solveX(b);
         
         // ####### Alle folgenden Berechnungen werden mit höherer Präzision ausgeführt #########
