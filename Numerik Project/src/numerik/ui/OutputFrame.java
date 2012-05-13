@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 
+import org.scilab.forge.jlatexmath.*;
+
 import numerik.tasks.*;
 
 public class OutputFrame extends JFrame
@@ -25,25 +27,7 @@ public class OutputFrame extends JFrame
         this.setIconImages(icons);
         
         initLookAndFeel();
-        
-        /*TaskPane lu_decompos = new TaskPane( new LUDecomposition().getFormula() ); 
-        TaskPane newton_iter = new TaskPane( new NewtonIteration().getFormula() ); 
-        TaskPane non_lin_equ = new TaskPane( new SolveNonLinearEquation().getFormula() ); 
-        TaskPane gauss_int4o = new TaskPane( new GaussIntegrationOrder4().getFormula() );
-        TaskPane rungkutta4o = new TaskPane( new GaussIntegrationOrder4().getFormula() );*/
-        
-        // --- Tab-Pane ---
-        
-        //tabMain = new JTabbedPane( JTabbedPane.BOTTOM );
-
-        //tabMain.addTab("Expression", pnlExpression);
-        /*tabMain.addTab("LU-Zerlegung",    lu_decompos);
-        tabMain.addTab("Newton Wurzel",   newton_iter);
-        tabMain.addTab("Non-Lin-GS",      non_lin_equ);
-        tabMain.addTab("Gauss Int. 4",    gauss_int4o);
-        tabMain.addTab("Runge Kutta 4",   rungkutta4o);*/
-        
-        //this.add( tabMain );
+        initLatex();
         
         TabbedTaskPane tabMain = new TabbedTaskPane(this);
         tabMain.addTab("Expression", new ExpressionTask());
@@ -82,6 +66,13 @@ public class OutputFrame extends JFrame
         {
             e.printStackTrace();
         }
+    }
+    
+    
+    private void initLatex()
+    {
+        // Dummy, um die Static-Elemente zu laden
+        new TeXFormula(new LatexFormula().toString()).createTeXIcon(TeXConstants.STYLE_DISPLAY, 20);
     }
     
     

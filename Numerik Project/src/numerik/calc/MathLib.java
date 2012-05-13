@@ -5,17 +5,20 @@ import java.math.*;
 
 public class MathLib
 {
+    
+    public  static final int               EXACT = 0;
+    public  static final int              NORMAL = 1;
+    
+    public  static final int    ZEILENSUMMENNORM = 0;
+    public  static final int FROBENIUSEUKILDNORM = 1;
+    
     private static boolean         pivotstrategy = false;
     private static boolean                active = true;
     private static int                 precision = 5;
     private static int         inverse_precision = 20;
     private static int              roundingmode = 0;
-    public  static final int               EXACT = 0;
-    public  static final int              NORMAL = 1;
-    public  static final int    ZEILENSUMMENNORM = 0;
-    public  static final int FROBENIUSEUKILDNORM = 1;
     private static int                      norm = 0;
-
+    
     
     public static BigDecimal round(BigDecimal value)
     {
@@ -36,15 +39,15 @@ public class MathLib
         
         return value.stripTrailingZeros();
     }
-   
     
-    // Die gleiche Funktion ist BigDecimalMath.log(BigDecimal x), enthalten in BigDecimalMath.jar
+    
+    
+    // auskommentiert, was nicht gebraucht wird
+    
+    /*// Die gleiche Funktion ist BigDecimalMath.log(BigDecimal x), enthalten in BigDecimalMath.jar
     // Funktion stammt von:
     // http://www.humbug.in/stackoverflow/de/logarithm-of-a-bigdecimal-739532.html
     // siehe unten auf der Seite
-    /**
-     * Compute the natural logarithm of x to a given scale, x > 0.
-     */
     public static BigDecimal ln(BigDecimal x)
     {
         // diese beiden Variablen vllt. von als Parameter oder so übergeben,
@@ -81,6 +84,7 @@ public class MathLib
         return ln(value).divide(ln(BigDecimal.TEN), precision, BigDecimal.ROUND_HALF_UP);
     }
     
+    
     // Berechnen eines Exponenten einer Zahl
     public static int getExponent(BigDecimal value)
     {
@@ -95,7 +99,8 @@ public class MathLib
         String roundedValue = BigDecimalExtension.roundingAwayFromZero(exponent).toEngineeringString();
         
         return Integer.valueOf(roundedValue);
-    }
+    }*/
+    
     
     public static BigDecimal stripTrailingZeros(BigDecimal value)
     {
@@ -111,53 +116,54 @@ public class MathLib
         return value;
     }
     
-    // getters and setters
-    public static int getPrecision()
+    
+    public static BigDecimal ln(BigDecimal value)
     {
-        return precision;
+        return round(BigDecimal.valueOf(Math.log(value.doubleValue())));
     }
     
-    public static void setPrecision(int precision)
+    
+    public static BigDecimal log(BigDecimal value, BigDecimal base)
     {
-        MathLib.precision = precision;
+        return round(ln(value).divide(ln(base), precision, RoundingMode.HALF_UP));
     }
     
-    public static boolean isActive()
+    
+    public static BigDecimal sin(BigDecimal value)
     {
-        return active;
+        return round(BigDecimal.valueOf(Math.sin(value.doubleValue())));
     }
     
-    public static void enableRound(boolean active)
+    
+    public static BigDecimal cos(BigDecimal value)
     {
-        MathLib.active = active;
-    }
-
-    public static boolean isPivotStrategy() {
-        return pivotstrategy;
-    }
-
-    public static void setPivotStrategy(boolean pivotstrategy) {
-        MathLib.pivotstrategy = pivotstrategy;
+        return round(BigDecimal.valueOf(Math.cos(value.doubleValue())));
     }
     
-    public static void setRoundingMode(int mode) {
-        MathLib.roundingmode = mode;
+    
+    public static BigDecimal tan(BigDecimal value)
+    {
+        return round(BigDecimal.valueOf(Math.tan(value.doubleValue())));
     }
     
-    public static int getRoundingMode() {
-        return MathLib.roundingmode;
+    
+    public static BigDecimal asin(BigDecimal value)
+    {
+        return round(BigDecimal.valueOf(Math.asin(value.doubleValue())));
     }
-
-
-    public static int getInversePrecision() {
-        return inverse_precision;
+    
+    
+    public static BigDecimal acos(BigDecimal value)
+    {
+        return round(BigDecimal.valueOf(Math.acos(value.doubleValue())));
     }
-
-
-    public static void setInversePrecision(int inverse_precision) {
-        MathLib.inverse_precision = inverse_precision;
+    
+    
+    public static BigDecimal atan(BigDecimal value)
+    {
+        return round(BigDecimal.valueOf(Math.atan(value.doubleValue())));
     }
-
+    
     
     public static BigDecimal sqrt(BigDecimal root) {
         
@@ -201,10 +207,58 @@ public class MathLib
     {
         return norm;
     }
-
-
+    
+    
     public static void setNorm(int norm)
     {
         MathLib.norm = norm;
+    }
+    
+    
+    // getters and setters
+    public static int getPrecision()
+    {
+        return precision;
+    }
+    
+    public static void setPrecision(int precision)
+    {
+        MathLib.precision = precision;
+    }
+    
+    public static boolean isActive()
+    {
+        return active;
+    }
+    
+    public static void enableRound(boolean active)
+    {
+        MathLib.active = active;
+    }
+    
+    public static boolean isPivotStrategy() {
+        return pivotstrategy;
+    }
+    
+    public static void setPivotStrategy(boolean pivotstrategy) {
+        MathLib.pivotstrategy = pivotstrategy;
+    }
+    
+    public static void setRoundingMode(int mode) {
+        MathLib.roundingmode = mode;
+    }
+    
+    public static int getRoundingMode() {
+        return MathLib.roundingmode;
+    }
+    
+    
+    public static int getInversePrecision() {
+        return inverse_precision;
+    }
+    
+    
+    public static void setInversePrecision(int inverse_precision) {
+        MathLib.inverse_precision = inverse_precision;
     }
 }

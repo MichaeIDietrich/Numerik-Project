@@ -24,19 +24,20 @@ public class LUDecomposition implements Task
     {
         this.taskPane = taskPane;
         taskPane.createJToolBarByArguments(new Argument("Matrix A:", ArgType.MATRIX), new Argument("Vektor b:", ArgType.VECTOR), 
-                Argument.RUN_BUTTON);
+                new Argument("Normalisieren", ArgType.BOOLEAN), Argument.PRECISION, Argument.RUN_BUTTON);
     }
     
     
     @Override
-    public void run(Value... values)
+    public void run(Value... parameters)
     {
         Recorder recorder = Recorder.getInstance();
         recorder.clear();
         
         // ####### Alle Berechnungen werden mit niedriger Präzision ausgeführt #########
         
-        MathLib.setPrecision( 5 );                                        // Mantissenlänge
+        MathLib.setPrecision( parameters[3].toDecimal().intValue() );                                        // Mantissenlänge
+//        MathLib.setPrecision( 5 );                                        // Mantissenlänge
         MathLib.setPivotStrategy( true );
         MathLib.setRoundingMode( MathLib.EXACT );                         // exact = Mantissen genau, normal = Nachkomma genau
         MathLib.setNorm( MathLib.FROBENIUSEUKILDNORM );                   // ZEILENSUMMENNORM oder FROBENIUSEUKILDNORM
@@ -44,14 +45,17 @@ public class LUDecomposition implements Task
         
         //Matrix A = new Matrix("Data.txt", "A");
         //Vector b = new Vector("Data.txt", "a");
-        Matrix A = values[0].toMatrix();
-        Vector b = values[1].toVector();
+        Matrix A = parameters[0].toMatrix();
+        Vector b = parameters[1].toVector();
         
-        A.mult(b); // Test
+        A.mult(b); // sind Matrix und Vektor verkettet?
         
-//        Matrix P = A.getScaleOf();
-//        A = P.mult(A);
-//        b = P.mult(b);
+        if (parameters[2].toBoolean())
+        {
+            Matrix P = A.getScaleOf();
+            A = P.mult(A);
+            b = P.mult(b);
+        }
         
         Vector x = A.solveX(b);
         

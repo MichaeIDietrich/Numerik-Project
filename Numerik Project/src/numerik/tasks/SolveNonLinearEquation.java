@@ -15,7 +15,7 @@ public class SolveNonLinearEquation implements Task
     
     TaskPane taskPane;
     LatexFormula formula = new LatexFormula();
-    Recorder    recorder = new Recorder();
+    Recorder    recorder = Recorder.getInstance();
     
     @Override
     public void init(OutputFrame frame, TaskPane taskPane)
@@ -30,7 +30,7 @@ public class SolveNonLinearEquation implements Task
         recorder.clear();
         
         MathLib.setNorm( MathLib.FROBENIUSEUKILDNORM );
-        MathLib.setPrecision( 16 );    // Achtung: Präzision>16 führt zu Endlosschleife!!!                  
+        MathLib.setPrecision( 16 );    // Achtung: Präzision>16 führt zu Endlosschleife!!!
         
         // Lösen nichtlinearer Gleichungssysteme
         BigDecimal[] startvector = {new BigDecimal(-0.7) , new BigDecimal(-0.5)};
@@ -38,7 +38,7 @@ public class SolveNonLinearEquation implements Task
         Vector  iter = new Vector( startvector );
         Vector     x = new Vector( startvector.length );
         x = x.setUnitVector(x);
-        Vector start = iter.clone();
+        //Vector start = iter.clone();
         Matrix    jm = new Matrix( startvector.length, startvector.length );
         int        i = 0;
        

@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import javax.swing.*;
+
 import numerik.calc.Matrix;
 import numerik.calc.Vector;
 import numerik.expression.Value;
@@ -38,6 +39,8 @@ public final class TaskPane extends JPanel implements ActionListener
     {
         toolBar = new JToolBar();
         toolBar.setFloatable(false);
+        toolBar.setLayout(new FlowLayout(FlowLayout.LEFT));
+        //toolBar.setMaximumSize(new Dimension(10000, 15));
         
         DocumentLoader docLoader = new DocumentLoader();
         String[] matrices = docLoader.getAllMatrixNames("Data.txt");
@@ -46,6 +49,8 @@ public final class TaskPane extends JPanel implements ActionListener
         JComboBox combo;
         JTextField text;
         JCheckBox check;
+        JSpinner spinner;
+        SpinnerModel model;
         JButton button;
         
         args = arguments;
@@ -55,31 +60,33 @@ public final class TaskPane extends JPanel implements ActionListener
             {
                 toolBar.add(new JLabel(arg.getName()));
             }
+            
             switch (arg.getArgumentType())
             {
                 case MATRIX:
                     combo = new JComboBox(matrices);
-                    combo.setMaximumSize(new Dimension(100, combo.getPreferredSize().height));
+//                    combo.setMinimumSize(new Dimension(70, 0));
                     arg.setRelatedControl(combo);
                     toolBar.add(combo);
                     break;
                     
                 case VECTOR:
                     combo = new JComboBox(vectors);
-                    combo.setMaximumSize(new Dimension(100, combo.getPreferredSize().height));
+//                    combo.setMinimumSize(new Dimension(70, 0));
                     arg.setRelatedControl(combo);
                     toolBar.add(combo);
                     break;
                     
                 case DECIMAL:
                     text = new JTextField(arg.getDefaultValue());
-                    text.setMaximumSize(new Dimension(100, text.getPreferredSize().height));
+//                    text.setMinimumSize(new Dimension(70, 0));
                     arg.setRelatedControl(text);
                     toolBar.add(text);
                     break;
                     
                 case INTEGER:
                     text = new JTextField(arg.getDefaultValue());
+//                    text.setMinimumSize(new Dimension(70, 0));
                     arg.setRelatedControl(text);
                     toolBar.add(text);
                     break;
@@ -90,11 +97,27 @@ public final class TaskPane extends JPanel implements ActionListener
                     toolBar.add(check);
                     break;
                     
+                case PRECISION:
+                    model = new SpinnerNumberModel(Integer.parseInt(arg.getDefaultValue()), 1, 100, 1);
+                    spinner = new JSpinner(model);
+                    arg.setRelatedControl(spinner);
+                    toolBar.add(spinner);
+                    break;
+                    
+                case DOUBLEPRECISION:
+                    model = new SpinnerNumberModel(Integer.parseInt(arg.getDefaultValue()), 1, 16, 1);
+                    spinner = new JSpinner(model);
+                    arg.setRelatedControl(spinner);
+                    toolBar.add(spinner);
+                    break;
+                    
                 case RUN_BUTTON:
                     button = new JButton(new ImageIcon("icons/button_go_small.png"));
                     button.addActionListener(this);
                     toolBar.add(button);
             }
+            
+            toolBar.add(new JLabel(" "));
         }
     }
     
@@ -107,34 +130,44 @@ public final class TaskPane extends JPanel implements ActionListener
     
     public void runTask()
     {
-        try
+        Thread taskThread = new Thread()
         {
-            task.run(getParameters());
-        }
-        catch (IllegalArgumentException ex)
-        {
-            JLabel label = new JLabel(ex.getMessage());
-            label.setForeground(Color.RED);
-            setViewPortView(label);
-            
-            ex.printStackTrace();
-        }
-        catch (ArithmeticException ex)
-        {
-            JLabel label = new JLabel(ex.getMessage());
-            label.setForeground(Color.RED);
-            setViewPortView(label);
-            
-            ex.printStackTrace();
-        }
-        catch (IndexOutOfBoundsException ex)
-        {
-            JLabel label = new JLabel(ex.getMessage());
-            label.setForeground(Color.RED);
-            setViewPortView(label);
-            
-            ex.printStackTrace();
-        }
+            @Override
+            public void run()
+            {
+                try
+                {
+                    task.run(getParameters());
+                }
+                catch (IllegalArgumentException ex)
+                {
+                    JLabel label = new JLabel(ex.getMessage());
+                    label.setForeground(Color.RED);
+                    setViewPortView(label);
+                    
+                    //ex.printStackTrace();
+                }
+                catch (ArithmeticException ex)
+                {
+                    JLabel label = new JLabel(ex.getMessage());
+                    label.setForeground(Color.RED);
+                    setViewPortView(label);
+                    
+                    //ex.printStackTrace();
+                }
+                catch (IndexOutOfBoundsException ex)
+                {
+                    JLabel label = new JLabel(ex.getMessage());
+                    label.setForeground(Color.RED);
+                    setViewPortView(label);
+                    
+                    //ex.printStackTrace();
+                }
+            }
+        };
+        
+//        taskThread.start();
+        taskThread.run();
     }
     
     
@@ -178,6 +211,11 @@ public final class TaskPane extends JPanel implements ActionListener
                         
                     case BOOLEAN:
                         parameters.add(new Value(((JCheckBox)arg.getRelatedControl()).isSelected()));
+                        break;
+                        
+                    case PRECISION:
+                    case DOUBLEPRECISION:
+                        parameters.add(new Value(new BigDecimal((Integer)((JSpinner)arg.getRelatedControl()).getValue())));
                 }
             }
             catch (NullPointerException ex)

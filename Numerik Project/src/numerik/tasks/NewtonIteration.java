@@ -17,13 +17,14 @@ public class NewtonIteration implements Task
     {
         this.taskPane = taskPane;
         taskPane.createJToolBarByArguments(new Argument("k:", ArgType.INTEGER, "5"), new Argument("a:", ArgType.DECIMAL, "18"), 
-                new Argument("x_0:", ArgType.DECIMAL, "12800"), Argument.RUN_BUTTON);
+                new Argument("x_0:", ArgType.DECIMAL, "12800"), Argument.DOUBLEPRECISION, Argument.RUN_BUTTON);
     }
 
     @Override
-    public void run(Value... values)
+    public void run(Value... parameters)
     {
-        MathLib.setPrecision( 20 );
+//        MathLib.setPrecision( 16 );
+        MathLib.setPrecision( parameters[3].toDecimal().intValue() );
         MathLib.setRoundingMode( MathLib.EXACT );
         
         int counter = 0;
@@ -32,13 +33,13 @@ public class NewtonIteration implements Task
         double  f , df;
 
         //double  x = 12800;         // Achtung bei df(x)=0 -> Division durch Null
-        double x = values[2].toDecimal().doubleValue();
+        double x = parameters[2].toDecimal().doubleValue();
         
         double ox = x+1;
         //int     k = 5;
-        int     k = values[0].toDecimal().intValue();
+        int     k = parameters[0].toDecimal().intValue();
         //double  a = 18;
-        double  a = values[1].toDecimal().doubleValue();
+        double  a = parameters[1].toDecimal().doubleValue();
         
         LatexFormula formula = new LatexFormula();
         // Ausgabe 
@@ -56,23 +57,24 @@ public class NewtonIteration implements Task
         // ---
         
         // Iteration
-        if(a<0 && (k % 2)==0) {
-            formula.addTextBold("Fehler: ").addText("Keine geradzahlige Wurzel aus einer negativen Zahl möglich!");
-        } 
-        else 
+        if(a<0 && (k % 2)==0)
         {
-            while( ox-x != 0 ) 
-            {
-                formula.addLatexString("x_{"+counter+"} = "+x).addNewLine(1);
-                counter++;
-                
-                ox = x;
-                f = Math.pow(x, k) - a;
-                df = k * Math.pow(x, k-1);
-                x = MathLib.round( BigDecimal.valueOf(     x - f/df       )).doubleValue();
-            }
-            formula.addNewLine(1);
+            throw new IllegalArgumentException("Keine geradzahlige Wurzel aus einer negativen Zahl möglich!");
+            //formula.addTextBold("Fehler: ").addText("Keine geradzahlige Wurzel aus einer negativen Zahl möglich!");
+        } 
+        
+        while( ox-x != 0 ) 
+        {
+            System.out.println(x);
+            formula.addLatexString("x_{"+counter+"} = " + BigDecimal.valueOf(x).toPlainString()).addNewLine(1);
+            counter++;
+            
+            ox = x;
+            f = Math.pow(x, k) - a;
+            df = k * Math.pow(x, k-1);
+            x = MathLib.round( BigDecimal.valueOf(     x - f/df       )).doubleValue();
         }
+        formula.addNewLine(1);
         
         taskPane.setViewPortView(new TaskScrollPane(formula));
     }
