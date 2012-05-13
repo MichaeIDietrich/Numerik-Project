@@ -2,6 +2,7 @@ package numerik.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
@@ -38,6 +39,7 @@ public final class TaskPane extends JPanel implements ActionListener
     public void createJToolBarByArguments(Argument... arguments)
     {
         toolBar = new JToolBar();
+        toolBar.setLayout( new FlowLayout(FlowLayout.LEFT));
         toolBar.setFloatable(false);
         
         DocumentLoader docLoader = new DocumentLoader();

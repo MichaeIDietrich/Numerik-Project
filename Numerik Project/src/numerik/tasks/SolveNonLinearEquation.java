@@ -67,7 +67,7 @@ public class SolveNonLinearEquation implements Task
 
         .addText("   und   ").addLatexString("x^{k+1} = x^{k} + \\Delta{x^{k+1}}").addText("  mit ").addNewLine(3).addLatexString("\\Phi( x ) = ");
         formula.jakobiMatrix();
-        formula.addNewLine(3).addTextUL("Start der Iteration").addNewLine(1);
+        formula.addNewLine(3).addTextUL("Start\\;der\\;Iteration").addNewLine(1);
         formula.addFormula( recorder.get() ).addNewLine(2);
         
         taskPane.setViewPortView(new TaskScrollPane(formula));

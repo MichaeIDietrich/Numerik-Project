@@ -23,7 +23,7 @@ public class NewtonIteration implements Task
     @Override
     public void run(Value... values)
     {
-        MathLib.setPrecision( 20 );
+        MathLib.setPrecision( 16 );
         MathLib.setRoundingMode( MathLib.EXACT );
         
         int counter = 0;
