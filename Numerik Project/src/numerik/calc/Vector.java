@@ -112,11 +112,23 @@ public final class Vector
         BigDecimal[] v = new BigDecimal[length];
         for (int i = 0; i < values.length; i++)
         {
-            v[i] = values[i].multiply(value);
+            v[i] = MathLib.round(MathLib.round(values[i]).multiply(value));
         }
         return new Vector(v);
     }
     
+    public Vector divide(BigDecimal value)
+    {
+        if (value == BigDecimal.ZERO)
+        {
+            throw new ArithmeticException("Bei der Skalardivision kann nicht durch 0 geteilt werden.");
+        }
+        
+        BigDecimal dividend = new BigDecimal("1");
+        BigDecimal quotient = dividend.divide(value, MathLib.getPrecision(), MathLib.getRoundingMode());
+        
+        return mult(quotient);
+    }
     
     public Vector add(Vector vector)
     {
@@ -127,7 +139,7 @@ public final class Vector
         BigDecimal[] v = new BigDecimal[length];
         for (int i = 0; i < length; i++)
         {
-            v[i] = values[i].add(vector.get(i));
+            v[i] = MathLib.round(MathLib.round(values[i]).add(vector.get(i)));
         }
         return new Vector(v);
     }
@@ -142,11 +154,35 @@ public final class Vector
         BigDecimal[] v = new BigDecimal[length];
         for (int i = 0; i < length; i++)
         {
-            v[i] = values[i].subtract(vector.get(i));
+            v[i] = MathLib.round(MathLib.round(values[i]).subtract(vector.get(i)));
         }
         return new Vector(v);
     }
-    
+
+//    Muss noch überarbeitet werden --> z.B. wegen dem transponierend
+//    public Matrix mult(Matrix matrix)
+//    {
+//        if (length != matrix.getCols())
+//        {
+//            throw new ArithmeticException("Bei der Multiplikations von einem Vektor mit einer Matrix, muss der Vektor die selbe Länge haben, wie die Matrix an Spalten besitzt.");
+//        }
+//        
+//        BigDecimal[][] v = new BigDecimal[1][matrix.getCols()];
+//        
+//        for (int j = 0; j < matrix.getCols(); j++)
+//        {   
+//            BigDecimal sum = BigDecimal.ZERO;
+//            
+//            for (int j2 = 0; j2 < matrix.getCols(); j2++)
+//            {
+//                sum = MathLib.round( sum.add( MathLib.round( values[j].multiply( matrix.get(j2, j) ))));
+//            }
+//            
+//            v[0][j] = sum;
+//        }
+//        
+//        return new Matrix(v);
+//    }
     
     public Vector getTransposed()
     {
@@ -236,5 +272,23 @@ public final class Vector
             vector.set(i, BigDecimal.ONE);
         }
         return vector;
+    }
+    
+    @Override
+    public String toString()
+    {
+        StringBuilder buffer = new StringBuilder();
+        buffer.append("[[");
+    
+        for (int row = 0; row < length; row++)
+        {
+            buffer.append(values[row].toPlainString());
+            if (row < length - 1)
+            {
+                buffer.append(",");
+            }
+        }
+        buffer.append("]]");
+        return buffer.toString();
     }
 }

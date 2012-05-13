@@ -1,12 +1,8 @@
 package numerik.calc_test;
 
-
 import numerik.calc.*;
-
 import java.math.BigDecimal;
-
 import org.junit.*;
-
 import static org.junit.Assert.*;
 
 public class Matrix_TestFixture
@@ -67,18 +63,51 @@ public class Matrix_TestFixture
         assertEquals("65.0095", MMul.get(1,1).toPlainString());
     }
     
+    @Test
+    public void getDiagonalMatrix__diagonalMatrix_Of_A_3x3_Matrix()
+    {
+        Matrix diagonalMatrix;
+        
+        M1 = new Matrix(3, 3);
+        
+        M1.set(0, 0, new BigDecimal("1.53578"));
+        M1.set(0, 1, new BigDecimal("2.83493"));
+        M1.set(0, 2, new BigDecimal("2.83493"));
+        
+        M1.set(1, 0, new BigDecimal("3.86645"));
+        M1.set(1, 1, new BigDecimal("4.64339"));
+        M1.set(1, 2, new BigDecimal("2.83493"));
+        
+        M1.set(2, 0, new BigDecimal("2.83493"));
+        M1.set(2, 1, new BigDecimal("2.83493"));
+        M1.set(2, 2, new BigDecimal("2.83493"));
+        
+        diagonalMatrix = M1.getDiagonalMatrix();
+        
+        assertEquals("1.536", diagonalMatrix.get(0, 0).toPlainString());
+        assertEquals("0", diagonalMatrix.get(0, 1).toPlainString());
+        assertEquals("0", diagonalMatrix.get(0, 2).toPlainString());
+        
+        assertEquals("0", diagonalMatrix.get(1, 0).toPlainString());
+        assertEquals("4.643", diagonalMatrix.get(1, 1).toPlainString());
+        assertEquals("0", diagonalMatrix.get(1, 2).toPlainString());
+        
+        assertEquals("0", diagonalMatrix.get(2, 0).toPlainString());
+        assertEquals("0", diagonalMatrix.get(2, 1).toPlainString());
+        assertEquals("2.835", diagonalMatrix.get(2, 2).toPlainString());
+    }
+    
     /* Setzen von allgemeinen Werten, die bei jedem Test verwendet werden */
     @Before
     public void setUp()
     {
         MathLib.setPrecision(4);
         MathLib.enableRound(true);
-        
     }
     
     /*
-     * ZurÃ¼cksetzen von Werten, um Ausgangszustand eines Tests zu erreichen -->
-     * wichtig fÃ¼r weitere Tests
+     * Zurücksetzen von Werten, um Ausgangszustand eines Tests zu erreichen -->
+     * wichtig für weitere Tests
      */
     @After
     public void tearDown()
