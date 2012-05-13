@@ -1,11 +1,14 @@
 package numerik.ui;
 
-public class Recorder
+public final class Recorder
 {
     private static Recorder recorder;
     private LatexFormula formula = new LatexFormula();
     private boolean      isempty = true;
     private boolean       active = true;
+    
+    
+    private Recorder() { } //private Contructor, um zu vermeiden, dass jemand diese Klasse instanziieren will (Singleton)
     
     
     public void add(LatexFormula formula) 

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 
+import org.scilab.forge.jlatexmath.*;
+
 import numerik.tasks.*;
 
 public class OutputFrame extends JFrame
@@ -25,6 +27,10 @@ public class OutputFrame extends JFrame
         this.setIconImages(icons);
         
         initLookAndFeel();
+<<<<<<< HEAD
+=======
+        initLatex();
+>>>>>>> origin/master
         
         TabbedTaskPane tabMain = new TabbedTaskPane(this);
         tabMain.addTab("Expression", new ExpressionTask());
@@ -63,6 +69,13 @@ public class OutputFrame extends JFrame
         {
             e.printStackTrace();
         }
+    }
+    
+    
+    private void initLatex()
+    {
+        // Dummy, um die Static-Elemente zu laden
+        new TeXFormula(new LatexFormula().toString()).createTeXIcon(TeXConstants.STYLE_DISPLAY, 20);
     }
     
     

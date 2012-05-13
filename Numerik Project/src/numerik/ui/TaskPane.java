@@ -1,19 +1,24 @@
 package numerik.ui;
 
+<<<<<<< HEAD
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
+=======
+import java.awt.*;
+>>>>>>> origin/master
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import javax.swing.*;
+
 import numerik.calc.Matrix;
 import numerik.calc.Vector;
 import numerik.expression.Value;
 import numerik.io.DocumentLoader;
-import numerik.tasks.Argument;
-import numerik.tasks.Task;
+import numerik.tasks.*;
+import numerik.tasks.Argument.ArgType;
 
     
 public final class TaskPane extends JPanel implements ActionListener
@@ -41,6 +46,8 @@ public final class TaskPane extends JPanel implements ActionListener
         toolBar = new JToolBar();
         toolBar.setLayout( new FlowLayout(FlowLayout.LEFT));
         toolBar.setFloatable(false);
+        toolBar.setLayout(new FlowLayout(FlowLayout.LEFT));
+        //toolBar.setMaximumSize(new Dimension(10000, 15));
         
         DocumentLoader docLoader = new DocumentLoader();
         String[] matrices = docLoader.getAllMatrixNames("Data.txt");
@@ -48,39 +55,67 @@ public final class TaskPane extends JPanel implements ActionListener
         
         JComboBox combo;
         JTextField text;
+        JCheckBox check;
+        JSpinner spinner;
+        SpinnerModel model;
         JButton button;
         
         args = arguments;
         for (Argument arg : arguments)
         {
-            if (arg.getName() != null)
+            if (arg.getName() != null && arg.getArgumentType() != ArgType.BOOLEAN)
             {
                 toolBar.add(new JLabel(arg.getName()));
             }
+            
             switch (arg.getArgumentType())
             {
                 case MATRIX:
                     combo = new JComboBox(matrices);
+//                    combo.setMinimumSize(new Dimension(70, 0));
                     arg.setRelatedControl(combo);
                     toolBar.add(combo);
                     break;
                     
                 case VECTOR:
                     combo = new JComboBox(vectors);
+//                    combo.setMinimumSize(new Dimension(70, 0));
                     arg.setRelatedControl(combo);
                     toolBar.add(combo);
                     break;
                     
                 case DECIMAL:
                     text = new JTextField(arg.getDefaultValue());
+//                    text.setMinimumSize(new Dimension(70, 0));
                     arg.setRelatedControl(text);
                     toolBar.add(text);
                     break;
                     
                 case INTEGER:
                     text = new JTextField(arg.getDefaultValue());
+//                    text.setMinimumSize(new Dimension(70, 0));
                     arg.setRelatedControl(text);
                     toolBar.add(text);
+                    break;
+                    
+                case BOOLEAN:
+                    check = new JCheckBox(arg.getName() ,arg.getDefaultValue().equals("true"));
+                    arg.setRelatedControl(check);
+                    toolBar.add(check);
+                    break;
+                    
+                case PRECISION:
+                    model = new SpinnerNumberModel(Integer.parseInt(arg.getDefaultValue()), 1, 100, 1);
+                    spinner = new JSpinner(model);
+                    arg.setRelatedControl(spinner);
+                    toolBar.add(spinner);
+                    break;
+                    
+                case DOUBLEPRECISION:
+                    model = new SpinnerNumberModel(Integer.parseInt(arg.getDefaultValue()), 1, 16, 1);
+                    spinner = new JSpinner(model);
+                    arg.setRelatedControl(spinner);
+                    toolBar.add(spinner);
                     break;
                     
                 case RUN_BUTTON:
@@ -88,6 +123,8 @@ public final class TaskPane extends JPanel implements ActionListener
                     button.addActionListener(this);
                     toolBar.add(button);
             }
+            
+            toolBar.add(new JLabel(" "));
         }
     }
     
@@ -100,28 +137,44 @@ public final class TaskPane extends JPanel implements ActionListener
     
     public void runTask()
     {
-        try
+        Thread taskThread = new Thread()
         {
-            task.run(getParameters());
-        }
-        catch (IllegalArgumentException ex)
-        {
-            JLabel label = new JLabel(ex.getMessage());
-            label.setForeground(Color.RED);
-            setViewPortView(label);
-        }
-        catch (ArithmeticException ex)
-        {
-            JLabel label = new JLabel(ex.getMessage());
-            label.setForeground(Color.RED);
-            setViewPortView(label);
-        }
-        catch (IndexOutOfBoundsException ex)
-        {
-            JLabel label = new JLabel(ex.getMessage());
-            label.setForeground(Color.RED);
-            setViewPortView(label);
-        }
+            @Override
+            public void run()
+            {
+                try
+                {
+                    task.run(getParameters());
+                }
+                catch (IllegalArgumentException ex)
+                {
+                    JLabel label = new JLabel(ex.getMessage());
+                    label.setForeground(Color.RED);
+                    setViewPortView(label);
+                    
+                    //ex.printStackTrace();
+                }
+                catch (ArithmeticException ex)
+                {
+                    JLabel label = new JLabel(ex.getMessage());
+                    label.setForeground(Color.RED);
+                    setViewPortView(label);
+                    
+                    //ex.printStackTrace();
+                }
+                catch (IndexOutOfBoundsException ex)
+                {
+                    JLabel label = new JLabel(ex.getMessage());
+                    label.setForeground(Color.RED);
+                    setViewPortView(label);
+                    
+                    //ex.printStackTrace();
+                }
+            }
+        };
+        
+//        taskThread.start();
+        taskThread.run();
     }
     
     
@@ -161,6 +214,15 @@ public final class TaskPane extends JPanel implements ActionListener
                         
                     case INTEGER:
                         parameters.add(new Value(new BigDecimal(Integer.parseInt(((JTextField)arg.getRelatedControl()).getText()))));
+                        break;
+                        
+                    case BOOLEAN:
+                        parameters.add(new Value(((JCheckBox)arg.getRelatedControl()).isSelected()));
+                        break;
+                        
+                    case PRECISION:
+                    case DOUBLEPRECISION:
+                        parameters.add(new Value(new BigDecimal((Integer)((JSpinner)arg.getRelatedControl()).getValue())));
                 }
             }
             catch (NullPointerException ex)
