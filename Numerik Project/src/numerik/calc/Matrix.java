@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import numerik.ui.LatexFormula;
@@ -231,10 +232,15 @@ public class Matrix {
         BigDecimal[][] v = new BigDecimal[rows][cols];
         for (int i = 0; i < values.length; i++) {
             for (int j = 0; j < values[i].length; j++) {
-                v[i][j] = values[i][j].add(x.get(i, j));
+                v[i][j] = MathLib.round(MathLib.round(values[i][j]).add(x.get(i, j)));
             }
         }
         return new Matrix(v);
+    }
+    
+    public Matrix subtract(Matrix x)
+    {
+        return add(x.mult(new BigDecimal("-1")));
     }
     
     
@@ -242,12 +248,24 @@ public class Matrix {
         BigDecimal[][] v = new BigDecimal[rows][cols];
         for (int i = 0; i < values.length; i++) {
             for (int j = 0; j < values[i].length; j++) {
-                v[i][j] = values[i][j].multiply(x);
+                v[i][j] = MathLib.round(MathLib.round(values[i][j]).multiply(x));
             }
         }
         return new Matrix(v);
     }
     
+    public Matrix divide(BigDecimal x)
+    {  
+        if (x == BigDecimal.ZERO)
+        {
+            throw new ArithmeticException("Bei der Skalardivision kann nicht durch 0 geteilt werden.");
+        }
+        
+        BigDecimal dividend = new BigDecimal("1");
+        BigDecimal quotient = dividend.divide(x, MathLib.getPrecision(), MathLib.getRoundingMode());
+        
+        return mult(quotient);
+    }
     
     public Vector mult(Vector vector) {                       // Multipliziere Matrix und Vektor
         if(cols != vector.getLength())
@@ -666,6 +684,23 @@ public class Matrix {
         values[1][1] = BigDecimal.valueOf(  -2*x[1]-1.6  );
         
         return this;
+    }
+    
+    /**
+     * Gibt die Matrix zurück, die nur an der Diagonale die Zahlen der originalen Matrix enthält
+     * Die anderen Zellen der Matrix beinhalten die Zahl 0
+     * In Formeln auch als "B-Matrix" bezeichnet
+     */
+    public Matrix getDiagonalMatrix()
+    {
+        Matrix tempMatrix = new Matrix(rows, cols);
+
+        for (int columnRow = 0; columnRow < cols; columnRow++)
+        {
+            tempMatrix.set(columnRow, columnRow, MathLib.round(get(columnRow, columnRow)));
+        }
+
+        return tempMatrix;
     }
     
     
