@@ -1,6 +1,7 @@
 package numerik;
 
-public class Git_Test extends Object
+public class Git_Test
 {
-    boolean waswo = true;
+    
+    private int bla = 65;
 }
