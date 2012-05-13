@@ -35,13 +35,12 @@ public class SolveNonLinearEquation implements Task
         // Lösen nichtlinearer Gleichungssysteme
         BigDecimal[] startvector = {new BigDecimal(-0.7) , new BigDecimal(-0.5)};
         
-        Vector  iter = new Vector( startvector );
-        Vector     x = new Vector( startvector.length );
+        Vector iter = new Vector( startvector );
+        Vector    x = new Vector( startvector.length );
         x = x.setUnitVector(x);
-        //Vector start = iter.clone();
-        Matrix    jm = new Matrix( startvector.length, startvector.length );
-        int        i = 0;
-       
+        Matrix   jm = new Matrix( startvector.length, startvector.length );
+        int       i = 0;
+        
         while (( x.norm() ).compareTo( BigDecimal.ZERO )==1) 
         {
             formula.addLatexString("x_{"+ i +"} = ").addVector(iter).addNewLine(1);

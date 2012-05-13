@@ -1,12 +1,6 @@
 package numerik.ui;
 
-<<<<<<< HEAD
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
-=======
 import java.awt.*;
->>>>>>> origin/master
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;

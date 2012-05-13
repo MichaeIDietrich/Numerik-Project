@@ -23,12 +23,8 @@ public class NewtonIteration implements Task
     @Override
     public void run(Value... parameters)
     {
-<<<<<<< HEAD
-        MathLib.setPrecision( 16 );
-=======
 //        MathLib.setPrecision( 16 );
         MathLib.setPrecision( parameters[3].toDecimal().intValue() );
->>>>>>> origin/master
         MathLib.setRoundingMode( MathLib.EXACT );
         
         int counter = 0;
