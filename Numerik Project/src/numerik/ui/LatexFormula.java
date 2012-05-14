@@ -15,7 +15,7 @@ import numerik.expression.Value;
 public class LatexFormula
 {
     private StringBuilder formula;
-    
+
     private static HashMap<String, String> characterTable;
     
     

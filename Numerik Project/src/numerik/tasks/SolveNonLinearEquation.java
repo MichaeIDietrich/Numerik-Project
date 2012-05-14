@@ -2,7 +2,6 @@
 package numerik.tasks;
 
 import java.math.BigDecimal;
-
 import numerik.calc.MathLib;
 import numerik.calc.Matrix;
 import numerik.calc.Vector;
@@ -15,7 +14,7 @@ public class SolveNonLinearEquation implements Task
     
     TaskPane taskPane;
     LatexFormula formula = new LatexFormula();
-    Recorder    recorder = Recorder.getInstance();
+    LatexFormula itformula = new LatexFormula();
     
     @Override
     public void init(OutputFrame frame, TaskPane taskPane)
@@ -27,8 +26,6 @@ public class SolveNonLinearEquation implements Task
     @Override
     public void run(Value... values)
     {
-        recorder.clear();
-        
         MathLib.setNorm( MathLib.FROBENIUSEUKILDNORM );
         MathLib.setPrecision( 16 );    // Achtung: Präzision>16 führt zu Endlosschleife!!!
         
@@ -41,16 +38,13 @@ public class SolveNonLinearEquation implements Task
         Matrix   jm = new Matrix( startvector.length, startvector.length );
         int       i = 0;
         
-        while (( x.norm() ).compareTo( BigDecimal.ZERO )==1) 
+        while (( x.norm()).compareTo( BigDecimal.ZERO )==1) 
         {
-            formula.addLatexString("x_{"+ i +"} = ").addVector(iter).addNewLine(1);
+            itformula.addLatexString("x_{"+ i +"} = ").addVector(iter).addNewLine(1);
             i++;
             x = jm.jakobiMatrix( iter ).solveX( iter.getEquationsValue() );
             iter = iter.add( x );
         }
-        
-        recorder.add( formula );
-        formula.clear();
         
         // Ausgabe: Latex-Formula-String
 
@@ -67,7 +61,7 @@ public class SolveNonLinearEquation implements Task
         .addText("   und   ").addLatexString("x^{k+1} = x^{k} + \\Delta{x^{k+1}}").addText("  mit ").addNewLine(3).addLatexString("\\Phi( x ) = ");
         formula.jakobiMatrix();
         formula.addNewLine(3).addTextUL("Start\\;der\\;Iteration").addNewLine(1);
-        formula.addFormula( recorder.get() ).addNewLine(2);
+        formula.addFormula( itformula ).addNewLine(2);
         
         taskPane.setViewPortView(new TaskScrollPane(formula));
     }

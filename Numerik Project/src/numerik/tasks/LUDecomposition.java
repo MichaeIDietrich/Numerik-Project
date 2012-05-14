@@ -15,6 +15,7 @@ public class LUDecomposition implements Task
     
     Matrix A;
     Vector b;
+    Vector trueb;
     
     TaskPane taskPane;
     
@@ -55,6 +56,11 @@ public class LUDecomposition implements Task
             Matrix P = A.getScaleOf();
             A = P.mult(A);
             b = P.mult(b);
+            MathLib.enableRound(false);
+            trueb = P.mult(trueb);
+            MathLib.enableRound(true);
+        } else {
+            trueb = b.clone();
         }
         
         Vector x = A.solveX(b);

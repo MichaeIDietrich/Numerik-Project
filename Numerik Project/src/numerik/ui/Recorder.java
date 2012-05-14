@@ -8,7 +8,7 @@ public final class Recorder
     private boolean       active = true;
     
     
-    private Recorder() { } //private Contructor, um zu vermeiden, dass jemand diese Klasse instanziieren will (Singleton)
+    private Recorder() { } //private Constructor, um zu vermeiden, dass jemand diese Klasse instanziieren will (Singleton)
     
     
     public void add(LatexFormula formula) 
@@ -35,7 +35,7 @@ public final class Recorder
     public void clear()
     {
         isempty = true;
-        formula = new LatexFormula();
+        this.formula = new LatexFormula();
     }
     
     

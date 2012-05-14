@@ -675,7 +675,6 @@ public class Matrix {
     
     public Matrix jakobiMatrix(Vector vector)
     {
-        
         Double[] x = vector.toDouble();  // x[0] = x_1 ; x[1] = x_2 ; usw.
         
         values[0][0] = BigDecimal.valueOf(   2*x[0]      );
@@ -687,7 +686,7 @@ public class Matrix {
     }
     
     /**
-     * Gibt die Matrix zurück, die nur an der Diagonale die Zahlen der originalen Matrix enthält
+     * Gibt die Matrix zurï¿½ck, die nur an der Diagonale die Zahlen der originalen Matrix enthï¿½lt
      * Die anderen Zellen der Matrix beinhalten die Zahl 0
      * In Formeln auch als "B-Matrix" bezeichnet
      */
