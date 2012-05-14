@@ -280,7 +280,7 @@ public class Matrix {
         {
                 for(int j=0; j<vector.getLength(); j++)
                 {
-                    sum = MathLib.round( sum.add( MathLib.round( values[zeile][j].multiply( vector.get(j) ))));
+                    sum = sum.add( MathLib.round( values[zeile][j].multiply( vector.get(j) )));
                 }
                 newVector.set(zeile, sum);
                 sum = BigDecimal.ZERO;
@@ -309,7 +309,7 @@ public class Matrix {
                 
                 for (int j2 = 0; j2 < cols; j2++)
                 {
-                    sum = MathLib.round( sum.add( MathLib.round( values[i][j2].multiply( matrix.get(j2, j) ))));
+                    sum = sum.add( MathLib.round( values[i][j2].multiply( matrix.get(j2, j) )));
                 }
                 v[i][j] = sum;
             }
