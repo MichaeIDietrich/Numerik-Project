@@ -64,6 +64,30 @@ public class Matrix_TestFixture
     }
     
     @Test
+    public void mult__Multiplizere_eine_1x4_Matrix_mit_einer_4x1_Matrix_mit_Prezision_6()
+    {
+        MathLib.setPrecision(6);
+        
+        M1 = new Matrix(1, 4);
+        M2 = new Matrix(4, 1);
+
+        M1.set(0, 0, new BigDecimal("0.356887"));
+        M1.set(0, 1, new BigDecimal("-0.540738"));
+        M1.set(0, 2, new BigDecimal("0.47585"));
+        M1.set(0, 3, new BigDecimal("-0.594812"));
+        
+        M2.set(0, 0, new BigDecimal("0.1"));
+        M2.set(1, 0, new BigDecimal("0"));
+        M2.set(2, 0, new BigDecimal("0.1"));
+        M2.set(3, 0, new BigDecimal("-0.375"));
+        
+        MMul = M1.mult(M2);
+        
+        //mit der Prezision 7 kommt hier 0.3063282 raus --> das heiﬂt, eigentlich muss bei pr‰zision 6 abgerundet werden
+        assertEquals("0.306328",  MMul.get(0, 0));
+    }
+    
+    @Test
     public void getDiagonalMatrix__diagonalMatrix_Of_A_3x3_Matrix()
     {
         Matrix diagonalMatrix;

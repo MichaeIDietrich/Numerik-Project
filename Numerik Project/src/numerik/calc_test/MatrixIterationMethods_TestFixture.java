@@ -286,7 +286,7 @@ public class MatrixIterationMethods_TestFixture
     {
         MathLib.setPrecision(6);
         MathLib.enableRound(true);
-        MathLib.setRoundingMode(MathLib.NORMAL);
+        MathLib.setRoundingMode(MathLib.EXACT);
     }
     
     /*
