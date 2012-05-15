@@ -11,24 +11,41 @@ public class ImageComponent extends JComponent
 {
     private static final long serialVersionUID = 8055865896136562197L;
     
-    int width;
-    int height;
+    private int width;
+    private int height;
     
     private Image image;
+    private Color backGround = Color.WHITE;
+    private boolean framed = false; // soll ein Rahmen ums Bild gezeichnet werden?
     
     public ImageComponent(Image image)
     {
         setImage(image);
     }
     
+    public ImageComponent(Image image, Color backGround)
+    {
+        this.backGround = backGround;
+        
+        setImage(image);
+    }
+    
+    public ImageComponent(Image image, Color backGround, boolean framed)
+    {
+        this.backGround = backGround;
+        this.framed = framed;
+        
+        setImage(image);
+    }
+    
     public void setImage(Image image)
     {
-        this.width  = image.getWidth(null);
-        this.height = image.getHeight(null);
-        
-        this.setPreferredSize(new Dimension( this.width, this.height) );
-        this.setMaximumSize(new Dimension( 10000, this.height) );
         this.image = image;
+        width  = image.getWidth(null);
+        height = image.getHeight(null);
+        
+        this.setPreferredSize(new Dimension( getWidth(), getHeight()) );
+        this.setMaximumSize(new Dimension( 10000, getHeight()) );
         
         invalidate();
     }
@@ -36,23 +53,52 @@ public class ImageComponent extends JComponent
     @Override
     protected void paintComponent(Graphics g)
     {
-        g.setColor(Color.WHITE);
+        g.setColor(backGround);
         g.fillRect(g.getClipBounds().x, g.getClipBounds().y, g.getClipBounds().width, g.getClipBounds().height);
         if (image != null)
         {
-            g.drawImage(image, 0, 0, this);
+            if (framed)
+            {
+                System.out.println("framed");
+                g.drawImage(image, 1, 1, this);
+                g.setColor(Color.BLACK);
+                g.drawRect(0, 0, g.getClipBounds().width - 1, g.getClipBounds().height - 1);
+            }
+            else
+            {
+                System.out.println("unframed");
+                g.drawImage(image, 0, 0, this);
+            }
         }
-        //g.setColor(Color.BLACK);
-        //g.drawRect(0, 0, g.getClipBounds().width - 1, g.getClipBounds().height - 1);
     }
     
-    public int width()
+    public int getWidth()
     {
-        return width;
+        return framed ? width + 2 : width;
     }
 
-    public int height()
+    public int getHeight()
     {
-        return height;
+        return framed ? height + 2 : height;
+    }
+
+    public Color getBackGround()
+    {
+        return backGround;
+    }
+
+    public void setBackGround(Color backGround)
+    {
+        this.backGround = backGround;
+    }
+
+    public boolean isFramed()
+    {
+        return framed;
+    }
+
+    public void setFramed(boolean framed)
+    {
+        this.framed = framed;
     }
 }
