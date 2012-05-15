@@ -8,8 +8,8 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import numerik.ui.LatexFormula;
-import numerik.ui.Recorder;
+import numerik.ui.misc.LatexFormula;
+import numerik.ui.misc.Recorder;
 
 
 public class Matrix {
@@ -687,7 +687,7 @@ public class Matrix {
     }
     
     /**
-     * Gibt die Matrix zurück, die nur an der Diagonale die Zahlen der originalen Matrix enthält
+     * Gibt die Matrix zurï¿½ck, die nur an der Diagonale die Zahlen der originalen Matrix enthï¿½lt
      * Die anderen Zellen der Matrix beinhalten die Zahl 0
      * In Formeln auch als "B-Matrix" bezeichnet
      */
@@ -704,7 +704,7 @@ public class Matrix {
     }
     
     /**
-     * Rundet die aktuelle Matrix mit der Mantissenlänge, die in der MathLib statisch enthalten ist.
+     * Rundet die aktuelle Matrix mit der Mantissenlï¿½nge, die in der MathLib statisch enthalten ist.
      */
     public Matrix roundToMantissaLength()
     {

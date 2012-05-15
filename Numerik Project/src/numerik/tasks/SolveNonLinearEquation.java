@@ -8,6 +8,11 @@ import numerik.calc.Matrix;
 import numerik.calc.Vector;
 import numerik.expression.Value;
 import numerik.ui.*;
+import numerik.ui.controls.TaskPane;
+import numerik.ui.controls.TaskScrollPane;
+import numerik.ui.dialogs.OutputFrame;
+import numerik.ui.misc.LatexFormula;
+import numerik.ui.misc.Recorder;
 
 
 public class SolveNonLinearEquation implements Task

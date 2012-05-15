@@ -1,4 +1,4 @@
-package numerik.ui;
+package numerik.ui.misc;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

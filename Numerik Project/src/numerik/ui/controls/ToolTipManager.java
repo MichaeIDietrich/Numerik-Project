@@ -1,15 +1,15 @@
-package numerik.ui;
+package numerik.ui.controls;
 
 import java.awt.*;
 import java.util.ArrayList;
 
 import javax.swing.*;
 
-public class ToolTipManager
+public final class ToolTipManager
 {
     ArrayList<ImageToolTip> toolTips = new ArrayList<ImageToolTip>();
     
-    class ImageToolTip
+    protected final class ImageToolTip
     {
         private Popup popup;
         

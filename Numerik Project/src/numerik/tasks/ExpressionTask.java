@@ -12,6 +12,11 @@ import numerik.calc.Matrix;
 import numerik.expression.*;
 import numerik.expression.Value.ValueType;
 import numerik.ui.*;
+import numerik.ui.controls.*;
+import numerik.ui.dialogs.NewMatrixWindow;
+import numerik.ui.dialogs.OutputFrame;
+import numerik.ui.misc.LatexFormula;
+import numerik.ui.misc.Recorder;
 
 public class ExpressionTask implements Task, ActionListener, KeyListener, ExpressionListener
 {

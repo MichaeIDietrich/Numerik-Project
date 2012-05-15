@@ -1,4 +1,4 @@
-package numerik.ui;
+package numerik.ui.controls;
 
 import java.awt.Color;
 import java.awt.Dimension;

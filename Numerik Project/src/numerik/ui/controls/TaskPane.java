@@ -1,4 +1,4 @@
-package numerik.ui;
+package numerik.ui.controls;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -13,6 +13,8 @@ import numerik.expression.Value;
 import numerik.io.DocumentLoader;
 import numerik.tasks.*;
 import numerik.tasks.Argument.ArgType;
+import numerik.ui.dialogs.OutputFrame;
+import numerik.ui.misc.LatexFormula;
 
     
 public final class TaskPane extends JPanel implements ActionListener
@@ -75,15 +77,16 @@ public final class TaskPane extends JPanel implements ActionListener
             {
                 case MATRIX:
                     combo = new JComboBox<String>(matrices);
-                    combo.setUI(new ToolTippedComboBoxUI(imgMatrices, new Color(255, 255, 150)));
-//                    combo.setMinimumSize(new Dimension(70, 0));
+                    new ToolTippedComboBox(combo, imgMatrices, new Color(255, 255, 150));
+                    combo.setPreferredSize(new Dimension(50, combo.getPreferredSize().height));
                     arg.setRelatedControl(combo);
                     toolBar.add(combo);
                     break;
                     
                 case VECTOR:
                     combo = new JComboBox<String>(vectors);
-                    combo.setUI(new ToolTippedComboBoxUI(imgVectors, new Color(255, 255, 150)));
+                    new ToolTippedComboBox(combo, imgVectors, new Color(255, 255, 150));
+                    combo.setPreferredSize(new Dimension(50, combo.getPreferredSize().height));
 //                    combo.setMinimumSize(new Dimension(70, 0));
                     arg.setRelatedControl(combo);
                     toolBar.add(combo);
@@ -91,6 +94,7 @@ public final class TaskPane extends JPanel implements ActionListener
                     
                 case DECIMAL:
                     text = new JTextField(arg.getDefaultValue());
+                    text.setPreferredSize(new Dimension(50, text.getPreferredSize().height));
 //                    text.setMinimumSize(new Dimension(70, 0));
                     arg.setRelatedControl(text);
                     toolBar.add(text);
@@ -98,6 +102,7 @@ public final class TaskPane extends JPanel implements ActionListener
                     
                 case INTEGER:
                     text = new JTextField(arg.getDefaultValue());
+                    text.setPreferredSize(new Dimension(50, text.getPreferredSize().height));
 //                    text.setMinimumSize(new Dimension(70, 0));
                     arg.setRelatedControl(text);
                     toolBar.add(text);
