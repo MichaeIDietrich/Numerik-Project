@@ -23,7 +23,7 @@ public class LUDecomposition implements Task
     public void init(OutputFrame frame, TaskPane taskPane)
     {
         this.taskPane = taskPane;
-        taskPane.createJToolBarByArguments(new Argument("Matrix A:", ArgType.MATRIX), new Argument("Vektor b:", ArgType.VECTOR), 
+        taskPane.createJToolBarByArguments(new Argument("Matrix:", ArgType.MATRIX), new Argument("Vektor:", ArgType.VECTOR), 
                 new Argument("Normalisieren", ArgType.BOOLEAN), Argument.PRECISION, Argument.RUN_BUTTON);
     }
     
@@ -40,7 +40,7 @@ public class LUDecomposition implements Task
 //        MathLib.setPrecision( 5 );                                        // Mantissenlänge
         MathLib.setPivotStrategy( true );
         MathLib.setRoundingMode( MathLib.EXACT );                         // exact = Mantissen genau, normal = Nachkomma genau
-        MathLib.setNorm( MathLib.FROBENIUSEUKILDNORM );                   // ZEILENSUMMENNORM oder FROBENIUSEUKILDNORM
+        MathLib.setNorm( MathLib.ZEILENSUMMENNORM );                   // ZEILENSUMMENNORM oder FROBENIUSEUKILDNORM
         MathLib.setInversePrecision( 20 );
         
         //Matrix A = new Matrix("Data.txt", "A");
