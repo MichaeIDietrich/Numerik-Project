@@ -702,6 +702,24 @@ public class Matrix {
         return tempMatrix;
     }
     
+    /**
+     * Rundet die aktuelle Matrix mit der Mantissenlänge, die in der MathLib statisch enthalten ist.
+     * Gibt eine Matrix, die zu einer bestimmten Mantissenlänge gerundet wurde.
+     */
+    public Matrix roundToMantissaLength()
+    {
+        Matrix tempMatrix = new Matrix(rows, cols);
+        
+        for (int row = 0; row < rows; row++)
+        {
+            for (int column = 0; column < cols; column++)
+            {
+                tempMatrix.set(row, column, MathLib.round(get(row, column)));
+            }
+        }
+        
+        return tempMatrix;
+    }
     
     public BigDecimal norm()
     {

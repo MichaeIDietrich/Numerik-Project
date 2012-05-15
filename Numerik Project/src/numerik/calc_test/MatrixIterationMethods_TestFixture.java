@@ -162,8 +162,8 @@ public class MatrixIterationMethods_TestFixture
         assertEquals("1.99224", vectorArrayOutput[5].get(1).toPlainString());
         
         //hier kommt ein rundungsfehler zustande --> scheinbar ist bei irgendeiner rundungsoperation was schief gegangen
-        assertEquals("-0.994522", vectorArrayOutput[5].get(2).toPlainString());
-        assertEquals("0.994434", vectorArrayOutput[5].get(3).toPlainString());
+        assertEquals("-0.994521", vectorArrayOutput[5].get(2).toPlainString());
+        assertEquals("0.994431", vectorArrayOutput[5].get(3).toPlainString());
     }
     
     @Test
@@ -200,7 +200,7 @@ public class MatrixIterationMethods_TestFixture
         
         tupleOutput = vectorIteration(matrixInput, vectorInput, 20);
         
-        assertEquals("-0.425912", tupleOutput.item1[0].toPlainString());
+        assertEquals("-0.425913", tupleOutput.item1[0].toPlainString());
         assertEquals("0.356887", tupleOutput.item2[0].get(0).toPlainString());
         assertEquals("-0.540738", tupleOutput.item2[0].get(1).toPlainString());
         assertEquals("0.47585", tupleOutput.item2[0].get(2).toPlainString());
@@ -209,14 +209,14 @@ public class MatrixIterationMethods_TestFixture
         assertEquals("-0.426378", tupleOutput.item1[9].toPlainString());
         assertEquals("-0.33526", tupleOutput.item2[9].get(0).toPlainString());
         assertEquals("0.560322", tupleOutput.item2[9].get(1).toPlainString());
-        assertEquals("-0.433956", tupleOutput.item2[9].get(2).toPlainString());
-        assertEquals("0.620744", tupleOutput.item2[9].get(3).toPlainString());
+        assertEquals("-0.433957", tupleOutput.item2[9].get(2).toPlainString());
+        assertEquals("0.620741", tupleOutput.item2[9].get(3).toPlainString());
         
-        assertEquals("-0.42643", tupleOutput.item1[19].toPlainString());
-        assertEquals("-0.335116", tupleOutput.item2[19].get(0).toPlainString());
-        assertEquals("0.560679", tupleOutput.item2[19].get(1).toPlainString());
-        assertEquals("-0.434106", tupleOutput.item2[19].get(2).toPlainString());
-        assertEquals("0.620394", tupleOutput.item2[19].get(3).toPlainString());
+        assertEquals("-0.426432", tupleOutput.item1[19].toPlainString());
+        assertEquals("-0.335115", tupleOutput.item2[19].get(0).toPlainString());
+        assertEquals("0.560682", tupleOutput.item2[19].get(1).toPlainString());
+        assertEquals("-0.434108", tupleOutput.item2[19].get(2).toPlainString());
+        assertEquals("0.620392", tupleOutput.item2[19].get(3).toPlainString());
     }
     
     @Test
@@ -286,7 +286,7 @@ public class MatrixIterationMethods_TestFixture
     {
         MathLib.setPrecision(6);
         MathLib.enableRound(true);
-        MathLib.setRoundingMode(MathLib.NORMAL);
+        MathLib.setRoundingMode(MathLib.EXACT);
     }
     
     /*

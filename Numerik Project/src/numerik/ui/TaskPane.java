@@ -46,8 +46,18 @@ public final class TaskPane extends JPanel implements ActionListener
         DocumentLoader docLoader = new DocumentLoader();
         String[] matrices = docLoader.getAllMatrixNames("Data.txt");
         String[] vectors = docLoader.getAllVectorNames("Data.txt");
+        ArrayList<Image> imgMatrices = new ArrayList<Image>();
+        for (Matrix matrix : docLoader.readMatrices("Data.txt"))
+        {
+            imgMatrices.add(new LatexFormula().addMatrix(matrix).toImage());
+        }
+        ArrayList<Image> imgVectors = new ArrayList<Image>();
+        for (Vector vector : docLoader.readVectors("Data.txt"))
+        {
+            imgVectors.add(new LatexFormula().addVector(vector).toImage());
+        }
         
-        JComboBox combo;
+        JComboBox<String> combo;
         JTextField text;
         JCheckBox check;
         JSpinner spinner;
@@ -65,14 +75,16 @@ public final class TaskPane extends JPanel implements ActionListener
             switch (arg.getArgumentType())
             {
                 case MATRIX:
-                    combo = new JComboBox(matrices);
+                    combo = new JComboBox<String>(matrices);
+                    combo.setUI(new ToolTippedComboBoxUI(imgMatrices, new Color(255, 255, 150)));
 //                    combo.setMinimumSize(new Dimension(70, 0));
                     arg.setRelatedControl(combo);
                     toolBar.add(combo);
                     break;
                     
                 case VECTOR:
-                    combo = new JComboBox(vectors);
+                    combo = new JComboBox<String>(vectors);
+                    combo.setUI(new ToolTippedComboBoxUI(imgVectors, new Color(255, 255, 150)));
 //                    combo.setMinimumSize(new Dimension(70, 0));
                     arg.setRelatedControl(combo);
                     toolBar.add(combo);
@@ -195,11 +207,11 @@ public final class TaskPane extends JPanel implements ActionListener
                 switch (arg.getArgumentType())
                 {
                     case MATRIX:
-                        parameters.add(new Value(new Matrix("Data.txt", ((JComboBox)arg.getRelatedControl()).getSelectedItem().toString())));
+                        parameters.add(new Value(new Matrix("Data.txt", ((JComboBox<?>)arg.getRelatedControl()).getSelectedItem().toString())));
                         break;
                         
                     case VECTOR:
-                        parameters.add(new Value(new Vector("Data.txt", ((JComboBox)arg.getRelatedControl()).getSelectedItem().toString())));
+                        parameters.add(new Value(new Vector("Data.txt", ((JComboBox<?>)arg.getRelatedControl()).getSelectedItem().toString())));
                         break;
                         
                     case DECIMAL:

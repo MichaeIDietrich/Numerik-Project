@@ -27,7 +27,7 @@ public class OutputFrame extends JFrame
         this.setIconImages(icons);
         
         initLookAndFeel();
-        initLatex();
+        //initLatex();
         
         TabbedTaskPane tabMain = new TabbedTaskPane(this);
         tabMain.addTab("Expression", new ExpressionTask());
