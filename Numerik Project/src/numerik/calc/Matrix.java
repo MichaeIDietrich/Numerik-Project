@@ -705,6 +705,7 @@ public class Matrix {
     
     /**
      * Rundet die aktuelle Matrix mit der Mantissenlänge, die in der MathLib statisch enthalten ist.
+     * Gibt eine Matrix, die zu einer bestimmten Mantissenlänge gerundet wurde.
      */
     public Matrix roundToMantissaLength()
     {

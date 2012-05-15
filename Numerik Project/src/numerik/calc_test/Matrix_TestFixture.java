@@ -83,8 +83,7 @@ public class Matrix_TestFixture
         
         MMul = M1.mult(M2);
         
-        //mit der Prezision 7 kommt hier 0.3063282 raus --> das heißt, eigentlich muss bei präzision 6 abgerundet werden
-        assertEquals("0.306328",  MMul.get(0, 0));
+        assertEquals("0.306329",  MMul.get(0, 0).toPlainString());
     }
     
     @Test
