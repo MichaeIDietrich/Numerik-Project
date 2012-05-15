@@ -65,7 +65,6 @@ public class NewtonIteration implements Task
         
         while( ox-x != 0 ) 
         {
-            System.out.println(x);
             formula.addLatexString("x_{"+counter+"} = " + BigDecimal.valueOf(x).toPlainString()).addNewLine(1);
             counter++;
             
