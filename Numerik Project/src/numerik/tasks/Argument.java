@@ -4,7 +4,7 @@ import javax.swing.JComponent;
 
 public class Argument
 {
-    public enum ArgType { MATRIX, VECTOR, DECIMAL, INTEGER, BOOLEAN, PRECISION, DOUBLEPRECISION, RUN_BUTTON }
+    public enum ArgType { MATRIX, VECTOR, DECIMAL, INTEGER, BOOLEAN, CHOICE, PRECISION, DOUBLEPRECISION, RUN_BUTTON }
     
     public final static Argument RUN_BUTTON = new Argument(null, ArgType.RUN_BUTTON); 
     public final static Argument PRECISION = new Argument("Genauigkeit:", ArgType.PRECISION, "12"); 
@@ -14,6 +14,7 @@ public class Argument
     private ArgType argumentType;
     private JComponent relatedControl;
     private String defaultValue;
+    private String[] choices;
     
     
     public Argument(String name, ArgType argumentType)
@@ -29,6 +30,14 @@ public class Argument
         this.name = name;
         this.argumentType = argumentType;
         this.defaultValue = defaultValue;
+    }
+    
+    
+    public Argument(String name, String... choices)
+    {
+        this.name = name;
+        this.argumentType = ArgType.CHOICE;
+        this.choices = choices;
     }
     
     
@@ -59,5 +68,11 @@ public class Argument
     public String getDefaultValue()
     {
         return defaultValue;
+    }
+    
+    
+    public String[] getChoices()
+    {
+        return choices;
     }
 }

@@ -7,10 +7,8 @@ import java.awt.Image;
 
 import javax.swing.JComponent;
 
-public class ImageComponent extends JComponent
+public final class ImageComponent extends JComponent
 {
-    private static final long serialVersionUID = 8055865896136562197L;
-    
     private int width;
     private int height;
     
@@ -59,14 +57,12 @@ public class ImageComponent extends JComponent
         {
             if (framed)
             {
-                System.out.println("framed");
                 g.drawImage(image, 1, 1, this);
                 g.setColor(Color.BLACK);
                 g.drawRect(0, 0, g.getClipBounds().width - 1, g.getClipBounds().height - 1);
             }
             else
             {
-                System.out.println("unframed");
                 g.drawImage(image, 0, 0, this);
             }
         }

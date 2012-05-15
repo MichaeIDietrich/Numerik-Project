@@ -4,7 +4,7 @@ import javax.swing.JScrollPane;
 
 import numerik.ui.misc.LatexFormula;
 
-public class TaskScrollPane extends JScrollPane
+public final class TaskScrollPane extends JScrollPane
 {
     public TaskScrollPane(LatexFormula formula) {
         

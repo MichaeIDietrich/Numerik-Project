@@ -5,36 +5,37 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 import javax.swing.*;
-import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import javax.swing.plaf.basic.ComboPopup;
 
 public final class ToolTippedComboBox
 {
     
-    @SuppressWarnings("unchecked")
     public ToolTippedComboBox(JComboBox<String> comboBox, ArrayList<Image> previewImages, Color backGround)
     {
+        // an dieser Stelle muss zwischen den Betriebssystemen unterschieden werden, weil wir das jeweilige "native" Look&Feel unterstützen möchten
+        // und wir deshalb von verschieden Klassen erben müssen und auch andere Sachen sich leicht unterscheiden (teilweise auch wegen Grafik-Bugs)
         switch (System.getProperty("os.name"))
         {
-            case "Windows":
-                ToolTippedComboBoxUI_Windows windowsUI = new ToolTippedComboBoxUI_Windows(previewImages, backGround);
-                comboBox.setUI(windowsUI);
+            case "Windows 7":
+                comboBox.setUI(new ToolTippedComboBoxUI_Windows7(previewImages, backGround));
+                comboBox.setRenderer(new ComboBoxRenderer());
                 break;
             
-            case "Linux":
-                ToolTippedComboBoxUI_Linux linuxUI = new ToolTippedComboBoxUI_Linux(previewImages, backGround);
-                comboBox.setUI(linuxUI);
-                comboBox.setRenderer(new LinuxRenderer());
+            case "Linux": //nur für Ubuntu Unity getestet
+                comboBox.setUI(new ToolTippedComboBoxUI_Linux(previewImages, backGround));
+                comboBox.setRenderer(new ComboBoxRenderer());
                 break;
             
             default:
-                System.err.println(System.getProperty("os.name"));
-                System.err.println(UIManager.getSystemLookAndFeelClassName());
-                System.err.println(comboBox.getUI());
+                //alle anderen Betriebssysteme werden keine Vorschau in der ComboBox sehen
+                System.err.println(System.getProperty("os.name") + " wird zurzeit nicht unterstützt und wird daher keine Vorschau in Comboboxen anzeigen.");
+                System.err.println("Look & Feel: " + UIManager.getSystemLookAndFeelClassName());
+                System.err.println("ComboBox-UI: " + comboBox.getUI());
         }
     }
     
-    protected final class ToolTippedComboBoxUI_Windows extends com.sun.java.swing.plaf.windows.WindowsComboBoxUI
+    
+    protected final class ToolTippedComboBoxUI_Windows7 extends com.sun.java.swing.plaf.windows.WindowsComboBoxUI
     {
         
         private int index = -1;
@@ -42,7 +43,7 @@ public final class ToolTippedComboBox
         private ArrayList<Image> images;
         private Color backGround = Color.WHITE;
         
-        public ToolTippedComboBoxUI_Windows(ArrayList<Image> previewImages, Color backGround)
+        public ToolTippedComboBoxUI_Windows7(ArrayList<Image> previewImages, Color backGround)
         {
             images = previewImages;
             this.backGround = backGround;
@@ -91,6 +92,7 @@ public final class ToolTippedComboBox
             return popup;
         }
     }
+    
     
     protected final class ToolTippedComboBoxUI_Linux extends javax.swing.plaf.synth.SynthComboBoxUI
     {
@@ -149,14 +151,12 @@ public final class ToolTippedComboBox
         }
     }
     
-    protected final class LinuxRenderer extends BasicComboBoxRenderer
+    
+    protected final class ComboBoxRenderer extends DefaultListCellRenderer
     {
-        
-        @Override
-        public Component getListCellRendererComponent(@SuppressWarnings("rawtypes") JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
+        public ComboBoxRenderer()
         {
-            return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            this.setHorizontalAlignment(DefaultListCellRenderer.CENTER);
         }
-        
     }
 }

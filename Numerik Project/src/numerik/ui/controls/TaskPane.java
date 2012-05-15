@@ -114,6 +114,12 @@ public final class TaskPane extends JPanel implements ActionListener
                     toolBar.add(check);
                     break;
                     
+                case CHOICE:
+                    combo = new JComboBox<String>(arg.getChoices());
+                    arg.setRelatedControl(combo);
+                    toolBar.add(combo);
+                    break;
+                    
                 case PRECISION:
                     model = new SpinnerNumberModel(Integer.parseInt(arg.getDefaultValue()), 1, 100, 1);
                     spinner = new JSpinner(model);
@@ -136,6 +142,11 @@ public final class TaskPane extends JPanel implements ActionListener
             
             toolBar.add(new JLabel(" "));
         }
+        if (toolBar.getComponentCount() > 15) // Workaround für viele Elemente in der Toolbar, sollte dringenst ersetzt werden
+        {
+            toolBar.setPreferredSize(new Dimension(0, 60));
+        }
+
     }
     
     
@@ -156,23 +167,7 @@ public final class TaskPane extends JPanel implements ActionListener
                 {
                     task.run(getParameters());
                 }
-                catch (IllegalArgumentException ex)
-                {
-                    JLabel label = new JLabel(ex.getMessage());
-                    label.setForeground(Color.RED);
-                    setViewPortView(label);
-                    
-                    //ex.printStackTrace();
-                }
-                catch (ArithmeticException ex)
-                {
-                    JLabel label = new JLabel(ex.getMessage());
-                    label.setForeground(Color.RED);
-                    setViewPortView(label);
-                    
-                    //ex.printStackTrace();
-                }
-                catch (IndexOutOfBoundsException ex)
+                catch (IllegalArgumentException | ArithmeticException | IndexOutOfBoundsException ex)
                 {
                     JLabel label = new JLabel(ex.getMessage());
                     label.setForeground(Color.RED);
@@ -183,8 +178,8 @@ public final class TaskPane extends JPanel implements ActionListener
             }
         };
         
-//        taskThread.start();
-        taskThread.run();
+        taskThread.start(); //asynchron
+//        taskThread.run(); //snychron
     }
     
     
@@ -228,6 +223,10 @@ public final class TaskPane extends JPanel implements ActionListener
                         
                     case BOOLEAN:
                         parameters.add(new Value(((JCheckBox)arg.getRelatedControl()).isSelected()));
+                        break;
+                        
+                    case CHOICE:
+                        parameters.add(new Value(((JComboBox<?>)arg.getRelatedControl()).getSelectedItem().toString()));
                         break;
                         
                     case PRECISION:

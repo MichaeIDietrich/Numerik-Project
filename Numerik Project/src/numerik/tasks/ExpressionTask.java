@@ -11,7 +11,6 @@ import javax.swing.border.LineBorder;
 import numerik.calc.Matrix;
 import numerik.expression.*;
 import numerik.expression.Value.ValueType;
-import numerik.ui.*;
 import numerik.ui.controls.*;
 import numerik.ui.dialogs.NewMatrixWindow;
 import numerik.ui.dialogs.OutputFrame;

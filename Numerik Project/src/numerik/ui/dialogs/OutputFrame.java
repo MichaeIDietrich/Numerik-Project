@@ -5,14 +5,24 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 
-import org.scilab.forge.jlatexmath.*;
-
 import numerik.tasks.*;
 import numerik.ui.controls.TabbedTaskPane;
-import numerik.ui.misc.LatexFormula;
 
-public class OutputFrame extends JFrame
+public final class OutputFrame extends JFrame
 {
+    
+    private static List<Image> icons;
+    
+    static
+    {
+        icons = new ArrayList<Image>();
+        icons.add(new ImageIcon("icons/app16.png").getImage());
+        icons.add(new ImageIcon("icons/app32.png").getImage());
+        icons.add(new ImageIcon("icons/app48.png").getImage());
+        icons.add(new ImageIcon("icons/app64.png").getImage());
+        icons.add(new ImageIcon("icons/app128.png").getImage());
+    }
+    
     
     private JToolBar activeToolBar;
     
@@ -20,16 +30,9 @@ public class OutputFrame extends JFrame
     public OutputFrame()
     {
         super("Numerik");
-        List<Image> icons = new ArrayList<Image>();
-        icons.add(new ImageIcon("icons/app16.png").getImage());
-        icons.add(new ImageIcon("icons/app32.png").getImage());
-        icons.add(new ImageIcon("icons/app48.png").getImage());
-        icons.add(new ImageIcon("icons/app64.png").getImage());
-        icons.add(new ImageIcon("icons/app128.png").getImage());
         this.setIconImages(icons);
         
         initLookAndFeel();
-        //initLatex();
         
         TabbedTaskPane tabMain = new TabbedTaskPane(this);
         tabMain.addTab("Expression", new ExpressionTask());
@@ -48,21 +51,14 @@ public class OutputFrame extends JFrame
     
     private void initLookAndFeel()
     {
-            try
-            {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            }
-            catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e)
-            {
-                e.printStackTrace();
-            }
-    }
-    
-    
-    private void initLatex()
-    {
-        // Dummy, um die Static-Elemente zu laden
-        new TeXFormula(new LatexFormula().toString()).createTeXIcon(TeXConstants.STYLE_DISPLAY, 20);
+        try
+        {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        }
+        catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e)
+        {
+            e.printStackTrace();
+        }
     }
     
     

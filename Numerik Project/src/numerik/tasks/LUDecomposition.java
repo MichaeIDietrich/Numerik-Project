@@ -8,7 +8,6 @@ import numerik.calc.Matrix;
 import numerik.calc.Vector;
 import numerik.expression.Value;
 import numerik.tasks.Argument.ArgType;
-import numerik.ui.*;
 import numerik.ui.controls.TaskPane;
 import numerik.ui.controls.TaskScrollPane;
 import numerik.ui.dialogs.OutputFrame;
@@ -29,7 +28,8 @@ public class LUDecomposition implements Task
     {
         this.taskPane = taskPane;
         taskPane.createJToolBarByArguments(new Argument("Matrix:", ArgType.MATRIX), new Argument("Vektor:", ArgType.VECTOR), 
-                new Argument("Normalisieren", ArgType.BOOLEAN), Argument.PRECISION, Argument.RUN_BUTTON);
+                new Argument("Normalisieren", ArgType.BOOLEAN), new Argument("Pivot-Strategie: ", ArgType.BOOLEAN), 
+                new Argument("Norm: ", "Zeilensummen-Norm", "Frobenius-Euklid-Norm"), Argument.PRECISION, Argument.RUN_BUTTON);
     }
     
     
@@ -41,11 +41,11 @@ public class LUDecomposition implements Task
         
         // ####### Alle Berechnungen werden mit niedriger Präzision ausgeführt #########
         
-        MathLib.setPrecision( parameters[3].toDecimal().intValue() );                                        // Mantissenlänge
+        MathLib.setPrecision( parameters[5].toDecimal().intValue() );                                        // Mantissenlänge
 //        MathLib.setPrecision( 5 );                                        // Mantissenlänge
-        MathLib.setPivotStrategy( true );
+        MathLib.setPivotStrategy( parameters[3].toBoolean() );
         MathLib.setRoundingMode( MathLib.EXACT );                         // exact = Mantissen genau, normal = Nachkomma genau
-        MathLib.setNorm( MathLib.ZEILENSUMMENNORM );                   // ZEILENSUMMENNORM oder FROBENIUSEUKILDNORM
+        MathLib.setNorm( parameters[4].toText().equals("Zeilensummen-Norm") ? MathLib.ZEILENSUMMENNORM : MathLib.FROBENIUSEUKILDNORM );  // ZEILENSUMMENNORM oder FROBENIUSEUKILDNORM
         MathLib.setInversePrecision( 20 );
         
         //Matrix A = new Matrix("Data.txt", "A");

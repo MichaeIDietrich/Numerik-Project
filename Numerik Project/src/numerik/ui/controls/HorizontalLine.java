@@ -4,7 +4,7 @@ import java.awt.Dimension;
 
 import javax.swing.JSeparator;
 
-public class HorizontalLine extends JSeparator
+public final class HorizontalLine extends JSeparator
 {
     
     public HorizontalLine()

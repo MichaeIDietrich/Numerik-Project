@@ -7,7 +7,7 @@ import javax.swing.event.ChangeListener;
 import numerik.tasks.Task;
 import numerik.ui.dialogs.OutputFrame;
 
-public class TabbedTaskPane extends JTabbedPane implements ChangeListener
+public final class TabbedTaskPane extends JTabbedPane implements ChangeListener
 {
     
     OutputFrame frame;
