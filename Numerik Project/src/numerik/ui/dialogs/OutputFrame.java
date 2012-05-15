@@ -1,4 +1,4 @@
-package numerik.ui;
+package numerik.ui.dialogs;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -8,6 +8,8 @@ import javax.swing.*;
 import org.scilab.forge.jlatexmath.*;
 
 import numerik.tasks.*;
+import numerik.ui.controls.TabbedTaskPane;
+import numerik.ui.misc.LatexFormula;
 
 public class OutputFrame extends JFrame
 {
@@ -27,14 +29,14 @@ public class OutputFrame extends JFrame
         this.setIconImages(icons);
         
         initLookAndFeel();
-        initLatex();
+        //initLatex();
         
         TabbedTaskPane tabMain = new TabbedTaskPane(this);
         tabMain.addTab("Expression", new ExpressionTask());
         tabMain.addTab("LU-Zerlegung", new LUDecomposition());
         tabMain.addTab("Newton Wurzel", new NewtonIteration());
         tabMain.addTab("Non-Lin-GS", new SolveNonLinearEquation());
-        this.add(tabMain);       
+        this.add(tabMain);
         
         this.setSize(600, 720);
         this.setLocationRelativeTo(null);
@@ -46,26 +48,14 @@ public class OutputFrame extends JFrame
     
     private void initLookAndFeel()
     {
-        try
-        {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        }
-        catch (ClassNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-        catch (InstantiationException e)
-        {
-            e.printStackTrace();
-        }
-        catch (IllegalAccessException e)
-        {
-            e.printStackTrace();
-        }
-        catch (UnsupportedLookAndFeelException e)
-        {
-            e.printStackTrace();
-        }
+            try
+            {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            }
+            catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e)
+            {
+                e.printStackTrace();
+            }
     }
     
     

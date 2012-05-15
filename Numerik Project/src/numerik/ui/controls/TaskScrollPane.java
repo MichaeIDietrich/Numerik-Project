@@ -1,6 +1,8 @@
-package numerik.ui;
+package numerik.ui.controls;
 
 import javax.swing.JScrollPane;
+
+import numerik.ui.misc.LatexFormula;
 
 public class TaskScrollPane extends JScrollPane
 {

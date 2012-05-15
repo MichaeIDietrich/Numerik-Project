@@ -1,10 +1,11 @@
-package numerik.ui;
+package numerik.ui.controls;
 
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import numerik.tasks.Task;
+import numerik.ui.dialogs.OutputFrame;
 
 public class TabbedTaskPane extends JTabbedPane implements ChangeListener
 {

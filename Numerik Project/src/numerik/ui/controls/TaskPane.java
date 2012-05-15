@@ -1,4 +1,4 @@
-package numerik.ui;
+package numerik.ui.controls;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -13,6 +13,8 @@ import numerik.expression.Value;
 import numerik.io.DocumentLoader;
 import numerik.tasks.*;
 import numerik.tasks.Argument.ArgType;
+import numerik.ui.dialogs.OutputFrame;
+import numerik.ui.misc.LatexFormula;
 
     
 public final class TaskPane extends JPanel implements ActionListener
@@ -45,8 +47,18 @@ public final class TaskPane extends JPanel implements ActionListener
         DocumentLoader docLoader = new DocumentLoader();
         String[] matrices = docLoader.getAllMatrixNames("Data.txt");
         String[] vectors = docLoader.getAllVectorNames("Data.txt");
+        ArrayList<Image> imgMatrices = new ArrayList<Image>();
+        for (Matrix matrix : docLoader.readMatrices("Data.txt"))
+        {
+            imgMatrices.add(new LatexFormula().addMatrix(matrix).toImage());
+        }
+        ArrayList<Image> imgVectors = new ArrayList<Image>();
+        for (Vector vector : docLoader.readVectors("Data.txt"))
+        {
+            imgVectors.add(new LatexFormula().addVector(vector).toImage());
+        }
         
-        JComboBox combo;
+        JComboBox<String> combo;
         JTextField text;
         JCheckBox check;
         JSpinner spinner;
@@ -64,14 +76,17 @@ public final class TaskPane extends JPanel implements ActionListener
             switch (arg.getArgumentType())
             {
                 case MATRIX:
-                    combo = new JComboBox(matrices);
-//                    combo.setMinimumSize(new Dimension(70, 0));
+                    combo = new JComboBox<String>(matrices);
+                    new ToolTippedComboBox(combo, imgMatrices, new Color(255, 255, 150));
+                    combo.setPreferredSize(new Dimension(50, combo.getPreferredSize().height));
                     arg.setRelatedControl(combo);
                     toolBar.add(combo);
                     break;
                     
                 case VECTOR:
-                    combo = new JComboBox(vectors);
+                    combo = new JComboBox<String>(vectors);
+                    new ToolTippedComboBox(combo, imgVectors, new Color(255, 255, 150));
+                    combo.setPreferredSize(new Dimension(50, combo.getPreferredSize().height));
 //                    combo.setMinimumSize(new Dimension(70, 0));
                     arg.setRelatedControl(combo);
                     toolBar.add(combo);
@@ -79,6 +94,7 @@ public final class TaskPane extends JPanel implements ActionListener
                     
                 case DECIMAL:
                     text = new JTextField(arg.getDefaultValue());
+                    text.setPreferredSize(new Dimension(50, text.getPreferredSize().height));
 //                    text.setMinimumSize(new Dimension(70, 0));
                     arg.setRelatedControl(text);
                     toolBar.add(text);
@@ -86,6 +102,7 @@ public final class TaskPane extends JPanel implements ActionListener
                     
                 case INTEGER:
                     text = new JTextField(arg.getDefaultValue());
+                    text.setPreferredSize(new Dimension(50, text.getPreferredSize().height));
 //                    text.setMinimumSize(new Dimension(70, 0));
                     arg.setRelatedControl(text);
                     toolBar.add(text);
@@ -194,11 +211,11 @@ public final class TaskPane extends JPanel implements ActionListener
                 switch (arg.getArgumentType())
                 {
                     case MATRIX:
-                        parameters.add(new Value(new Matrix("Data.txt", ((JComboBox)arg.getRelatedControl()).getSelectedItem().toString())));
+                        parameters.add(new Value(new Matrix("Data.txt", ((JComboBox<?>)arg.getRelatedControl()).getSelectedItem().toString())));
                         break;
                         
                     case VECTOR:
-                        parameters.add(new Value(new Vector("Data.txt", ((JComboBox)arg.getRelatedControl()).getSelectedItem().toString())));
+                        parameters.add(new Value(new Vector("Data.txt", ((JComboBox<?>)arg.getRelatedControl()).getSelectedItem().toString())));
                         break;
                         
                     case DECIMAL:

@@ -2,6 +2,8 @@ package numerik.tasks;
 
 import numerik.expression.Value;
 import numerik.ui.*;
+import numerik.ui.controls.TaskPane;
+import numerik.ui.dialogs.OutputFrame;
 
 public interface Task
 {

@@ -3,14 +3,14 @@ package numerik.calc;
 import java.math.BigDecimal;
 
 /**
- * MatrixIterationMethods bietet Methoden an für die Lösung von Iterationsaufgaben für Matrizen
+ * MatrixIterationMethods bietet Methoden an fï¿½r die Lï¿½sung von Iterationsaufgaben fï¿½r Matrizen
  */
 public class MatrixIterationMethods
 {
     /**
      * Berechnet die Matrix M aus folgender Formel
      * M = -B^-1 * (A-B)
-     * @param matrixA Ist die Matrix A, die für die obere Formel eigesetzt wird und B ist die Diagonalmatrix von A
+     * @param matrixA Ist die Matrix A, die fï¿½r die obere Formel eigesetzt wird und B ist die Diagonalmatrix von A
      */
     public static Matrix getM(Matrix matrixA)
     {
@@ -19,14 +19,14 @@ public class MatrixIterationMethods
         
         matrixB = matrixA.subtract(matrixB);
         
-        return matrixBinversed.mult(new BigDecimal("-1")).mult(matrixB);
+        return matrixBinversed.mult(new BigDecimal(-1)).mult(matrixB);
     }
     
     /**
      * Berechnet die Vektor M aus folgender Formel
      * c = B^-1 * b
-     * @param matrixA Ist die Matrix A, die für die obere Formel eigesetzt wird und B ist die Diagonalmatrix von A
-     * @param vectorb Vektor b ist ein Vektor, der für eine lineare Gleichung gebraucht wird und steht immer für ein Ergebnis einer Gleichung (wenn eine bessere Erklärung gefunden werden kann, dann ergänzen!)
+     * @param matrixA Ist die Matrix A, die fï¿½r die obere Formel eigesetzt wird und B ist die Diagonalmatrix von A
+     * @param vectorb Vektor b ist ein Vektor, der fï¿½r eine lineare Gleichung gebraucht wird und steht immer fï¿½r ein Ergebnis einer Gleichung (wenn eine bessere Erklï¿½rung gefunden werden kann, dann ergï¿½nzen!)
      */
     public static Vector getc(Matrix matrixA, Vector vectorb)
     {
@@ -36,13 +36,13 @@ public class MatrixIterationMethods
     }
     
     /**
-     * Ermöglicht das Berechnen einer einer Lösung für lineare Gleichungen (näherungsweise)
+     * Ermï¿½glicht das Berechnen einer einer Lï¿½sung fï¿½r lineare Gleichungen (nï¿½herungsweise)
      * mittels der Formel x = Mx * c
-     * Gibt als Endergebnis einen Array von x-Vectoren als Lösungen aus, wobei die erste Iteration
+     * Gibt als Endergebnis einen Array von x-Vectoren als Lï¿½sungen aus, wobei die erste Iteration
      * des Verfahrens Matrix[0] entspricht
-     * @param matrixM Nötig für die Formel x = Mx * c
-     * @param vectorc Nötig für die Formel x = Mx * c
-     * @param startVectorX0 Startvector für die Iterationen
+     * @param matrixM Nï¿½tig fï¿½r die Formel x = Mx * c
+     * @param vectorc Nï¿½tig fï¿½r die Formel x = Mx * c
+     * @param startVectorX0 Startvector fï¿½r die Iterationen
      * @param maxIterations Angabe der maximalen Anzahl der Iterationen
      */
     public static Vector[] jacobiIteration(Matrix matrixM, Vector vectorc, Vector startVectorX0, int maxIterations)
@@ -63,12 +63,12 @@ public class MatrixIterationMethods
     }
     
     /**
-     * Ermöglicht das Abschätzen eines Spektralradiuses
-     * Die Ausgabe des Spektralradiuses(angenähert) für die Iterationen ist im item1 des Tupels als Array gespeichert.
-     * Die Ausgabe des y-Vectors für die Iteration ist im item2 des Tupels als Array gespeichert.
+     * Ermï¿½glicht das Abschï¿½tzen eines Spektralradiuses
+     * Die Ausgabe des Spektralradiuses(angenï¿½hert) fï¿½r die Iterationen ist im item1 des Tupels als Array gespeichert.
+     * Die Ausgabe des y-Vectors fï¿½r die Iteration ist im item2 des Tupels als Array gespeichert.
      * Im Array ist die erste Iteration dem Index 0 zugeordnet.
      * @param matrixM Eigenwert = (y[transponiert] * matrixM * y) / Euklidische Norm von Vektor y
-     * @param startVectorY0 Startvector für die Iterationen
+     * @param startVectorY0 Startvector fï¿½r die Iterationen
      * @param maxIterations Angabe der maximalen Anzahl der Iterationen
      */
     public static Tuple<BigDecimal[], Vector[]> vectorIteration(Matrix matrixM, Vector startVectorY0, int maxIterations)
@@ -102,8 +102,8 @@ public class MatrixIterationMethods
      * item2 des Tupels gibt den Eigenvektor einer Iteration aus
      * Index 0 entspricht wieder der ersten Iteration
      * @param matrixA (A-mue * IdentityMatrix) * y^(k+1) = y^(k)
-     * @param mue Annäherungswert --> Ermöglicht das approximieren des Eigenpaares
-     * @param startVectorY0 Startvector für die Iterationen
+     * @param mue Annï¿½herungswert --> Ermï¿½glicht das approximieren des Eigenpaares
+     * @param startVectorY0 Startvector fï¿½r die Iterationen
      * @param maxIterations Angabe der maximalen Anzahl der Iterationen
      */
     public static Tuple<BigDecimal, Vector[]> inverseIteration(Matrix matrixA, BigDecimal mue, Vector startVectorY0, int maxIterations) throws Exception

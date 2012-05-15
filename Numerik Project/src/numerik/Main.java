@@ -1,6 +1,6 @@
 package numerik;
 
-import numerik.ui.OutputFrame;
+import numerik.ui.dialogs.OutputFrame;
 
 public class Main
 {
