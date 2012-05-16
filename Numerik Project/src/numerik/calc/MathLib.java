@@ -3,7 +3,7 @@ package numerik.calc;
 
 import java.math.*;
 
-public class MathLib
+public final class MathLib
 {
     
     public  static final int               EXACT = 0;

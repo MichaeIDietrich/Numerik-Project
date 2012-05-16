@@ -14,13 +14,10 @@ import numerik.ui.dialogs.OutputFrame;
 import numerik.ui.misc.LatexFormula;
 import numerik.ui.misc.Recorder;
 
-public class LUDecomposition implements Task
+public final class LUDecomposition implements Task
 {
     
-    Matrix A;
-    Vector b;
-    
-    TaskPane taskPane;
+    private TaskPane taskPane;
     
     
     @Override
@@ -28,8 +25,8 @@ public class LUDecomposition implements Task
     {
         this.taskPane = taskPane;
         taskPane.createJToolBarByArguments(new Argument("Matrix:", ArgType.MATRIX), new Argument("Vektor:", ArgType.VECTOR), 
-                new Argument("Normalisieren", ArgType.BOOLEAN), new Argument("Pivot-Strategie: ", ArgType.BOOLEAN), 
-                new Argument("Norm: ", "Zeilensummen-Norm", "Frobenius-Euklid-Norm"), Argument.PRECISION, Argument.RUN_BUTTON);
+                new Argument("Normalisieren", ArgType.BOOLEAN), new Argument("Pivot-Strategie:", ArgType.BOOLEAN), 
+                new Argument("Norm:", "Zeilensummen-Norm", "Frobenius-Euklid-Norm"), Argument.PRECISION, Argument.RUN_BUTTON);
     }
     
     
