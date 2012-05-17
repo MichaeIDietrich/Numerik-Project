@@ -159,12 +159,12 @@ public final class Vector
         return new Vector(v);
     }
 
-//    Muss noch überarbeitet werden --> z.B. wegen dem transponierend
+//    Muss noch ï¿½berarbeitet werden --> z.B. wegen dem transponierend
 //    public Matrix mult(Matrix matrix)
 //    {
 //        if (length != matrix.getCols())
 //        {
-//            throw new ArithmeticException("Bei der Multiplikations von einem Vektor mit einer Matrix, muss der Vektor die selbe Länge haben, wie die Matrix an Spalten besitzt.");
+//            throw new ArithmeticException("Bei der Multiplikations von einem Vektor mit einer Matrix, muss der Vektor die selbe Lï¿½nge haben, wie die Matrix an Spalten besitzt.");
 //        }
 //        
 //        BigDecimal[][] v = new BigDecimal[1][matrix.getCols()];
@@ -247,7 +247,7 @@ public final class Vector
     }
     
     
-    public Double[] toDouble() {
+    public Double[] toDoubleArray() {
         
         Double x[] = new Double[ length ];
         for(int i=0; i<=length-1; i++) x[i] = get(i).doubleValue();
@@ -259,7 +259,7 @@ public final class Vector
     public Vector getEquationsValue() {
         
         Vector   f = new Vector( getLength() );
-        Double[] x = toDouble();                  // x[0] = x_1 ; x[1] = x_2 ; usw.
+        Double[] x = toDoubleArray();                  // x[0] = x_1 ; x[1] = x_2 ; usw.
         
         f.set(0, BigDecimal.valueOf(     x[0]*x[0] +x[1]*x[1]       +0.6*x[1] -0.16     ).negate());
         f.set(1, BigDecimal.valueOf(     x[0]*x[0] -x[1]*x[1] +x[0] -1.6*x[1] -0.14     ).negate());

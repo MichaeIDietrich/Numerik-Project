@@ -629,14 +629,13 @@ public class Matrix {
     
     public BigDecimal det()
     {
-        
         if (!isQuadratic() || (rows>3 && cols>3))
         {
             throw new ArithmeticException("Die Matrix muss quadratisch sein");
         } 
         BigDecimal sum;
         
-        // Determinanten mittels Sarrus Regel fÃ¼r 2x2 und 3x3 Matrizen
+        // Determinante mittels Sarrus Regel fÃ¼r 2x2 und 3x3 Matrizen
         int        dim = cols-1;
         BigDecimal det = BigDecimal.ONE;
                    sum = BigDecimal.ZERO;
@@ -675,7 +674,7 @@ public class Matrix {
     
     public Matrix jakobiMatrix(Vector vector)
     {
-        Double[] x = vector.toDouble();  // x[0] = x_1 ; x[1] = x_2 ; usw.
+        Double[] x = vector.toDoubleArray();  // x[0] = x_1 ; x[1] = x_2 ; usw.
         
         values[0][0] = BigDecimal.valueOf(   2*x[0]      );
         values[0][1] = BigDecimal.valueOf(   2*x[1]+0.6  );
@@ -684,6 +683,7 @@ public class Matrix {
         
         return this;
     }
+    
     
     /**
      * Gibt die Matrix zurï¿½ck, die nur an der Diagonale die Zahlen der originalen Matrix enthï¿½lt
@@ -696,15 +696,16 @@ public class Matrix {
 
         for (int columnRow = 0; columnRow < cols; columnRow++)
         {
-            tempMatrix.set(columnRow, columnRow, MathLib.round(get(columnRow, columnRow)));
+            tempMatrix.set( columnRow, columnRow, MathLib.round( this.get(columnRow, columnRow)));
         }
 
         return tempMatrix;
     }
     
+    
     /**
-     * Rundet die aktuelle Matrix mit der Mantissenlänge, die in der MathLib statisch enthalten ist.
-     * Gibt eine Matrix, die zu einer bestimmten Mantissenlänge gerundet wurde.
+     * Rundet die aktuelle Matrix mit der Mantissenlï¿½nge, die in der MathLib statisch enthalten ist.
+     * Gibt eine Matrix, die zu einer bestimmten Mantissenlï¿½nge gerundet wurde.
      */
     public Matrix roundToMantissaLength()
     {
@@ -721,16 +722,17 @@ public class Matrix {
         return tempMatrix;
     }
     
+    
     public BigDecimal norm()
     {
-        if( MathLib.getNorm()==0 ) return  zsnorm();
-        if( MathLib.getNorm()==1 ) return fronorm();
+        if( MathLib.getNorm()==0 ) return zeilensummenNorm();
+        if( MathLib.getNorm()==1 ) return frobeniusNorm();
         
         return null;
     }
     
     
-    private BigDecimal zsnorm()
+    private BigDecimal zeilensummenNorm()
     {
         BigDecimal sum = BigDecimal.ZERO;
         BigDecimal max = BigDecimal.ZERO;
@@ -749,16 +751,15 @@ public class Matrix {
     }
     
     
-    private BigDecimal fronorm()
+    private BigDecimal frobeniusNorm()
     {
-        
-        BigDecimal     sum = BigDecimal.ZERO;
+        BigDecimal sum = BigDecimal.ZERO;
         
         for(int row=0; row<rows; row++)
         {
             for(int col=0; col<cols; col++)
             {
-                sum = sum.add( values[row][col].multiply( values[row][col] ) );
+                sum = sum.add( values[row][col].multiply( values[row][col] ));
             }
         }
         return MathLib.sqrt( sum );

@@ -57,10 +57,11 @@ public class LUDecomposition implements Task
         
         if (parameters[2].toBoolean())
         {
-            MathLib.enableRound(false);
+            MathLib.enableRound( false );
             Matrix P = A.getScaleOf();
             trueA = P.mult(trueA);
-            MathLib.enableRound(true);
+            trueb = P.mult(trueb);
+            MathLib.enableRound( true );
             
             name = A.name;
             A = P.mult(A);
@@ -69,26 +70,21 @@ public class LUDecomposition implements Task
             name = b.name;
             b = P.mult(b);
             b.name = name;
-            
-            MathLib.enableRound(false);
-            trueb = P.mult(trueb);
-            MathLib.enableRound(true);
         } 
         
         Vector x = A.solveX(b);
         
         // ####### Alle folgenden Berechnungen werden mit "maximaler" Präzision ausgeführt #########
-        
-        MathLib.enableRound(false);
+        MathLib.enableRound( false );
         Matrix  invA = trueA.getInverse();
         Matrix AinvA = trueA.mult(invA);
         Vector invAb = invA.mult(trueb);
         Vector     r = trueA.mult(x).sub(b);
-        MathLib.enableRound(true);
+        MathLib.enableRound( true );
 
         BigDecimal     kappa = invA.norm().multiply( trueA.norm() );
-        BigDecimal relFehler = kappa.multiply( r.norm().divide( b.norm(), MathLib.getInversePrecision(), RoundingMode.HALF_UP) );
-        
+        BigDecimal relFehler = kappa.multiply( r.norm().divide( b.norm(), MathLib.getPrecision(), RoundingMode.HALF_UP) );
+       
         
         // ####### Ausgabe mit niedriger Präzision / Achtung! Ausgabe sollte Mantissengenauigkeit haben. #########
         LatexFormula formula = new LatexFormula();
@@ -111,6 +107,8 @@ public class LUDecomposition implements Task
         formula.addRelError("x").addText(" = ")
                .addVektornormXdivY("x-"+A.name+"^{-1}"+b.name, A.name+"^{-1}"+b.name, false)
                .addText(" = "+ x.sub(invAb).norm().divide(invAb.norm(), MathLib.getPrecision(), RoundingMode.HALF_UP) ).addNewLine(2);
+        
+        
         taskPane.setViewPortView(new TaskScrollPane(formula));
     }
 }
