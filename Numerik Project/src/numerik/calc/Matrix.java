@@ -672,15 +672,16 @@ public class Matrix {
     }
     
     
-    public Matrix jakobiMatrix(Vector vector)
+    public Matrix jakobiMatrix(Matrix functions)
     {
-        Double[] x = vector.toDoubleArray();  // x[0] = x_1 ; x[1] = x_2 ; usw.
-        
-        values[0][0] = BigDecimal.valueOf(   2*x[0]      );
-        values[0][1] = BigDecimal.valueOf(   2*x[1]+0.6  );
-        values[1][0] = BigDecimal.valueOf(   2*x[0]+1    );
-        values[1][1] = BigDecimal.valueOf(  -2*x[1]-1.6  );
-        
+        for(int row=0; row<functions.getRows(); row++) 
+        {
+            for(int col=0; col<functions.getCols(); col++) 
+            {
+                values[row][col] = functions.get(row, col);
+            }
+        }
+
         return this;
     }
     

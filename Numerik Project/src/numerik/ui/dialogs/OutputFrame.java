@@ -36,9 +36,12 @@ public final class OutputFrame extends JFrame
         
         TabbedTaskPane tabMain = new TabbedTaskPane(this);
         tabMain.addTab("Expression", new ExpressionTask());
+        tabMain.addTab("Dez->Bin",    new dezToBin());
         tabMain.addTab("LU-Zerlegung", new LUDecomposition());
         tabMain.addTab("Newton Wurzel", new NewtonIteration());
         tabMain.addTab("Non-Lin-GS", new SolveNonLinearEquation());
+        tabMain.addTab("Gauss 4P", new GaussIntegrationOrder4());
+        
         this.add(tabMain);
         
         this.setSize(600, 720);
