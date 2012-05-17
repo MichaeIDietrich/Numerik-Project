@@ -1,4 +1,5 @@
-package numerik.ui;
+package numerik.ui.misc;
+
 
 public final class Recorder
 {

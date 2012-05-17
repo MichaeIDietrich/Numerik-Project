@@ -1,4 +1,5 @@
-package numerik.ui;
+
+package numerik.ui.controls;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -6,13 +7,14 @@ import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import javax.swing.*;
-
 import numerik.calc.Matrix;
 import numerik.calc.Vector;
 import numerik.expression.Value;
 import numerik.io.DocumentLoader;
 import numerik.tasks.*;
 import numerik.tasks.Argument.ArgType;
+import numerik.ui.dialogs.OutputFrame;
+import numerik.ui.misc.LatexFormula;
 
     
 public final class TaskPane extends JPanel implements ActionListener
@@ -76,15 +78,16 @@ public final class TaskPane extends JPanel implements ActionListener
             {
                 case MATRIX:
                     combo = new JComboBox<String>(matrices);
-                    combo.setUI(new ToolTippedComboBoxUI(imgMatrices, new Color(255, 255, 150)));
-//                    combo.setMinimumSize(new Dimension(70, 0));
+                    new ToolTippedComboBox(combo, imgMatrices, new Color(255, 255, 150));
+                    combo.setPreferredSize(new Dimension(50, combo.getPreferredSize().height));
                     arg.setRelatedControl(combo);
                     toolBar.add(combo);
                     break;
                     
                 case VECTOR:
                     combo = new JComboBox<String>(vectors);
-                    combo.setUI(new ToolTippedComboBoxUI(imgVectors, new Color(255, 255, 150)));
+                    new ToolTippedComboBox(combo, imgVectors, new Color(255, 255, 150));
+                    combo.setPreferredSize(new Dimension(50, combo.getPreferredSize().height));
 //                    combo.setMinimumSize(new Dimension(70, 0));
                     arg.setRelatedControl(combo);
                     toolBar.add(combo);
@@ -92,6 +95,7 @@ public final class TaskPane extends JPanel implements ActionListener
                     
                 case DECIMAL:
                     text = new JTextField(arg.getDefaultValue());
+                    text.setPreferredSize(new Dimension(50, text.getPreferredSize().height));
 //                    text.setMinimumSize(new Dimension(70, 0));
                     arg.setRelatedControl(text);
                     toolBar.add(text);
@@ -99,6 +103,7 @@ public final class TaskPane extends JPanel implements ActionListener
                     
                 case INTEGER:
                     text = new JTextField(arg.getDefaultValue());
+                    text.setPreferredSize(new Dimension(50, text.getPreferredSize().height));
 //                    text.setMinimumSize(new Dimension(70, 0));
                     arg.setRelatedControl(text);
                     toolBar.add(text);
@@ -108,6 +113,12 @@ public final class TaskPane extends JPanel implements ActionListener
                     check = new JCheckBox(arg.getName() ,arg.getDefaultValue().equals("true"));
                     arg.setRelatedControl(check);
                     toolBar.add(check);
+                    break;
+                    
+                case CHOICE:
+                    combo = new JComboBox<String>(arg.getChoices());
+                    arg.setRelatedControl(combo);
+                    toolBar.add(combo);
                     break;
                     
                 case PRECISION:
@@ -132,6 +143,11 @@ public final class TaskPane extends JPanel implements ActionListener
             
             toolBar.add(new JLabel(" "));
         }
+        if (toolBar.getComponentCount() > 15) // Workaround für viele Elemente in der Toolbar, sollte dringenst ersetzt werden
+        {
+            toolBar.setPreferredSize(new Dimension(0, 60));
+        }
+
     }
     
     
@@ -152,23 +168,7 @@ public final class TaskPane extends JPanel implements ActionListener
                 {
                     task.run(getParameters());
                 }
-                catch (IllegalArgumentException ex)
-                {
-                    JLabel label = new JLabel(ex.getMessage());
-                    label.setForeground(Color.RED);
-                    setViewPortView(label);
-                    
-                    //ex.printStackTrace();
-                }
-                catch (ArithmeticException ex)
-                {
-                    JLabel label = new JLabel(ex.getMessage());
-                    label.setForeground(Color.RED);
-                    setViewPortView(label);
-                    
-                    //ex.printStackTrace();
-                }
-                catch (IndexOutOfBoundsException ex)
+                catch (IllegalArgumentException | ArithmeticException | IndexOutOfBoundsException ex)
                 {
                     JLabel label = new JLabel(ex.getMessage());
                     label.setForeground(Color.RED);
@@ -179,8 +179,8 @@ public final class TaskPane extends JPanel implements ActionListener
             }
         };
         
-//        taskThread.start();
-        taskThread.run();
+        taskThread.start(); //asynchron
+//        taskThread.run(); //snychron
     }
     
     
@@ -224,6 +224,10 @@ public final class TaskPane extends JPanel implements ActionListener
                         
                     case BOOLEAN:
                         parameters.add(new Value(((JCheckBox)arg.getRelatedControl()).isSelected()));
+                        break;
+                        
+                    case CHOICE:
+                        parameters.add(new Value(((JComboBox<?>)arg.getRelatedControl()).getSelectedItem().toString()));
                         break;
                         
                     case PRECISION:

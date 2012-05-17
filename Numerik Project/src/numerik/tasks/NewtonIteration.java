@@ -5,7 +5,10 @@ import java.math.BigDecimal;
 import numerik.calc.MathLib;
 import numerik.expression.Value;
 import numerik.tasks.Argument.ArgType;
-import numerik.ui.*;
+import numerik.ui.controls.TaskPane;
+import numerik.ui.controls.TaskScrollPane;
+import numerik.ui.dialogs.OutputFrame;
+import numerik.ui.misc.LatexFormula;
 
 public class NewtonIteration implements Task
 {
@@ -17,7 +20,7 @@ public class NewtonIteration implements Task
     {
         this.taskPane = taskPane;
         taskPane.createJToolBarByArguments(new Argument("k:", ArgType.INTEGER, "5"), new Argument("a:", ArgType.DECIMAL, "18"), 
-                new Argument("x_0:", ArgType.DECIMAL, "12800"), Argument.DOUBLEPRECISION, Argument.RUN_BUTTON);
+                new Argument("<html>x<sub>0</sub>:</html>", ArgType.DECIMAL, "12800"), Argument.DOUBLEPRECISION, Argument.RUN_BUTTON);
     }
 
     @Override

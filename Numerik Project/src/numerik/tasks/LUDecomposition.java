@@ -8,25 +8,24 @@ import numerik.calc.Matrix;
 import numerik.calc.Vector;
 import numerik.expression.Value;
 import numerik.tasks.Argument.ArgType;
-import numerik.ui.*;
+import numerik.ui.controls.TaskPane;
+import numerik.ui.controls.TaskScrollPane;
+import numerik.ui.dialogs.OutputFrame;
+import numerik.ui.misc.LatexFormula;
+import numerik.ui.misc.Recorder;
 
-public class LUDecomposition implements Task
+public final class LUDecomposition implements Task
 {
-    
-    Matrix A;
-    Vector b;
-    Matrix trueA;
-    Vector trueb;
-    
-    TaskPane taskPane;
-    
+    private TaskPane taskPane;
+
     
     @Override
     public void init(OutputFrame frame, TaskPane taskPane)
     {
         this.taskPane = taskPane;
-        taskPane.createJToolBarByArguments(new Argument("Matrix:", ArgType.MATRIX), new Argument("Vektor:", ArgType.VECTOR), 
-                new Argument("Zeilenskalierung", ArgType.BOOLEAN), Argument.PRECISION, Argument.RUN_BUTTON);
+        taskPane.createJToolBarByArguments(new Argument("Matrix:", ArgType.MATRIX), new Argument("Vektor:", ArgType.VECTOR),
+                new Argument("Normalisieren", ArgType.BOOLEAN), new Argument("Pivot-Strategie:", ArgType.BOOLEAN), 
+                new Argument("Norm:", "Zeilensummen-Norm", "Frobenius-Euklid-Norm"), Argument.PRECISION, Argument.RUN_BUTTON);
     }
     
     
@@ -38,23 +37,19 @@ public class LUDecomposition implements Task
         String name;
         
         // ####### Alle Berechnungen werden mit niedriger Präzision ausgeführt #########
-        
-        MathLib.setPrecision( parameters[3].toDecimal().intValue() );                                        // Mantissenlänge
-//        MathLib.setPrecision( 5 );                                      // Mantissenlänge
-        MathLib.setPivotStrategy( true );
+        MathLib.setPrecision( parameters[5].toDecimal().intValue() );                                        // Mantissenlänge
+        MathLib.setPivotStrategy( parameters[3].toBoolean() );
         MathLib.setRoundingMode( MathLib.EXACT );                         // exact = Mantissen genau, normal = Nachkomma genau
-        MathLib.setNorm( MathLib.ZEILENSUMMENNORM );                      // ZEILENSUMMENNORM oder FROBENIUSEUKILDNORM
+        MathLib.setNorm( parameters[4].toText().equals("Zeilensummen-Norm") ? MathLib.ZEILENSUMMENNORM : MathLib.FROBENIUSEUKLIDNORM );  // ZEILENSUMMENNORM oder FROBENIUSEUKILDNORM
         MathLib.setInversePrecision( 20 );
-        
-        //Matrix A = new Matrix("Data.txt", "A");
-        //Vector b = new Vector("Data.txt", "a");
+
         Matrix A = parameters[0].toMatrix();
         Vector b = parameters[1].toVector();
         Matrix trueA = A.clone();
         Vector trueb = b.clone();
         
-        A.mult(b); // sind Matrix und Vektor verkettet?
-        
+        A.mult(b);     // Prüfe: Matrix und Vektor verkettet; sonst Fehler.
+         
         if (parameters[2].toBoolean())
         {
             MathLib.enableRound( false );
@@ -73,6 +68,7 @@ public class LUDecomposition implements Task
         } 
         
         Vector x = A.solveX(b);
+        
         
         // ####### Alle folgenden Berechnungen werden mit "maximaler" Präzision ausgeführt #########
         MathLib.enableRound( false );

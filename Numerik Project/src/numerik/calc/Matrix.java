@@ -8,8 +8,8 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import numerik.ui.LatexFormula;
-import numerik.ui.Recorder;
+import numerik.ui.misc.LatexFormula;
+import numerik.ui.misc.Recorder;
 
 
 public class Matrix {

@@ -6,7 +6,11 @@ import numerik.calc.MathLib;
 import numerik.calc.Matrix;
 import numerik.calc.Vector;
 import numerik.expression.Value;
-import numerik.ui.*;
+import numerik.ui.controls.TaskPane;
+import numerik.ui.controls.TaskScrollPane;
+import numerik.ui.dialogs.OutputFrame;
+import numerik.ui.misc.LatexFormula;
+import numerik.ui.misc.Recorder;
 
 
 public class SolveNonLinearEquation implements Task
@@ -26,7 +30,7 @@ public class SolveNonLinearEquation implements Task
     @Override
     public void run(Value... values)
     {
-        MathLib.setNorm( MathLib.FROBENIUSEUKILDNORM );
+        MathLib.setNorm( MathLib.FROBENIUSEUKLIDNORM );
         MathLib.setPrecision( 16 );    // Achtung: Präzision > 16 führt zu Endlosschleife!!!
         
         // Lösen nichtlinearer Gleichungssysteme

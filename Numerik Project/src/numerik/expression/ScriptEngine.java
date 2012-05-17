@@ -7,7 +7,7 @@ import numerik.calc.Matrix;
 import numerik.calc.Vector;
 import numerik.expression.ExpressionEngine.Token;
 import numerik.expression.ExpressionListener.ActionType;
-import numerik.ui.LatexFormula;
+import numerik.ui.misc.LatexFormula;
 
 public final class ScriptEngine implements TokenListener
 {

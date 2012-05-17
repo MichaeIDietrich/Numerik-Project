@@ -1,6 +1,6 @@
 package numerik.tasks;
 
-import numerik.ui.LatexFormula;
+import numerik.ui.misc.LatexFormula;
 
 public class RungeKuttaOrder4
 {

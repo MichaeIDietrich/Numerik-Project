@@ -1,4 +1,4 @@
-package numerik.ui;
+package numerik.ui.dialogs;
 
 import java.awt.*;
 import java.awt.event.*;

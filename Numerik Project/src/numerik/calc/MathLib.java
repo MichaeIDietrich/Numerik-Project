@@ -3,14 +3,14 @@ package numerik.calc;
 
 import java.math.*;
 
-public class MathLib
+public final class MathLib
 {
     
     public  static final int               EXACT = 0;
     public  static final int              NORMAL = 1;
     
     public  static final int    ZEILENSUMMENNORM = 0;
-    public  static final int FROBENIUSEUKILDNORM = 1;
+    public  static final int FROBENIUSEUKLIDNORM = 1;
     
     private static boolean         pivotstrategy = false;
     private static boolean                active = true;

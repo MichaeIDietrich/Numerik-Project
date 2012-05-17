@@ -6,8 +6,8 @@ import java.util.HashMap;
 import numerik.calc.MathLib;
 import numerik.expression.ExpressionEngine.Token;
 import numerik.expression.Value.ValueType;
-import numerik.ui.LatexFormula;
-import numerik.ui.Recorder;
+import numerik.ui.misc.LatexFormula;
+import numerik.ui.misc.Recorder;
 
 public final class MathPool
 {

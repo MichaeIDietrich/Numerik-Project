@@ -1,11 +1,11 @@
-package numerik.ui;
+package numerik.ui.controls;
 
 import java.awt.*;
 import java.awt.event.*;
 
 import javax.swing.*;
 
-public class ExpandButton extends JComponent implements MouseListener
+public final class ExpandButton extends JComponent implements MouseListener
 {
     
     private ImageComponent imgComponent;
