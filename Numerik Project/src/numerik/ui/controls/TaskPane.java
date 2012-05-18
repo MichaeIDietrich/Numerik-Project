@@ -15,6 +15,7 @@ import numerik.tasks.*;
 import numerik.tasks.Argument.ArgType;
 import numerik.ui.dialogs.OutputFrame;
 import numerik.ui.misc.LatexFormula;
+import numerik.ui.misc.WrappingToolbarLayout;
 
     
 public final class TaskPane extends JPanel implements ActionListener
@@ -40,10 +41,9 @@ public final class TaskPane extends JPanel implements ActionListener
     public void createJToolBarByArguments(Argument... arguments)
     {
         toolBar = new JToolBar();
-        toolBar.setLayout( new FlowLayout(FlowLayout.LEFT));
+        //toolBar.setLayout( new FlowLayout(FlowLayout.LEFT));
+        toolBar.setLayout(new WrappingToolbarLayout(WrappingToolbarLayout.LEFT));
         toolBar.setFloatable(false);
-        toolBar.setLayout(new FlowLayout(FlowLayout.LEFT));
-        //toolBar.setMaximumSize(new Dimension(10000, 15));
         
         DocumentLoader docLoader = new DocumentLoader();
         String[] matrices = docLoader.getAllMatrixNames("Data.txt");
@@ -65,13 +65,15 @@ public final class TaskPane extends JPanel implements ActionListener
         JSpinner spinner;
         SpinnerModel model;
         JButton button;
+        JPanel pnlGroup = null;
         
         args = arguments;
         for (Argument arg : arguments)
         {
             if (arg.getName() != null && arg.getArgumentType() != ArgType.BOOLEAN)
             {
-                toolBar.add(new JLabel(arg.getName()));
+                pnlGroup = new JPanel();
+                pnlGroup.add(new JLabel(arg.getName()));
             }
             
             switch (arg.getArgumentType())
@@ -81,32 +83,33 @@ public final class TaskPane extends JPanel implements ActionListener
                     new ToolTippedComboBox(combo, imgMatrices, new Color(255, 255, 150));
                     combo.setPreferredSize(new Dimension(50, combo.getPreferredSize().height));
                     arg.setRelatedControl(combo);
-                    toolBar.add(combo);
+                    pnlGroup.add(combo);
+                    toolBar.add(pnlGroup);
                     break;
                     
                 case VECTOR:
                     combo = new JComboBox<String>(vectors);
                     new ToolTippedComboBox(combo, imgVectors, new Color(255, 255, 150));
                     combo.setPreferredSize(new Dimension(50, combo.getPreferredSize().height));
-//                    combo.setMinimumSize(new Dimension(70, 0));
                     arg.setRelatedControl(combo);
-                    toolBar.add(combo);
+                    pnlGroup.add(combo);
+                    toolBar.add(pnlGroup);
                     break;
                     
                 case DECIMAL:
                     text = new JTextField(arg.getDefaultValue());
                     text.setPreferredSize(new Dimension(50, text.getPreferredSize().height));
-//                    text.setMinimumSize(new Dimension(70, 0));
                     arg.setRelatedControl(text);
-                    toolBar.add(text);
+                    pnlGroup.add(text);
+                    toolBar.add(pnlGroup);
                     break;
                     
                 case INTEGER:
                     text = new JTextField(arg.getDefaultValue());
                     text.setPreferredSize(new Dimension(50, text.getPreferredSize().height));
-//                    text.setMinimumSize(new Dimension(70, 0));
                     arg.setRelatedControl(text);
-                    toolBar.add(text);
+                    pnlGroup.add(text);
+                    toolBar.add(pnlGroup);
                     break;
                     
                 case BOOLEAN:
@@ -118,21 +121,24 @@ public final class TaskPane extends JPanel implements ActionListener
                 case CHOICE:
                     combo = new JComboBox<String>(arg.getChoices());
                     arg.setRelatedControl(combo);
-                    toolBar.add(combo);
+                    pnlGroup.add(combo);
+                    toolBar.add(pnlGroup);
                     break;
                     
                 case PRECISION:
                     model = new SpinnerNumberModel(Integer.parseInt(arg.getDefaultValue()), 1, 100, 1);
                     spinner = new JSpinner(model);
                     arg.setRelatedControl(spinner);
-                    toolBar.add(spinner);
+                    pnlGroup.add(spinner);
+                    toolBar.add(pnlGroup);
                     break;
                     
                 case DOUBLEPRECISION:
                     model = new SpinnerNumberModel(Integer.parseInt(arg.getDefaultValue()), 1, 16, 1);
                     spinner = new JSpinner(model);
                     arg.setRelatedControl(spinner);
-                    toolBar.add(spinner);
+                    pnlGroup.add(spinner);
+                    toolBar.add(pnlGroup);
                     break;
                     
                 case RUN_BUTTON:
@@ -143,11 +149,6 @@ public final class TaskPane extends JPanel implements ActionListener
             
             toolBar.add(new JLabel(" "));
         }
-        if (toolBar.getComponentCount() > 15) // Workaround für viele Elemente in der Toolbar, sollte dringenst ersetzt werden
-        {
-            toolBar.setPreferredSize(new Dimension(0, 60));
-        }
-
     }
     
     

@@ -24,7 +24,7 @@ public final class LUDecomposition implements Task
     {
         this.taskPane = taskPane;
         taskPane.createJToolBarByArguments(new Argument("Matrix:", ArgType.MATRIX), new Argument("Vektor:", ArgType.VECTOR),
-                new Argument("Normalisieren", ArgType.BOOLEAN), new Argument("Pivot-Strategie:", ArgType.BOOLEAN), 
+                new Argument("Normalisieren", ArgType.BOOLEAN), new Argument("Pivot-Strategie", ArgType.BOOLEAN), 
                 new Argument("Norm:", "Zeilensummen-Norm", "Frobenius-Euklid-Norm"), Argument.PRECISION, Argument.RUN_BUTTON);
     }
     
