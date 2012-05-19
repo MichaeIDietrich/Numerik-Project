@@ -1,6 +1,7 @@
 package numerik.tasks;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import numerik.calc.MathLib;
 import numerik.expression.Value;
@@ -15,7 +16,6 @@ public class dezToBin implements Task
     
     TaskPane taskPane;
     LatexFormula formula = new LatexFormula();
-    Double recalc = 0d;
     
     @Override
     public void init(OutputFrame frame, TaskPane taskPane)
@@ -35,158 +35,199 @@ public class dezToBin implements Task
         MathLib.setRoundingMode( MathLib.EXACT );
         
         formula.clear();
-        recalc = 0d;
         
-        Double  value = 0d;
+        Double value = 0d;
         if (values[1].toBoolean()) value = MathLib.round( values[0].toDecimal()).doubleValue(); 
                               else value = values[0].toDecimal().doubleValue(); 
         Double tmpval = value;
+
+        String[] temp = value.toString().split("\\.");
         
-        String binary = "";
+        BigDecimal     zero = BigDecimal.ZERO;
+        BigDecimal firstdec = new BigDecimal(temp[0]);
+        BigDecimal secondec = new BigDecimal("0."+temp[1]);
+        BigDecimal  tempdec = BigDecimal.ZERO;
+        String     firstbin = "";
+        String     seconbin = "";
+        String       binary = "";
+        int      highestbit = (int) Math.floor( Math.log(firstdec.doubleValue())/Math.log(2) );
+        int       lowestbit = 16;
+        BigDecimal two_to_power = BigDecimal.ZERO;
+
         
-        int mantiscount = 0;
-        int    exponent = 0;
+        // Konvertiere Vorkomma-Dezimalzahl nach Binär
+        tempdec = firstdec;
         
-        boolean begincount = false;
-        boolean      point = false;
-        
-        formula.addTextUL("").addNewLine(2);
-        
-        
-        
-        if (value>=1) {
-            exponent = (int)Math.floor( Math.log(value)/Math.log(2) ); 
-        } 
-          else 
+        for (int i=highestbit; i>=0; i--) 
         {
-            exponent = 0;
-            point    = true;
-            binary   = "0.";
+            two_to_power = new BigDecimal( Math.pow( 2, i));
+            
+            if ((tempdec.subtract( two_to_power ).compareTo( zero )==0) || (tempdec.subtract( two_to_power ).compareTo( zero )==1))
+            {
+                firstbin = firstbin + "1";
+                tempdec = tempdec.subtract( two_to_power );
+            }
+              else
+            {
+                firstbin = firstbin + "0";
+            }
         }
         
-        for(int i=0; i<=exponent+16; i++ )
+        if (firstdec.compareTo(zero)==0) { firstbin = "0"; }
+        
+        
+        // Konvertiere Nachkomma-Dezimalzahl nach Binär
+        tempdec = secondec;
+        
+        for (int i=1; i<=lowestbit; i++) 
         {
-            if ((exponent-i)==-1 && !point) 
-            {
-                binary = binary + ".";
-                point  = true;
-            }
+            two_to_power = BigDecimal.ONE.divide( new BigDecimal(Math.pow( 2, i)), 32, RoundingMode.HALF_UP);
             
-            if (mantiscount==values[3].toDecimal().intValue() && values[2].toBoolean())
+            if ((tempdec.subtract( two_to_power ).compareTo( zero )==0) || (tempdec.subtract( two_to_power ).compareTo( zero )==1))
             {
-                boolean check = (value-Math.pow(2, exponent-i)) >= 0;
-                int  position = exponent-i;
-                
-                binary = roundBinary( binary, check, position );
-                break;
+                seconbin = seconbin + "1"; 
+                tempdec = tempdec.subtract( two_to_power );
             }
-            
-            if ((value-Math.pow(2, exponent-i))>=0) 
+              else
             {
-                begincount = true;
-                mantiscount++;
-                    
-                if (mantiscount<values[3].toDecimal().intValue()+1)
-                {
-                    binary = binary + "1";
-                    value  = value  - Math.pow(2, exponent-i);
-                    recalc = recalc + Math.pow(2, exponent-i);
-                }
-                   else
-                {
-                    binary = binary + "0";
-                }
-            } 
-              else 
-            {
-                if (begincount) mantiscount++;  
-                binary = binary + "0";
-            }   
+                seconbin = seconbin + "0";
+            }
         }
         
+        // gerundet oder ungerundet?
+        if (values[2].toBoolean()) 
+        {
+            binary = roundBinary(firstbin+seconbin, values[3].toDecimal().intValue(), firstbin.length());
+        }
+          else
+        {
+            binary = firstbin+"."+seconbin;
+        }
         
+        Double recalc = getDecimal(binary).doubleValue();
+
         formula.addLatexString(tmpval+"_{10} \\cong "+ binary+"_{b} = "+recalc+"_{10}").addNewLine(4);
         formula.addText("eingegebener Wert: " +tmpval).addNewLine(1);
         formula.addText("konvertierter Wert: "+recalc).addNewLine(4);
         formula.addLatexString("abs.\\;Fehler\\;=\\;|\\;"+tmpval+"-"+recalc+"\\;|\\;=\\;"+Math.abs(tmpval-recalc)).addNewLine(1);
         MathLib.setPrecision( 5 );
-        if (Math.abs(tmpval-recalc)/recalc>0) MathLib.setRoundingMode( MathLib.NORMAL );
+
         formula.addLatexString("rel.\\;Fehler\\;=\\;\\frac{"+(Math.abs(tmpval-recalc))+"}{"+tmpval+"}\\;=\\;"
-                               +MathLib.round( new BigDecimal(Math.abs(tmpval-recalc)/recalc))).addNewLine(2);
+                               +MathLib.round( new BigDecimal(Math.abs(tmpval-recalc)/tmpval))).addNewLine(2);
         
         taskPane.setViewPortView(new TaskScrollPane(formula));
     }
     
-    public String roundBinary(String binary, boolean check, int position) {
+    
+    
+    
+    public String roundBinary(String binary, int mantisse, int dotpos) {
+
+        System.out.println(mantisse);
         
-        System.out.println("## "+binary);
-        
+        char[]  binchar = binary.toCharArray();
         int      length = binary.length()-1;
-        String[] binarr = binary.split("\\.");
-        int   firstmant = binarr[0].length();
-        int  secondmant = binarr[1].length();
-        int       dotat = binarr[0].length();
-        binary = binarr[0] + binarr[1];
+        int    position = 0;
+        boolean gocount = false;
+        binary = "";
         
-        System.out.println("length: "+length+" ## dotat: "+dotat+" ## "+binary+" ## 1 an Position"+position);
+        // Zähle Mantisse ab erster gefundener Eins
+        for (int i=0; i<=length; i++) 
+        {
+            if (binchar[i]=='1') gocount = true;
+           
+            System.out.println(binchar[i]);
+            
+            if (gocount) position++;
+            
+            if (position==mantisse)
+            {
+                position = i;
+                break;
+            }
+        }
+
+        // Erstelle String auf Mantissengenauigkeit (noch nicht gerundet)
+        for(int i=0; i<=position; i++)
+        {
+            binary = binary + binchar[i];
+        }
         
-        if (check) formula.addText("1 an Position "+position).addNewLine(1);
-        
-        for(int i=position; i>=0; i--) 
+        // lösche alle Folgestellen > position
+        for(int i=position+1; i<=length+1; i++)
         {
             binary = binary + "0";
         }
-
-        String[] code = new String[length];
         
-        for(int i=length; i>=0; i-- )
+        // Wenn Folgestelle nach Mantissenlänge gleich 0 ist, dann runde nicht und gib String zurück
+        if (binchar[position+1]=='0')
         {
-           if (binary.codePointAt(i)=='0') code[i]="0";
-           if (binary.codePointAt(i)=='1') code[i]="1"; 
-           if (binary.codePointAt(i)=='.') code[i]=".";
+            binary = binary.substring(0, dotpos) +"."+ binary.substring(dotpos, length+1);
+            return binary;
         }
         
-        out(code);
-        System.out.print(" ;; "+position+ "\n");
+        boolean oflag = true;
         
-        for(int i=position+1; i<=length; i++ )
+        // Runde binary
+        for(int i=position; i>=0; i--)
         {
-           if (code[length-i]=="0" && check)
-           {
-               check = false;
-               code[length-i]="1";
-           }
-           
-           if (code[length-i]=="1" && check)
-           {
-               code[length-i]="0";
-           }
-           out(code);
-           System.out.print("  ::  "+(length-i)+"\n");
+            if (binchar[i]=='0') { binchar[i]='1'; oflag = false; break; }
+            if (binchar[i]=='1')   binchar[i]='0'; 
         }
-
         
-        if (check) { 
-            binary = "1"; 
-            recalc = Math.pow(2, length+1);
-        }
-          else
+        // Reorganisiere String "binary"
+        binary = "";
+        for(int i=0; i<=length; i++)
         {
-            binary = "";
-            recalc = 0d;
+            if (i>position) binchar[i]='0';
+            binary = binary + binchar[i];
         }
+                
+        // War ein Überlauf? Erstelle neues MSB und setzte es auf 1.
+        if (oflag==true) { binary = "1"+binary; dotpos++; }
         
-        for(int i=0; i<=length; i++ ) {
-            
-            binary = binary + code[i];
-            if (code[i]=="1") recalc = recalc + Math.pow(2, length-i);
-        }
+        // Füge Trennzeichen ein
+        binary = binary.substring(0, dotpos) +"."+ binary.substring(dotpos, length+1);
         
         return binary;
     }
     
-    public void out(String[] str) {
-        for(int i=0; i<str.length; i++ ) System.out.print(str[i]);
+    
+    public BigDecimal getDecimal(String binary)
+    {
+        String[] tempbin = binary.split("\\.");
+        char[]  bincharL = tempbin[0].toCharArray();
+        char[]  bincharR = tempbin[1].toCharArray();
+        int       length = 16;
+        int      lengthL = tempbin[0].length();
+        int      lengthR = tempbin[1].length();
+        BigDecimal   sum = BigDecimal.ZERO;
+
+        System.out.println(lengthL+" | "+lengthR);
+        
+        if (length < tempbin[0].length()-1) length = tempbin[0].length()-1; length = 16; 
+        
+        for(int i=1; i<=length; i++)
+        {
+            if (i<lengthL+1) 
+            {
+                System.out.println(bincharL[lengthL-i]);
+                if (bincharL[lengthL-i]=='1') 
+                {
+                    sum = sum.add( new BigDecimal( Math.pow(2, i-1) ));
+                }
+            }
+            
+            if (i<=lengthR) 
+            {
+                
+                if (bincharR[i-1]=='1')
+                {
+                    sum = sum.add( BigDecimal.ONE.divide( new BigDecimal( Math.pow(2, i) )));
+                }
+            }
+        }
+        
+        return sum;
     }
 }
-
