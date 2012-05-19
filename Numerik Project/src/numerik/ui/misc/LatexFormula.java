@@ -348,6 +348,35 @@ public class LatexFormula
     }
     
     
+    public LatexFormula setColorBoxBegin(String color)
+    {
+        switch (color) {
+            case "black":   break;
+            case "white":   break;
+            case "red":     break;
+            case "green":   break;
+            case "blue":    break;
+            case "cyan":    break;
+            case "magenta": break;
+            case "yellow":  break;
+            default: formula.append("\\colorbox{white}{");
+                     return this;
+        }
+        
+        formula.append("\\colorbox{"+color+"}{");
+        
+        return this;
+    }
+    
+    
+    public LatexFormula setColorBoxEnd()
+    {
+        formula.append("}");
+        
+        return this;
+    }
+    
+    
     public LatexFormula jakobiMatrix() {
         formula.append("\\begin{pmatrix}" +
                 "\\frac{\\partial{f_1}}{\\partial{x_1}}&\\hdots&\\frac{\\partial{f_1}}{" +
