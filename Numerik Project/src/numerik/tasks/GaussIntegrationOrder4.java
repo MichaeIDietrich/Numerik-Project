@@ -32,8 +32,9 @@ public class GaussIntegrationOrder4 implements Task
     public void init(OutputFrame frame, TaskPane taskPane)
     {
         this.taskPane = taskPane;
-        taskPane.createJToolBarByArguments(new Argument("obere Grenze:", ArgType.DECIMAL, "10"), new Argument("untere Grenze:", ArgType.DECIMAL, "0"), 
-                Argument.DOUBLEPRECISION, Argument.RUN_BUTTON);
+        taskPane.createJToolBarByArguments(new Argument("obere Grenze:", ArgType.DECIMAL, "10"), 
+                                           new Argument("untere Grenze:", ArgType.DECIMAL, "6"), 
+                                           new Argument("Mantissenlänge:", ArgType.DOUBLEPRECISION, "5"), Argument.RUN_BUTTON);
     }
 
     
@@ -57,8 +58,8 @@ public class GaussIntegrationOrder4 implements Task
         
         iterformula.addNewLine(2);
         iterformula.addTextUL("Funktionswerte\\;von\\;f(x)\\;an\\;den\\;Stellen\\;0,1:").addNewLine(1);
-        iterformula.addLatexString("f(x="+0+") = "+MathLib.round( getFunctionsValue( new BigDecimal(0) ))).addNewLine(1);
-        iterformula.addLatexString("f(x="+1+") = "+MathLib.round( getFunctionsValue( new BigDecimal(1) ))).addNewLine(8);
+        iterformula.addLatexString("f(0) = "+MathLib.round( getFunctionsValue( new BigDecimal(0) ))).addNewLine(1);
+        iterformula.addLatexString("f(1) = "+MathLib.round( getFunctionsValue( new BigDecimal(1) ))).addNewLine(8);
         iterformula.addTextUL("4-Punkt\\;Gaussintegration:").addNewLine(1);
         iterformula.addLatexString("\\int_{"+a+"}^{"+b+"}f(x)\\;dx \\hspace{3mm} \\approx " +
         		                   "\\hspace{3mm} \\frac{b-a}{2} \\cdot \\sum \\limits_{i=1}^4 \\omega_{i} \\cdot f(\\;" +
