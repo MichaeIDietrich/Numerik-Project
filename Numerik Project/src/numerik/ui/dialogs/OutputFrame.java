@@ -31,9 +31,9 @@ public final class OutputFrame extends JFrame
     {
         super("Numerik");
         this.setIconImages(icons);
-        
+
         initLookAndFeel();
-        
+                
         TabbedTaskPane tabMain = new TabbedTaskPane(this);
         tabMain.addTab("Expression", new ExpressionTask());
         tabMain.addTab("Dez->Bin",    new DezimalToBinary());

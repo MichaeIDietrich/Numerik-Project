@@ -117,6 +117,22 @@ public final class Vector
         return new Vector(v);
     }
     
+    
+    public BigDecimal mult(Vector vector)
+    {
+        BigDecimal result = BigDecimal.ZERO;
+        
+        if (!transposed) 
+        {
+            throw new ArithmeticException("Multiplikation nur von transponiertem Vektor mit Vektor möglich.");
+        }
+        
+        for(int i=0; i<length; i++) result = result.add( this.get(i).multiply( vector.get(i) ));
+        
+        return result;
+    }
+    
+    
     public Vector divide(BigDecimal value)
     {
         if (value == BigDecimal.ZERO)

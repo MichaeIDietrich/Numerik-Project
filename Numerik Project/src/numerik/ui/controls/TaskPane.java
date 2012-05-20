@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import javax.swing.*;
+
 import numerik.calc.Matrix;
 import numerik.calc.Vector;
 import numerik.expression.Value;
@@ -25,7 +26,7 @@ public final class TaskPane extends JPanel implements ActionListener
     private OutputFrame frame;
     private Task task;
     private Argument[] args;
-    
+   
     
     public TaskPane(OutputFrame frame, Task task, boolean scrollable)
     {

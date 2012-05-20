@@ -22,7 +22,7 @@ public class DezimalToBinary implements Task
     {
         
         this.taskPane = taskPane;
-        taskPane.createJToolBarByArguments(new Argument("Dezimalzahl:", ArgType.DECIMAL, "130.05"), 
+        taskPane.createJToolBarByArguments(new Argument("Dezimalzahl:", ArgType.DECIMAL, "0"), 
                                            new Argument("Runde", "Binär", "Dezimal"),
                                            new Argument("Mantissenlänge:", ArgType.DOUBLEPRECISION, "16"), 
                                                Argument.RUN_BUTTON);
@@ -44,8 +44,9 @@ public class DezimalToBinary implements Task
         if (!round) value = MathLib.round( values[0].toDecimal()).doubleValue(); 
                              else value = values[0].toDecimal().doubleValue(); 
         Double tmpval = value;
-
-        String[] temp = value.toString().split("\\.");
+        
+        
+        String[] temp = new BigDecimal(value.toString()).toPlainString().split("\\.");
         
         BigDecimal     zero = BigDecimal.ZERO;
         BigDecimal firstdec = new BigDecimal(temp[0]);
@@ -112,15 +113,25 @@ public class DezimalToBinary implements Task
         Double recalc = getDecimal(binary).doubleValue();
         
         MathLib.setPrecision( 8 );
+           
+        String showtmpval = toPlain( tmpval.toString() );
+        String showrecalc = toPlain( recalc.toString() );
         
-        formula.setColorBoxBegin("cyan").addLatexString(tmpval+"_{10} \\cong "+ binary+"_{b} = "+recalc+"_{10}").setColorBoxEnd().addNewLine(4);
-        formula.addText("eingegebener Wert: " +tmpval).addNewLine(1);
-        formula.addText("konvertierter Wert: "+recalc).addNewLine(4);
-        formula.addLatexString("abs.\\;Fehler\\;=\\;|\\;"+tmpval+"-"+recalc+"\\;|\\;=\\;"
+        formula.setColorBoxBegin("cyan").addLatexString(showtmpval+"_{10} \\cong "+binary+"_{b} = "+showrecalc+"_{10}").setColorBoxEnd().addNewLine(4);
+        formula.addText("eingegebener Wert: " +showtmpval).addNewLine(1);
+        formula.addText("konvertierter Wert: "+showrecalc).addNewLine(4);
+        formula.addLatexString("abs.\\;Fehler\\;=\\;|\\;"+showtmpval+"-"+showrecalc+"\\;|\\;=\\;"
                                +MathLib.round( new BigDecimal( Math.abs(tmpval-recalc)) )).addNewLine(1);
         formula.addLatexString("rel.\\;Fehler\\;=\\;\\frac{"
-                               +MathLib.round( new BigDecimal(Math.abs(tmpval-recalc)))+"}{"+tmpval+"}\\;=\\;"
-                               +MathLib.round( new BigDecimal(Math.abs(tmpval-recalc)/tmpval))).addNewLine(2);
+                               +MathLib.round( new BigDecimal(Math.abs(tmpval-recalc)))+"}{"+showtmpval+"}\\;=\\;"); 
+        if (tmpval!=0)
+        {
+            formula.addLatexString(""+MathLib.round( new BigDecimal(Math.abs(tmpval-recalc)/tmpval)));
+        }
+          else
+        {
+            formula.addLatexString("0");  
+        }
         
         taskPane.setViewPortView(new TaskScrollPane(formula));
     }   
@@ -149,7 +160,7 @@ public class DezimalToBinary implements Task
                 break;
             }
         }
-
+        
         // Erstelle String auf Mantissengenauigkeit (noch nicht gerundet)
         for(int i=0; i<=position; i++)
         {
@@ -163,7 +174,7 @@ public class DezimalToBinary implements Task
         }
         
         // Wenn Folgestelle nach Mantissenlänge gleich 0 ist, dann runde nicht und gib String zurück
-        if (binchar[position+1]=='0')
+        if (position+1>16 || binchar[position+1]=='0')
         {
             binary = binary.substring(0, dotpos) +"."+ binary.substring(dotpos, length+1);
             return binary;
@@ -230,5 +241,26 @@ public class DezimalToBinary implements Task
         }
         
         return sum;
+    }
+    
+    public String toPlain(String string)
+    {
+        if (string.contains("E"))
+        {
+            String[] temp1    = string.split("E");
+            String[] vunkomma = temp1[0].split("\\.");
+            
+            if (vunkomma[1].equals("0")) vunkomma[1]="";
+            
+            if (temp1[1].contains("-"))
+            {
+                int nullen = (int) Math.abs( (double) Integer.parseInt(temp1[1]) );
+                string = "0.";
+                
+                for(int i=1; i<nullen; i++) string = string + "0";
+                string = string + vunkomma[0] + vunkomma[1];
+            }
+        }
+        return string;
     }
 }
