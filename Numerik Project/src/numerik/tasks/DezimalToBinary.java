@@ -22,7 +22,7 @@ public class DezimalToBinary implements Task
     {
         
         this.taskPane = taskPane;
-        taskPane.createJToolBarByArguments(new Argument("Dezimalzahl:", ArgType.DECIMAL, "0"), 
+        taskPane.createJToolBarByArguments(new Argument("Dezimalzahl:", ArgType.DECIMAL, "0.00567"), 
                                            new Argument("Runde", "Binär", "Dezimal"),
                                            new Argument("Mantissenlänge:", ArgType.DOUBLEPRECISION, "16"), 
                                                Argument.RUN_BUTTON);
@@ -63,7 +63,7 @@ public class DezimalToBinary implements Task
         // Konvertiere Vorkomma-Dezimalzahl nach Binär
         tempdec = firstdec;
         
-        for (int i=highestbit; i>=0; i--) 
+        for (int i = highestbit; i >= 0; i--) 
         {
             two_to_power = new BigDecimal( Math.pow( 2, i));
             
@@ -79,13 +79,13 @@ public class DezimalToBinary implements Task
         }
         
         
-        if (firstdec.compareTo(zero)==0) { firstbin = "0"; }
+        if (firstdec.compareTo(zero) == 0) { firstbin = "0"; }
         
         
         // Konvertiere Nachkomma-Dezimalzahl nach Binär
         tempdec = secondec;
         
-        for (int i=1; i<=lowestbit; i++) 
+        for (int i = 1; i <= lowestbit; i++) 
         {
             two_to_power = BigDecimal.ONE.divide( new BigDecimal(Math.pow( 2, i)), 32, RoundingMode.HALF_UP);
             
@@ -118,20 +118,29 @@ public class DezimalToBinary implements Task
         String showrecalc = toPlain( recalc.toString() );
         
         formula.setColorBoxBegin("cyan").addLatexString(showtmpval+"_{10} \\cong "+binary+"_{b} = "+showrecalc+"_{10}").setColorBoxEnd().addNewLine(4);
-        formula.addText("eingegebener Wert: " +showtmpval).addNewLine(1);
-        formula.addText("konvertierter Wert: "+showrecalc).addNewLine(4);
+        formula.addText("Eingabe: "+showtmpval).addNewLine(1);
+        formula.addText("Ausgabe: "+showrecalc).addNewLine(4);
         formula.addLatexString("abs.\\;Fehler\\;=\\;|\\;"+showtmpval+"-"+showrecalc+"\\;|\\;=\\;"
                                +MathLib.round( new BigDecimal( Math.abs(tmpval-recalc)) )).addNewLine(1);
         formula.addLatexString("rel.\\;Fehler\\;=\\;\\frac{"
                                +MathLib.round( new BigDecimal(Math.abs(tmpval-recalc)))+"}{"+showtmpval+"}\\;=\\;"); 
         if (tmpval!=0)
         {
-            formula.addLatexString(""+MathLib.round( new BigDecimal(Math.abs(tmpval-recalc)/tmpval)));
+            formula.addLatexString(""+MathLib.round( new BigDecimal(Math.abs(tmpval-recalc)/tmpval))).addNewLine(4);
         }
           else
         {
-            formula.addLatexString("0");  
+            formula.addLatexString("0").addNewLine(4);  
         }
+
+        formula.setColorBoxBegin("red");
+        formula.addText("Problem: wenn bspw. bei der Zahl 0.00567 die Mantissenlänge 9 ").setColorBoxEnd().addNewLine(1);
+        formula.setColorBoxBegin("red");
+        formula.addText("               überschreitet, wird falsch gerundet.");
+        formula.setColorBoxEnd().addNewLine(2);
+        formula.setColorBoxBegin("green");
+        formula.addText("Fehler behoben. Bitte noch testen (also ein bisschen herumspielen).");
+        formula.setColorBoxEnd();
         
         taskPane.setViewPortView(new TaskScrollPane(formula));
     }   
@@ -142,7 +151,8 @@ public class DezimalToBinary implements Task
 
         char[]  binchar = binary.toCharArray();
         int      length = binary.length()-1;
-        int    position = 0;
+        int relposition = 0;
+        int absposition = 0;
         boolean gocount = false;
         
         binary = "";
@@ -150,31 +160,31 @@ public class DezimalToBinary implements Task
         // Zähle Mantisse ab erster gefundener Eins
         for (int i=0; i<=length; i++) 
         {
-            if (binchar[i]=='1') gocount = true;
+            if (binchar[i] == '1' && !gocount ) { gocount = true; absposition=i; }
             
-            if (gocount) position++;
+            if (gocount) relposition++;
             
-            if (position==mantisse)
+            if (relposition+absposition > 16 || relposition == mantisse)
             {
-                position = i;
+                relposition = i;
                 break;
             }
         }
         
-        // Erstelle String auf Mantissengenauigkeit (noch nicht gerundet)
-        for(int i=0; i<=position; i++)
+        // Erstelle String nach Mantissengenauigkeit (ungerundet)
+        for(int i = 0; i <= relposition; i++)
         {
             binary = binary + binchar[i];
         }
         
         // lösche alle Folgestellen > position
-        for(int i=position+1; i<=length+1; i++)
+        for(int i = relposition+1; i <= length+1; i++)
         {
             binary = binary + "0";
         }
         
         // Wenn Folgestelle nach Mantissenlänge gleich 0 ist, dann runde nicht und gib String zurück
-        if (position+1>16 || binchar[position+1]=='0')
+        if (relposition+1 > 16 || binchar[relposition+1] == '0')
         {
             binary = binary.substring(0, dotpos) +"."+ binary.substring(dotpos, length+1);
             return binary;
@@ -182,25 +192,27 @@ public class DezimalToBinary implements Task
         
         boolean oflag = true;
         
+        System.out.println("OK."+relposition);
+        
         // Runde binary
-        for(int i=position; i>=0; i--)
+        for(int i = relposition; i >= 0; i--)
         {
-            if (binchar[i]=='0') { binchar[i]='1'; oflag = false; break; }
-            if (binchar[i]=='1')   binchar[i]='0'; 
+            if (binchar[i]=='0') { binchar[i]='1';   oflag = false;  break; }
+            if (binchar[i]=='1')   binchar[i]='0';
         }
         
         // Reorganisiere String "binary"
         binary = "";
         for(int i=0; i<=length; i++)
         {
-            if (i>position) binchar[i]='0';
+            if (i>relposition) binchar[i]='0';
             binary = binary + binchar[i];
         }
                 
-        // War ein Überlauf? Erstelle neues MSB und setzte es auf 1.
-        if (oflag==true) { binary = "1"+binary; dotpos++; }
+        // Überlauf? Addiere zu neuem MSB=1 "binary".
+        if (oflag == true) { binary = "1"+binary; dotpos++; }
         
-        // Füge Trennzeichen ein
+        // Füge das Trennzeichen ein
         binary = binary.substring(0, dotpos) +"."+ binary.substring(dotpos, length+1);
         
         return binary;
@@ -221,7 +233,7 @@ public class DezimalToBinary implements Task
 
         if (length < lengthL) length = lengthL; else length = lengthR; 
         
-        for(int i=1; i<=length; i++)
+        for(int i = 1; i <= length; i++)
         {
             if (i<lengthL+1) 
             {
