@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import javax.swing.*;
 
-public final class ToolTipManager
+public final class ImageToolTipManager
 {
     ArrayList<ImageToolTip> toolTips = new ArrayList<ImageToolTip>();
     

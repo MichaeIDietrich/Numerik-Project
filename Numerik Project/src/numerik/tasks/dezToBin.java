@@ -21,9 +21,9 @@ public class dezToBin implements Task
     public void init(OutputFrame frame, TaskPane taskPane)
     {
         this.taskPane = taskPane;
-        taskPane.createJToolBarByArguments(new Argument("Dezimalzahl:", ArgType.DECIMAL, "130.05"), 
-                                           new Argument("runde Dezimal:", ArgType.BOOLEAN),
-                                           new Argument("runde Binär:", ArgType.BOOLEAN),
+        taskPane.createJToolBarByArguments(new Argument("Dezimalzahl:", ArgType.DECIMAL, "130.05", 100), 
+                                           new Argument("runde Dezimal", ArgType.BOOLEAN),
+                                           new Argument("runde Binär", ArgType.BOOLEAN),
                                            new Argument("Mantissenlänge:", ArgType.DOUBLEPRECISION, "16"), 
                                                Argument.RUN_BUTTON);
     }

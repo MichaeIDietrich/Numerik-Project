@@ -6,11 +6,81 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import numerik.calc.Matrix;
 
 public class NewMatrixWindow extends JDialog implements ActionListener, MouseListener
 {
+    
+    
+    class TextToolTipManager
+    {
+        ArrayList<TextToolTip> toolTips = new ArrayList<TextToolTip>();
+        
+        class TextToolTip
+        {
+            
+            private Popup popup;
+            
+            public TextToolTip(Component parent, int x, int y, String defaultText, final ChangeListener listener)
+            {
+                System.out.println(parent);
+                final JTextField text = new JTextField(defaultText == null ? "0" : defaultText);
+                text.setPreferredSize(new Dimension(150, text.getPreferredSize().height));
+                popup = PopupFactory.getSharedInstance().getPopup(parent, text, x, y);
+                
+                text.addKeyListener(new KeyAdapter()
+                {
+                    @Override
+                    public void keyReleased(KeyEvent e)
+                    {
+                        listener.stateChanged(new ChangeEvent(new String(text.getText())));
+                        if (e.getKeyCode() == KeyEvent.VK_ENTER)
+                        {
+                            dispose();
+                        }
+                    }
+                });
+                
+                text.addFocusListener(new FocusAdapter()
+                {
+                    @Override
+                    public void focusLost(FocusEvent e)
+                    {
+                        System.err.println("Focus lost");
+//                        dispose();
+                    }
+                });
+                
+                popup.show();
+                text.requestFocus();
+            }
+            
+            
+            public void dispose()
+            {
+                popup.hide();
+            }
+        }
+        
+        public void showToolTip(Component parent, int x, int y, String defaultText, final ChangeListener listener)
+        {
+            disposeAll();
+            toolTips.add(new TextToolTip(parent, x, y, defaultText, listener));
+        }
+        
+        public void disposeAll()
+        {
+            for (TextToolTip t : toolTips)
+            {
+                t.dispose();
+            }
+        }
+
+    }
+    
     
     private final String ACCEPT = "ACCEPT";
     private final String CANCEL = "CANCEL";
@@ -36,7 +106,9 @@ public class NewMatrixWindow extends JDialog implements ActionListener, MouseLis
     
     private Matrix result;
     
-    private TextField txtInput = new TextField();
+    //private TextField txtInput = new TextField();
+    
+    private TextToolTipManager manager = new TextToolTipManager();
     
     private NewMatrixWindow(JFrame owner, Point position)
     {
@@ -49,8 +121,8 @@ public class NewMatrixWindow extends JDialog implements ActionListener, MouseLis
         
         JPanel pnlButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         pnlButtons.setBackground(Color.WHITE);
-        txtInput.setPreferredSize(new Dimension(150, 20));
-        pnlButtons.add(txtInput);
+//        txtInput.setPreferredSize(new Dimension(150, 20));
+//        pnlButtons.add(txtInput);
         JButton btnClean = new JButton(clean);
         btnClean.setActionCommand(ACCEPT);
         btnClean.addActionListener(this);
@@ -148,14 +220,14 @@ public class NewMatrixWindow extends JDialog implements ActionListener, MouseLis
     
     private void resize()
     {
-        this.setSize(Math.max(indents[cols] + 50, 280), rows * 50 + 50);
+        this.setSize(Math.max(indents[cols] + 50, 200), rows * 50 + 50);
     }
     
-    private void showInputField()
-    {
-        txtInput.setText(matrix[sel.y][sel.x] == null ? "" : matrix[sel.y][sel.x]);
-        txtInput.requestFocusInWindow();
-    }
+//    private void showInputField()
+//    {
+//        txtInput.setText(matrix[sel.y][sel.x] == null ? "" : matrix[sel.y][sel.x]);
+//        txtInput.requestFocusInWindow();
+//    }
     
     private void updateMatrixSize(int deltaRow, int deltaCol)
     {
@@ -249,7 +321,7 @@ public class NewMatrixWindow extends JDialog implements ActionListener, MouseLis
                     matrix[row][col] = null;
                 }
             }
-            txtInput.setText("");
+//            txtInput.setText("");
             this.repaint();
         }
     }
@@ -265,13 +337,23 @@ public class NewMatrixWindow extends JDialog implements ActionListener, MouseLis
                     e.getY() >= row * 50 + 25 && e.getY() < row * 50 + 75)
                 {
                     
-                    matrix[sel.y][sel.x] = txtInput.getText().equals("") ? null : txtInput.getText();
+//                    matrix[sel.y][sel.x] = txtInput.getText().equals("") ? null : txtInput.getText();
                     calcIndents();
                     resize();
                     this.repaint();
                     
                     sel = new Point(col, row);
-                    showInputField();
+                    //showInputField();
+                    manager.showToolTip(NewMatrixWindow.this, e.getXOnScreen(), e.getYOnScreen(), matrix[sel.y][sel.x], new ChangeListener()
+                    {
+                        
+                        @Override
+                        public void stateChanged(ChangeEvent e)
+                        {
+                            matrix[sel.y][sel.x] = e.getSource().toString();
+                            System.out.println(e.getSource().toString());
+                        }
+                    });
                     return;
                 }
             }
@@ -316,5 +398,4 @@ public class NewMatrixWindow extends JDialog implements ActionListener, MouseLis
     public void mouseReleased(MouseEvent e)
     {
     }
-
 }

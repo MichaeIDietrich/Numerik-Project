@@ -39,7 +39,7 @@ public final class ToolTippedComboBox
     {
         
         private int index = -1;
-        private ToolTipManager toolTipManager = new ToolTipManager();
+        private ImageToolTipManager toolTipManager = new ImageToolTipManager();
         private ArrayList<Image> images;
         private Color backGround = Color.WHITE;
         
@@ -98,7 +98,7 @@ public final class ToolTippedComboBox
     {
         
         private int index = -1;
-        private ToolTipManager toolTipManager = new ToolTipManager();
+        private ImageToolTipManager toolTipManager = new ImageToolTipManager();
         private ArrayList<Image> images;
         private Color backGround = Color.WHITE;
         

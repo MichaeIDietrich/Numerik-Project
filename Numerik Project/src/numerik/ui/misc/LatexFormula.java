@@ -14,8 +14,9 @@ import numerik.expression.Value;
 
 public class LatexFormula
 {
+    
     private StringBuilder formula;
-
+    
     private static HashMap<String, String> characterTable;
     
     
@@ -384,7 +385,7 @@ public class LatexFormula
     
     public Image toImage(int fontSize, Color foregroundColor)
     {
-        System.out.println("\\begin{array}{l}" + formula.toString() + "\\end{array}"); // nur zum Debug
+        //System.out.println("\\begin{array}{l}" + formula.toString() + "\\end{array}"); // nur zum Debug
         
         TeXFormula texFormula = new TeXFormula("\\begin{array}{l}" + formula.toString() + "\\end{array}");
         TeXIcon icon = texFormula.createTeXIcon(TeXConstants.STYLE_DISPLAY, fontSize);
