@@ -15,27 +15,33 @@ public class Argument
     private JComponent relatedControl;
     private String defaultValue;
     private String[] choices;
+    private int controlWidth;
     
     
     public Argument(String name, ArgType argumentType)
     {
-        this.name = name;
-        this.argumentType = argumentType;
-        this.defaultValue = "";
+        this(name, argumentType, null, 50);
     }
     
     
     public Argument(String name, ArgType argumentType, String defaultValue)
     {
-        this.name = name;
+        this(name, argumentType, defaultValue, 50);
+    }
+    
+    
+    public Argument(String name, ArgType argumentType, String defaultValue, int controlWidth)
+    {
+        this.name = name == null ? "" : name;
         this.argumentType = argumentType;
-        this.defaultValue = defaultValue;
+        this.defaultValue = defaultValue == null ? "" : defaultValue;
+        this.controlWidth = controlWidth;
     }
     
     
     public Argument(String name, String... choices)
     {
-        this.name = name;
+        this.name = name == null ? "" : name;
         this.argumentType = ArgType.CHOICE;
         this.choices = choices;
     }
@@ -74,5 +80,11 @@ public class Argument
     public String[] getChoices()
     {
         return choices;
+    }
+    
+    
+    public int getControlWidth()
+    {
+        return controlWidth;
     }
 }

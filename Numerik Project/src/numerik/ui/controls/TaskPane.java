@@ -82,7 +82,7 @@ public final class TaskPane extends JPanel implements ActionListener
                 case MATRIX:
                     combo = new JComboBox<String>(matrices);
                     new ToolTippedComboBox(combo, imgMatrices, new Color(255, 255, 150));
-                    combo.setPreferredSize(new Dimension(50, combo.getPreferredSize().height));
+                    combo.setPreferredSize(new Dimension(arg.getControlWidth(), combo.getPreferredSize().height));
                     arg.setRelatedControl(combo);
                     pnlGroup.add(combo);
                     toolBar.add(pnlGroup);
@@ -91,7 +91,7 @@ public final class TaskPane extends JPanel implements ActionListener
                 case VECTOR:
                     combo = new JComboBox<String>(vectors);
                     new ToolTippedComboBox(combo, imgVectors, new Color(255, 255, 150));
-                    combo.setPreferredSize(new Dimension(50, combo.getPreferredSize().height));
+                    combo.setPreferredSize(new Dimension(arg.getControlWidth(), combo.getPreferredSize().height));
                     arg.setRelatedControl(combo);
                     pnlGroup.add(combo);
                     toolBar.add(pnlGroup);
@@ -99,7 +99,8 @@ public final class TaskPane extends JPanel implements ActionListener
                     
                 case DECIMAL:
                     text = new JTextField(arg.getDefaultValue());
-                    text.setPreferredSize(new Dimension(50, text.getPreferredSize().height));
+                    text.setPreferredSize(new Dimension(arg.getControlWidth(), text.getPreferredSize().height));
+                    text.setHorizontalAlignment(JTextField.RIGHT);
                     arg.setRelatedControl(text);
                     pnlGroup.add(text);
                     toolBar.add(pnlGroup);
@@ -107,7 +108,8 @@ public final class TaskPane extends JPanel implements ActionListener
                     
                 case INTEGER:
                     text = new JTextField(arg.getDefaultValue());
-                    text.setPreferredSize(new Dimension(50, text.getPreferredSize().height));
+                    text.setPreferredSize(new Dimension(arg.getControlWidth(), text.getPreferredSize().height));
+                    text.setHorizontalAlignment(JTextField.RIGHT);
                     arg.setRelatedControl(text);
                     pnlGroup.add(text);
                     toolBar.add(pnlGroup);
@@ -129,6 +131,7 @@ public final class TaskPane extends JPanel implements ActionListener
                 case PRECISION:
                     model = new SpinnerNumberModel(Integer.parseInt(arg.getDefaultValue()), 1, 100, 1);
                     spinner = new JSpinner(model);
+                    spinner.setPreferredSize(new Dimension(arg.getControlWidth(), spinner.getPreferredSize().height));
                     arg.setRelatedControl(spinner);
                     pnlGroup.add(spinner);
                     toolBar.add(pnlGroup);
@@ -137,6 +140,7 @@ public final class TaskPane extends JPanel implements ActionListener
                 case DOUBLEPRECISION:
                     model = new SpinnerNumberModel(Integer.parseInt(arg.getDefaultValue()), 1, 16, 1);
                     spinner = new JSpinner(model);
+                    spinner.setPreferredSize(new Dimension(arg.getControlWidth(), spinner.getPreferredSize().height));
                     arg.setRelatedControl(spinner);
                     pnlGroup.add(spinner);
                     toolBar.add(pnlGroup);
