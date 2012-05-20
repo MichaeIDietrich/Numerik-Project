@@ -2,18 +2,18 @@
 package numerik.ui.controls;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import javax.swing.*;
+
 import numerik.calc.Matrix;
 import numerik.calc.Vector;
 import numerik.expression.Value;
 import numerik.io.DocumentLoader;
 import numerik.tasks.*;
 import numerik.tasks.Argument.ArgType;
-import numerik.ui.dialogs.OutputFrame;
+import numerik.ui.dialogs.*;
 import numerik.ui.misc.LatexFormula;
 import numerik.ui.misc.WrappingToolbarLayout;
 
@@ -80,6 +80,32 @@ public final class TaskPane extends JPanel implements ActionListener
             {
                 case MATRIX:
                     combo = new JComboBox<String>(matrices);
+                    combo.insertItemAt("...", matrices.length);
+                    combo.addItemListener(new ItemListener()
+                    {
+                        @Override
+                        public void itemStateChanged(ItemEvent e)
+                        {
+                            if (e.getItem().toString().equals("...") && e.getStateChange() == ItemEvent.SELECTED)
+                            {
+                                @SuppressWarnings("unchecked")
+                                JComboBox<String> combo = (JComboBox<String>) e.getSource();
+                                
+                                Matrix matrix = NewMatrixWindow.createNewMatrix(frame, combo.getLocationOnScreen());
+                                
+                                if (matrix == null)
+                                {
+                                    combo.setSelectedIndex(0);
+                                }
+                                else
+                                {
+                                    int index = combo.getItemCount() - 1;
+                                    combo.insertItemAt("***", index);
+                                    combo.setSelectedIndex(index);
+                                }
+                            }
+                        }
+                    });
                     new ToolTippedComboBox(combo, imgMatrices, new Color(255, 255, 150));
                     combo.setPreferredSize(new Dimension(arg.getControlWidth(), combo.getPreferredSize().height));
                     arg.setRelatedControl(combo);

@@ -168,4 +168,33 @@ public class DocumentLoader
         
         return names.toArray(new String[names.size()]);
     }
+    
+    
+    public void addMatrixToFile(Matrix matrix, String file)
+    {
+        try
+        {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+            bw.write("\n");
+            bw.write("Matrix#");
+            bw.write(matrix.name);
+            
+            for (int row = 0; row < matrix.getRows(); row++)
+            {
+                bw.write("\n");
+                for (int col = 0; col < matrix.getCols(); col++)
+                {
+                    bw.write(matrix.get(row, col).toPlainString());
+                    if (col < matrix.getCols() - 1)
+                    {
+                        bw.write(",");
+                    }
+                }
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
 }

@@ -65,6 +65,12 @@ public final class ToolTippedComboBox
                     int newIndex = list.locationToIndex(e.getPoint());
                     if (newIndex != index)
                     {
+                        if (newIndex >= images.size())
+                        {
+                            toolTipManager.disposeAll();
+                            index = -1;
+                            return;
+                        }
                         index = newIndex;
                         toolTipManager.showToolTip(list, e.getXOnScreen() + 16, e.getYOnScreen(), images.get(index), backGround);
                     }
