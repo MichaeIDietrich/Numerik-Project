@@ -1,6 +1,5 @@
 package numerik.expression;
 
-import java.math.BigDecimal;
 import java.util.*;
 
 import numerik.calc.Matrix;
@@ -17,6 +16,11 @@ public final class ScriptEngine implements TokenListener
     ExpressionEngine expression;
     
     LatexFormula formula;
+    
+    
+    // Zähler für Exponentendarstellung bei der Ausgabe der Expression (für Latex)
+    private int bracketCounter;
+    private boolean inExponent;
     
     public ScriptEngine()
     {
@@ -45,7 +49,7 @@ public final class ScriptEngine implements TokenListener
             String line = lines[lineIndex];
             
             System.out.println("Line: " + line);
-            if (line.equals("\n") || line.equals("") || line.startsWith("#") || line.startsWith("\n#"))
+            if (line.equals("\n") || line.equals("") || line.startsWith("//") || line.startsWith("\n//"))
                 continue;
             
             if (line.equals("do"))
@@ -62,9 +66,23 @@ public final class ScriptEngine implements TokenListener
             }
             if (line.startsWith("while "))
             {
-                String var = line.substring(6);
                 
-                if (expression.getVariableTable().get(var) != null && !expression.getVariableTable().get(var).toDecimal().equals(BigDecimal.ZERO))
+                boolean whileResult;
+                try
+                {
+                    whileResult = expression.isExpressionTrue(line.substring(6));
+                    
+                }
+                catch (InvalidExpressionException ex)
+                {
+                    for (ExpressionListener listener : expressionListeners)
+                    {
+                        listener.actionParsed(ActionType.BADEXPRESSION, ex.getMessage());
+                    }
+                    return;
+                }
+                
+                if (whileResult)
                 {
                     lineIndex = loopIndices.peek() - 1;
                 }
@@ -89,6 +107,8 @@ public final class ScriptEngine implements TokenListener
             try
             {
                 formula.clear();
+                bracketCounter = 0;
+                inExponent = false;
                 res = expression.solve(line);
                 
                 for (ExpressionListener listener : expressionListeners)
@@ -113,6 +133,7 @@ public final class ScriptEngine implements TokenListener
     @Override
     public void tokenParsed(Token token, Value value)
     {
+        System.err.println(token);
         switch (token)
         {
             case EQUAL:
@@ -149,25 +170,46 @@ public final class ScriptEngine implements TokenListener
                 formula.addLatexString(":");
                 break;
             case POW:
-                formula.addLatexString("^");
+                formula.addLatexString("^{");
+                inExponent = true;
                 break;
             case LGROUP:
                 formula.addLatexString("(");
+                if (inExponent) bracketCounter++;
                 break;
             case RGROUP:
                 formula.addLatexString(")");
+                if (inExponent) bracketCounter--;
+                
+                if (inExponent && bracketCounter == 0)
+                {
+                    formula.addLatexString("}");
+                    inExponent = false;
+                }
                 break;
             case KOMMA:
                 formula.addLatexString(",");
                 break;
             case NUMERIC:
                 formula.addLatexString(value.toDecimal().toPlainString());
+                
+                if (inExponent && bracketCounter == 0)
+                {
+                    formula.addLatexString("}");
+                    inExponent = false;
+                }
                 break;
             case FUNCTION:
                 formula.addLatexString(value.toText());
                 break;
             case VARIABLE:
                 formula.addLatexString(value.toText());
+                
+                if (inExponent && bracketCounter == 0)
+                {
+                    formula.addLatexString("}");
+                    inExponent = false;
+                }
                 break;
         }
     }

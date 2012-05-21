@@ -61,12 +61,12 @@ public final class ExpressionEngine
         tokenRelationMap.put(Token.DIVISION, operands);
         tokenRelationMap.put(Token.POW, new Token[] { Token.MINUS, Token.LGROUP, Token.FUNCTION, Token.NUMERIC, Token.VARIABLE });
         
-        tokenRelationMap.put(Token.LGROUP, operands);
+        tokenRelationMap.put(Token.LGROUP, new Token[] { Token.MINUS, Token.LGROUP, Token.RGROUP, Token.FUNCTION, Token.NUMERIC, Token.VARIABLE, Token.LMATRIX });
         tokenRelationMap.put(Token.RGROUP, new Token[]   { Token.NONE, Token.EQUAL, Token.UNEQUAL, Token.GREATER, Token.LESS, Token.GREATEREQ, Token.LESSEQ, Token.PLUS, Token.MINUS, Token.TIMES, Token.DIVISION, Token.POW, Token.KOMMA, Token.RGROUP, Token.RMATRIX });
         tokenRelationMap.put(Token.KOMMA, operands);
         tokenRelationMap.put(Token.FUNCTION, new Token[] { Token.LGROUP });
         tokenRelationMap.put(Token.NUMERIC, new Token[]  { Token.NONE, Token.EQUAL, Token.UNEQUAL, Token.GREATER, Token.LESS, Token.GREATEREQ, Token.LESSEQ, Token.PLUS, Token.MINUS, Token.TIMES, Token.DIVISION, Token.POW, Token.KOMMA, Token.RGROUP, Token.RMATRIX });
-        tokenRelationMap.put(Token.VARIABLE, new Token[] { Token.NONE, Token.ASSIGN, Token.PLUS, Token.MINUS, Token.TIMES, Token.DIVISION, Token.POW, Token.KOMMA, Token.RGROUP, Token.RMATRIX });
+        tokenRelationMap.put(Token.VARIABLE, new Token[] { Token.NONE, Token.ASSIGN, Token.EQUAL, Token.UNEQUAL, Token.GREATER, Token.LESS, Token.GREATEREQ, Token.LESSEQ, Token.PLUS, Token.MINUS, Token.TIMES, Token.DIVISION, Token.POW, Token.KOMMA, Token.RGROUP, Token.RMATRIX });
         tokenRelationMap.put(Token.LMATRIX, operands);
         tokenRelationMap.put(Token.RMATRIX, new Token[]  { Token.NONE, Token.PLUS, Token.MINUS, Token.TIMES, Token.DIVISION, Token.POW, Token.KOMMA, Token.RGROUP, Token.LMATRIX, Token.RMATRIX });
     }
@@ -118,6 +118,36 @@ public final class ExpressionEngine
     public void removeTokenListener(TokenListener tokenListener)
     {
         tokenListeners.remove(tokenListener);
+    }
+    
+    
+    public boolean isExpressionTrue(String expression) throws InvalidExpressionException
+    {
+        Value result;
+        
+        try
+        {
+            result = solve(expression);
+            System.out.println("res: " + result);
+        }
+        catch (InvalidExpressionException ex)
+        {
+            return false;
+        }
+        switch (result.getType())
+        {
+            case BOOLEAN:
+                return result.toBoolean();
+                
+            case DECIMAL:
+                return !result.toDecimal().equals(BigDecimal.ZERO);
+                
+            case NULL:
+                return false;
+                
+            default:
+                throw new InvalidExpressionException("Der Ausdruck \"" + expression + "\" kann nicht als boolscher Wert ausgeweret werden!");
+        }
     }
     
     
@@ -515,22 +545,27 @@ public final class ExpressionEngine
                     
                     if (lastToken == Token.LGROUP)
                     {
+                        
                         lastToken = getNextToken();
                         
-                        vars.add(expression(1));
-                        
-                        while (lastToken == Token.KOMMA)
+                        if (lastToken != Token.RGROUP)
                         {
-                            
-                            lastToken = getNextToken();
-                            
                             vars.add(expression(1));
+                            
+                            while (lastToken == Token.KOMMA)
+                            {
+                                
+                                lastToken = getNextToken();
+                                
+                                vars.add(expression(1));
+                            }
+                            
+                            if (lastToken == Token.RGROUP)
+                            {
+                                
+                            }
                         }
                         
-                        if (lastToken == Token.RGROUP)
-                        {
-                            
-                        }
                         lastToken = getNextToken();
                     }
                     Value res = mathPool.callFunction(funcName, vars.toArray(new Value[vars.size()]));

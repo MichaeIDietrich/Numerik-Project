@@ -1,6 +1,6 @@
 package numerik.expression;
 
-import java.math.BigDecimal;
+import java.math.*;
 import java.util.HashMap;
 
 import numerik.calc.MathLib;
@@ -87,7 +87,7 @@ public final class MathPool
                     return value;
                     
                 case DIVISION:
-                    value = new Value(MathLib.round(var1.toDecimal().divide(var2.toDecimal())));
+                    value = new Value(MathLib.round(var1.toDecimal().divide(var2.toDecimal(), MathLib.getPrecision(), RoundingMode.HALF_UP)));
                     
                     calcSteps.addLatexString(var1.toDecimal().toPlainString() + ":" + var2.toDecimal().toPlainString() + "=");
                     calcSteps.addText(value.toDecimal().toPlainString()).addNewLine();
@@ -205,8 +205,17 @@ public final class MathPool
     
     public Value callFunction(String funcName, Value... args) throws InvalidExpressionException
     {
+        System.out.println(funcName);
         switch (funcName)
         {
+            case "getPrecision":
+                if (args.length == 0)
+                {
+                    return new Value(new BigDecimal(MathLib.getPrecision()));
+                }
+                
+                throw new InvalidExpressionException("Bitte Eingabe überprüfen, getPrecision() nimmt keine Parameter.");
+                
             case "setPrecision":
                 if (args.length == 1 && args[0].getType() == ValueType.DECIMAL)
                 {
@@ -299,34 +308,116 @@ public final class MathPool
                         return new Value(args[0].toVector().get(args[1].toDecimal().intValue()));
                     }
                 }
-                throw new InvalidExpressionException("Bitte Eingabe überprüfen, get() nimmt als Parameter eine Matrix und zwei Indizes ooder einen Vektor und ein Index.");
+                
+                throw new InvalidExpressionException("Bitte Eingabe überprüfen, get() nimmt als Parameter eine Matrix und zwei Indizes oder einen Vektor und ein Index.");
                 
                 
-            // mathematische Standardfunktionen mit double-Genauigkeit
+              //*********************************************************//
+             // mathematische Standardfunktionen mit double-Genauigkeit //
+            //*********************************************************//
             case "ln":
-                args[0] = resolveVariable(args[0]);
+                if (args.length == 1)
+                {
+                    args[0] = resolveVariable(args[0]);
+                    
+                    if (args[0].getType() == ValueType.DECIMAL)
+                    {
+                        return new Value(MathLib.ln(args[0].toDecimal()));
+                    }
+                }
                 
-                return new Value(MathLib.ln(args[0].toDecimal()));
+                throw new InvalidExpressionException("Bitte Eingabe überprüfen, ln() nimmt als Parameter eine Dezimalzahl.");
                 
             case "sqrt":
-                args[0] = resolveVariable(args[0]);
+                if (args.length == 1)
+                {
+                    args[0] = resolveVariable(args[0]);
+                    
+                    if (args[0].getType() == ValueType.DECIMAL)
+                    {
+                        return new Value(MathLib.sqrt(args[0].toDecimal()));
+                    }
+                }
                 
-                return new Value(MathLib.sqrt(args[0].toDecimal()));
+                throw new InvalidExpressionException("Bitte Eingabe überprüfen, sqrt() nimmt als Parameter eine Dezimalzahl.");
                 
             case "sin":
-                args[0] = resolveVariable(args[0]);
+                if (args.length == 1)
+                {
+                    args[0] = resolveVariable(args[0]);
+                    
+                    if (args[0].getType() == ValueType.DECIMAL)
+                    {
+                        return new Value(MathLib.sin(args[0].toDecimal()));
+                    }
+                }
                 
-                return new Value(MathLib.sin(args[0].toDecimal()));
+                throw new InvalidExpressionException("Bitte Eingabe überprüfen, sin() nimmt als Parameter eine Dezimalzahl.");
                 
             case "cos":
-                args[0] = resolveVariable(args[0]);
+                if (args.length == 1)
+                {
+                    args[0] = resolveVariable(args[0]);
+                    
+                    if (args[0].getType() == ValueType.DECIMAL)
+                    {
+                        return new Value(MathLib.cos(args[0].toDecimal()));
+                    }
+                }
                 
-                return new Value(MathLib.cos(args[0].toDecimal()));
+                throw new InvalidExpressionException("Bitte Eingabe überprüfen, cos() nimmt als Parameter eine Dezimalzahl.");
                 
             case "tan":
-                args[0] = resolveVariable(args[0]);
+                if (args.length == 1)
+                {
+                    args[0] = resolveVariable(args[0]);
+                    
+                    if (args[0].getType() == ValueType.DECIMAL)
+                    {
+                        return new Value(MathLib.tan(args[0].toDecimal()));
+                    }
+                }
                 
-                return new Value(MathLib.tan(args[0].toDecimal()));
+                throw new InvalidExpressionException("Bitte Eingabe überprüfen, tan() nimmt als Parameter eine Dezimalzahl.");
+                
+            case "asin":
+                if (args.length == 1)
+                {
+                    args[0] = resolveVariable(args[0]);
+                    
+                    if (args[0].getType() == ValueType.DECIMAL)
+                    {
+                        return new Value(MathLib.asin(args[0].toDecimal()));
+                    }
+                }
+                
+                throw new InvalidExpressionException("Bitte Eingabe überprüfen, asin() nimmt als Parameter eine Dezimalzahl.");
+                
+            case "acos":
+                if (args.length == 1)
+                {
+                    args[0] = resolveVariable(args[0]);
+                    
+                    if (args[0].getType() == ValueType.DECIMAL)
+                    {
+                        return new Value(MathLib.acos(args[0].toDecimal()));
+                    }
+                }
+                
+                throw new InvalidExpressionException("Bitte Eingabe überprüfen, acos() nimmt als Parameter eine Dezimalzahl.");
+                
+            case "atan":
+                if (args.length == 1)
+                {
+                    args[0] = resolveVariable(args[0]);
+                    
+                    if (args[0].getType() == ValueType.DECIMAL)
+                    {
+                        return new Value(MathLib.atan(args[0].toDecimal()));
+                    }
+                }
+                
+                throw new InvalidExpressionException("Bitte Eingabe überprüfen, atan() nimmt als Parameter eine Dezimalzahl.");
         }
         
         throw new InvalidExpressionException("Funktion '" + funcName + "' existiert nicht.");

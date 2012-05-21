@@ -39,13 +39,6 @@ public class ExpressionTask implements Task, ActionListener, KeyListener, Expres
         JToolBar toolBar = new JToolBar();
         toolBar.setFloatable(false);
         
-        JButton btnNewMatrix = new JButton(new ImageIcon("icons/new_matrix16.png"));
-        btnNewMatrix.setToolTipText("Neue Matrix erzeugen");
-        btnNewMatrix.setActionCommand(NEW_MATRIX);
-        btnNewMatrix.addActionListener(this);
-        toolBar.add(btnNewMatrix);
-        toolBar.addSeparator();
-        
         JButton btnRun = new JButton(new ImageIcon("icons/run16.png"));
         btnRun.setToolTipText("Ausdrücke auswerten");
         btnRun.setActionCommand(RUN_PAUSE);
@@ -57,6 +50,14 @@ public class ExpressionTask implements Task, ActionListener, KeyListener, Expres
         btnStop.setActionCommand(STOP);
         btnStop.addActionListener(this);
         toolBar.add(btnStop);
+        
+        toolBar.addSeparator();
+        
+        JButton btnNewMatrix = new JButton(new ImageIcon("icons/new_matrix16.png"));
+        btnNewMatrix.setToolTipText("Neue Matrix erzeugen");
+        btnNewMatrix.setActionCommand(NEW_MATRIX);
+        btnNewMatrix.addActionListener(this);
+        toolBar.add(btnNewMatrix);
         
         taskPane.setJToolBar(toolBar);
         
@@ -117,6 +118,8 @@ public class ExpressionTask implements Task, ActionListener, KeyListener, Expres
         
         engine.addExpressionListener(this);
         engine.run(txtExpressionInput.getText());
+        
+        taskPane.repaint();
     }
     
     
@@ -214,7 +217,9 @@ public class ExpressionTask implements Task, ActionListener, KeyListener, Expres
                 pnlExpressionOutput.add(new HorizontalLine());
                 break;
             case PARSEDEXPRESSION:
-                //pnlExpressionOutput.add(new ImageComponent(new LatexFormula(data).toImage(10)));
+                System.out.println("data: " + data);
+                if (!data.equals(""))
+                    pnlExpressionOutput.add(new ImageComponent(new LatexFormula(data).toImage(10)));
                 break;
         }
     }
