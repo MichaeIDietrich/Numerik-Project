@@ -20,6 +20,7 @@ public class EditPopup implements PopupFrame
         final JTextField text = new JTextField(defaultText == null ? "" : defaultText);
         text.selectAll();
         text.setBackground(new Color(255, 255, 100));
+        text.setFocusTraversalKeysEnabled(false);
         text.setPreferredSize(new Dimension(100, text.getPreferredSize().height));
         container = new JWindow(parent);
         container.add(text);
@@ -36,6 +37,10 @@ public class EditPopup implements PopupFrame
                 {
                     listener.stateChanged(new ChangeEvent(new String("\0")));
                     dispose();
+                }
+                else if (e.getKeyCode() == KeyEvent.VK_TAB)
+                {
+                    listener.stateChanged(new ChangeEvent(new String("\t")));
                 }
             }
         });

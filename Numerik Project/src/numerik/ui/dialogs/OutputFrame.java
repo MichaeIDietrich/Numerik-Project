@@ -31,7 +31,7 @@ public final class OutputFrame extends JFrame
     {
         super("Numerik");
         this.setIconImages(icons);
-
+        
         initLookAndFeel();
                 
         TabbedTaskPane tabMain = new TabbedTaskPane(this);
@@ -58,9 +58,9 @@ public final class OutputFrame extends JFrame
         {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         }
-        catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e)
+        catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex)
         {
-            e.printStackTrace();
+            ex.printStackTrace();
         }
     }
     

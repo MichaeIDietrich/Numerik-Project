@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.plaf.basic.ComboPopup;
 
+import numerik.ui.dialogs.ImagePopup;
+import numerik.ui.misc.PopupManager;
+
 public final class ToolTippedComboBox
 {
     
@@ -39,7 +42,7 @@ public final class ToolTippedComboBox
     {
         
         private int index = -1;
-        private ImageToolTipManager toolTipManager = new ImageToolTipManager();
+        private PopupManager popupManager = PopupManager.getInstance();
         private ArrayList<Image> images;
         private Color backGround = Color.WHITE;
         
@@ -67,12 +70,12 @@ public final class ToolTippedComboBox
                     {
                         if (newIndex >= images.size())
                         {
-                            toolTipManager.disposeAll();
+                            popupManager.disposeAll();
                             index = -1;
                             return;
                         }
                         index = newIndex;
-                        toolTipManager.showToolTip(list, e.getXOnScreen() + 16, e.getYOnScreen(), images.get(index), backGround);
+                        new ImagePopup(list, e.getXOnScreen() + 16, e.getYOnScreen(), images.get(index), backGround, true);
                     }
                 }
             });
@@ -82,7 +85,7 @@ public final class ToolTippedComboBox
                 @Override
                 public void mousePressed(MouseEvent e)
                 {
-                    toolTipManager.disposeAll();
+                    popupManager.disposeAll();
                     index = -1;
                 }
                 
@@ -90,7 +93,7 @@ public final class ToolTippedComboBox
                 public void mouseExited(MouseEvent e)
                 {
                     super.mouseExited(e);
-                    toolTipManager.disposeAll();
+                    popupManager.disposeAll();
                     index = -1;
                 }
             });
@@ -104,7 +107,7 @@ public final class ToolTippedComboBox
     {
         
         private int index = -1;
-        private ImageToolTipManager toolTipManager = new ImageToolTipManager();
+        private PopupManager popupManager = PopupManager.getInstance();
         private ArrayList<Image> images;
         private Color backGround = Color.WHITE;
         
@@ -131,7 +134,7 @@ public final class ToolTippedComboBox
                     if (newIndex != index)
                     {
                         index = newIndex;
-                        toolTipManager.showToolTip(list, e.getXOnScreen() + 16, e.getYOnScreen(), images.get(index), backGround);
+                        new ImagePopup(list, e.getXOnScreen() + 16, e.getYOnScreen(), images.get(index), backGround, true);
                     }
                 }
             });
@@ -141,14 +144,14 @@ public final class ToolTippedComboBox
                 @Override
                 public void mousePressed(MouseEvent e)
                 {
-                    toolTipManager.disposeAll();
+                    popupManager.disposeAll();
                     index = -1;
                 }
                 
                 @Override
                 public void mouseExited(MouseEvent e)
                 {
-                    toolTipManager.disposeAll();
+                    popupManager.disposeAll();
                     index = -1;
                 }
             });

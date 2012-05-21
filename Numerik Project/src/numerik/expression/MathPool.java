@@ -205,137 +205,129 @@ public final class MathPool
     
     public Value callFunction(String funcName, Value... args) throws InvalidExpressionException
     {
-        if (funcName.equals("setPrecision"))
+        switch (funcName)
         {
-            if (args.length == 1 && args[0].getType() == ValueType.DECIMAL)
-            {
-                MathLib.setPrecision(args[0].toDecimal().intValue());
-                return new Value("Genauigkeit auf " + args[0].toDecimal().intValue() + " gesetzt.");
-            }
-            
-            throw new InvalidExpressionException("Bitte Eingabe überprüfen, setPrecision() nimmt als Parameter einen Integer.");
-            
-        }
-        else if (funcName.equals("delete") || funcName.equals("del"))
-        {
-            
-            if (args.length == 1 && args[0].getType() == ValueType.VARIABLE)
-            {
-                variables.remove(args[0].toVariable().toString());
-                return new Value("Variable '" + args[0].toVariable() + "' wurde gelöscht.");
-            }
-            
-            throw new InvalidExpressionException("Bitte Eingabe überprüfen, delete() nimmt als Parameter eine Variable.");
-            
-        }
-        else if (funcName.equals("L"))
-        {
-            
-            if (args.length == 1)
-            {
-                args[0] = resolveVariable(args[0]);
-                
-                if (args[0].getType() == ValueType.MATRIX)
+            case "setPrecision":
+                if (args.length == 1 && args[0].getType() == ValueType.DECIMAL)
                 {
-                    return new Value(args[0].toMatrix().getL());
+                    MathLib.setPrecision(args[0].toDecimal().intValue());
+                    return new Value("Genauigkeit auf " + args[0].toDecimal().intValue() + " gesetzt.");
                 }
                 
-            }
-            
-            throw new InvalidExpressionException("Bitte Eingabe überprüfen, L() nimmt als Parameter eine Matrix.");
-            
-        }
-        else if (funcName.equals("U"))
-        {
-            
-            if (args.length == 1)
-            {
-                args[0] = resolveVariable(args[0]);
+                throw new InvalidExpressionException("Bitte Eingabe überprüfen, setPrecision() nimmt als Parameter einen Integer.");
                 
-                if (args[0].getType() == ValueType.MATRIX)
+            case "delete":
+            case "del":
+                if (args.length == 1 && args[0].getType() == ValueType.VARIABLE)
                 {
-                    return new Value(args[0].toMatrix().getU());
+                    variables.remove(args[0].toVariable().toString());
+                    return new Value("Variable '" + args[0].toVariable() + "' wurde gelöscht.");
                 }
                 
-            }
-            
-            throw new InvalidExpressionException("Bitte Eingabe überprüfen, U() nimmt als Parameter eine Matrix.");
-        }
-        else if (funcName.equals("solve"))
-        {
-            if (args.length == 2)
-            {
-                args[0] = resolveVariable(args[0]);
-                args[1] = resolveVariable(args[1]);
+                throw new InvalidExpressionException("Bitte Eingabe überprüfen, delete() nimmt als Parameter eine Variable.");
                 
-                if (args[0].getType() == ValueType.MATRIX && args[1].getType() == ValueType.VECTOR)
+            case "determinant":
+            case "det":
+                if (args.length == 1)
                 {
-                    return new Value(args[0].toMatrix().solveX(args[1].toVector()));
+                    args[0] = resolveVariable(args[0]);
+                    
+                    if (args[0].getType() == ValueType.MATRIX)
+                    {
+                        return new Value(args[0].toMatrix().determinant());
+                    }
                 }
-            }
-            throw new InvalidExpressionException("Bitte Eingabe überprüfen, solve() nimmt als Parameter eine Matrix und einen Vektor.");
-        }
-        else if (funcName.equals("get"))
-        {
-            
-            if (args.length == 3)
-            {
+                
+                throw new InvalidExpressionException("Bitte Eingabe überprüfen, determinant() nimmt als Parameter eine Matrix.");
+                
+            case "L":
+                if (args.length == 1)
+                {
+                    args[0] = resolveVariable(args[0]);
+                    
+                    if (args[0].getType() == ValueType.MATRIX)
+                    {
+                        return new Value(args[0].toMatrix().getL());
+                    }
+                }
+                
+                throw new InvalidExpressionException("Bitte Eingabe überprüfen, L() nimmt als Parameter eine Matrix.");
+                
+            case "U":
+                if (args.length == 1)
+                {
+                    args[0] = resolveVariable(args[0]);
+                    
+                    if (args[0].getType() == ValueType.MATRIX)
+                    {
+                        return new Value(args[0].toMatrix().getU());
+                    }
+                }
+                
+                throw new InvalidExpressionException("Bitte Eingabe überprüfen, U() nimmt als Parameter eine Matrix.");
+                
+            case "solve":
+                if (args.length == 2)
+                {
+                    args[0] = resolveVariable(args[0]);
+                    args[1] = resolveVariable(args[1]);
+                    
+                    if (args[0].getType() == ValueType.MATRIX && args[1].getType() == ValueType.VECTOR)
+                    {
+                        return new Value(args[0].toMatrix().solveX(args[1].toVector()));
+                    }
+                }
+                
+                throw new InvalidExpressionException("Bitte Eingabe überprüfen, solve() nimmt als Parameter eine Matrix und einen Vektor.");
+                
+            case "get":
+                if (args.length == 3)
+                {
+                    args[0] = resolveVariable(args[0]);
+                    
+                    if (args[0].getType() == ValueType.MATRIX && args[0].getType() == ValueType.DECIMAL)
+                    {
+                        return new Value(args[0].toMatrix().get(args[1].toDecimal().intValue(), args[2].toDecimal().intValue()));
+                    }
+                }
+                else if (args.length == 2)
+                {
+                    args[0] = resolveVariable(args[0]);
+                    
+                    if (args[0].getType() == ValueType.VECTOR && args[0].getType() == ValueType.DECIMAL)
+                    {
+                        return new Value(args[0].toVector().get(args[1].toDecimal().intValue()));
+                    }
+                }
+                throw new InvalidExpressionException("Bitte Eingabe überprüfen, get() nimmt als Parameter eine Matrix und zwei Indizes ooder einen Vektor und ein Index.");
+                
+                
+            // mathematische Standardfunktionen mit double-Genauigkeit
+            case "ln":
                 args[0] = resolveVariable(args[0]);
                 
-                if (args[0].getType() == ValueType.MATRIX && args[0].getType() == ValueType.DECIMAL)
-                {
-                    return new Value(args[0].toMatrix().get(args[1].toDecimal().intValue(), args[2].toDecimal().intValue()));
-                }
-            }
-            else if (args.length == 2)
-            {
+                return new Value(MathLib.ln(args[0].toDecimal()));
+                
+            case "sqrt":
                 args[0] = resolveVariable(args[0]);
                 
-                if (args[0].getType() == ValueType.VECTOR && args[0].getType() == ValueType.DECIMAL)
-                {
-                    return new Value(args[0].toVector().get(args[1].toDecimal().intValue()));
-                }
-            }
-            throw new InvalidExpressionException("Bitte Eingabe überprüfen, get() nimmt als Parameter eine Matrix und zwei Indizes ooder einen Vektor und ein Index.");
+                return new Value(MathLib.sqrt(args[0].toDecimal()));
+                
+            case "sin":
+                args[0] = resolveVariable(args[0]);
+                
+                return new Value(MathLib.sin(args[0].toDecimal()));
+                
+            case "cos":
+                args[0] = resolveVariable(args[0]);
+                
+                return new Value(MathLib.cos(args[0].toDecimal()));
+                
+            case "tan":
+                args[0] = resolveVariable(args[0]);
+                
+                return new Value(MathLib.tan(args[0].toDecimal()));
         }
-        
-        // mathematische Standardfunktionen mit double-Genauigkeit
-        else if (funcName.equals("ln"))
-        {
-            args[0] = resolveVariable(args[0]);
-            
-            double d = Math.log(args[0].toDecimal().doubleValue());
-            return new Value(MathLib.round(new BigDecimal(d)));
-        }
-        else if (funcName.equals("sqrt"))
-        {
-            args[0] = resolveVariable(args[0]);
-            
-            double d = Math.sqrt(args[0].toDecimal().doubleValue());
-            return new Value(MathLib.round(new BigDecimal(d)));
-        }
-        else if (funcName.equals("sin"))
-        {
-            args[0] = resolveVariable(args[0]);
-            
-            double d = Math.sin(args[0].toDecimal().doubleValue());
-            return new Value(MathLib.round(new BigDecimal(d)));
-        }
-        else if (funcName.equals("cos"))
-        {
-            args[0] = resolveVariable(args[0]);
-            
-            double d = Math.cos(args[0].toDecimal().doubleValue());
-            return new Value(MathLib.round(new BigDecimal(d)));
-        }
-        else if (funcName.equals("tan"))
-        {
-            args[0] = resolveVariable(args[0]);
-            
-            double d = Math.tan(args[0].toDecimal().doubleValue());
-            return new Value(MathLib.round(new BigDecimal(d)));
-        }
-        
         
         throw new InvalidExpressionException("Funktion '" + funcName + "' existiert nicht.");
     }
@@ -353,7 +345,4 @@ public final class MathPool
         }
         return var;
     }
-    
-    
-    
 }

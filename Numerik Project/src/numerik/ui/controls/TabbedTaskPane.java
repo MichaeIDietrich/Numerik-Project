@@ -19,12 +19,14 @@ public final class TabbedTaskPane extends JTabbedPane implements ChangeListener
         this.addChangeListener(this);
     }
     
+    
     public void addTab(String title, Task task)
     {
         TaskPane taskPane = new TaskPane(frame, task, true);
         super.add(title, taskPane);
     }
-
+    
+    
     @Override
     public void stateChanged(ChangeEvent e)
     {

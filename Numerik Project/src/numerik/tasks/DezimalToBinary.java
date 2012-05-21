@@ -22,8 +22,8 @@ public class DezimalToBinary implements Task
     {
         
         this.taskPane = taskPane;
-        taskPane.createJToolBarByArguments(new Argument("Dezimalzahl:", ArgType.DECIMAL, "0.00567"), 
-                                           new Argument("Runde", "Binär", "Dezimal"),
+        taskPane.createJToolBarByArguments(new Argument("Dezimalzahl:", ArgType.DECIMAL, "0.00567", 100), 
+                                           new Argument("Runde:", "Binär", "Dezimal"),
                                            new Argument("Mantissenlänge:", ArgType.DOUBLEPRECISION, "16"), 
                                                Argument.RUN_BUTTON);
     }

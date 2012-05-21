@@ -6,8 +6,6 @@ import java.awt.Graphics;
 import java.awt.Image;
 
 import javax.swing.JComponent;
-import javax.swing.JInternalFrame;
-import javax.swing.JRootPane;
 
 public final class ImageComponent extends JComponent
 {

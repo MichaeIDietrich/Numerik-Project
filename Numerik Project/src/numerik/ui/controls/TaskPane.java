@@ -48,7 +48,7 @@ public final class TaskPane extends JPanel implements ActionListener
         DocumentLoader docLoader = new DocumentLoader();
         String[] matrices = docLoader.getAllMatrixNames("Data.txt");
         String[] vectors = docLoader.getAllVectorNames("Data.txt");
-        ArrayList<Image> imgMatrices = new ArrayList<Image>();
+        final ArrayList<Image> imgMatrices = new ArrayList<Image>();
         for (Matrix matrix : docLoader.readMatrices("Data.txt"))
         {
             imgMatrices.add(new LatexFormula().addMatrix(matrix).toImage());
@@ -81,6 +81,7 @@ public final class TaskPane extends JPanel implements ActionListener
                 case MATRIX:
                     combo = new JComboBox<String>(matrices);
                     combo.insertItemAt("...", matrices.length);
+                    
                     combo.addItemListener(new ItemListener()
                     {
                         @Override
@@ -97,15 +98,20 @@ public final class TaskPane extends JPanel implements ActionListener
                                 {
                                     combo.setSelectedIndex(0);
                                 }
-                                else
+                                else if ((matrix.name = JOptionPane.showInputDialog(frame, "Bitte geben Sie den Namen der Matrix ein.", "Matrixname", JOptionPane.QUESTION_MESSAGE)) 
+                                        != null && !matrix.name.equals(""))
                                 {
+                                    new DocumentLoader().addMatrixToFile(matrix, "Data.txt");
                                     int index = combo.getItemCount() - 1;
-                                    combo.insertItemAt("***", index);
+                                    combo.insertItemAt(matrix.name, index);
                                     combo.setSelectedIndex(index);
+                                    imgMatrices.add(new LatexFormula().addMatrix(matrix).toImage());
+                                    
                                 }
                             }
                         }
                     });
+                    
                     new ToolTippedComboBox(combo, imgMatrices, new Color(255, 255, 150));
                     combo.setPreferredSize(new Dimension(arg.getControlWidth(), combo.getPreferredSize().height));
                     arg.setRelatedControl(combo);
@@ -292,5 +298,6 @@ public final class TaskPane extends JPanel implements ActionListener
         this.removeAll();
         this.add(component);
         this.revalidate();
+        this.repaint();
     }
 }

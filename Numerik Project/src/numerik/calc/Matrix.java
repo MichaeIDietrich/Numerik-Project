@@ -5,9 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
-import java.util.ArrayList;
+import java.util.*;
+
 import numerik.ui.misc.LatexFormula;
 import numerik.ui.misc.Recorder;
 
@@ -632,7 +632,7 @@ public class Matrix {
         if (!isQuadratic() || (rows>3 && cols>3))
         {
             throw new ArithmeticException("Die Matrix muss quadratisch sein");
-        } 
+        }
         BigDecimal sum;
         
         // Determinante mittels Sarrus Regel für 2x2 und 3x3 Matrizen
@@ -669,6 +669,77 @@ public class Matrix {
             }
         }
         return sum;
+    }
+    
+    
+    public BigDecimal determinant()
+    {
+//            double result = 0;
+//
+//            if(mat.length == 1) {
+//            result = mat[0][0];
+//            return result;
+//            }
+//
+//            if(mat.length == 2) {
+//            result = mat[0][0] * mat[1][1] - mat[0][1] * mat[1][0];
+//            return result;
+//            }
+//
+//            for(int i = 0; i < mat[0].length; i++) {
+//            double temp[][] = new double[mat.length - 1][mat[0].length - 1];
+//
+//            for(int j = 1; j < mat.length; j++) {
+//            System.arraycopy(mat[j], 0, temp[j-1], 0, i);
+//            System.arraycopy(mat[j], i+1, temp[j-1], i, mat[0].length-i-1);
+//            }
+//
+//            result += mat[0][i] * Math.pow(-1, i) * determinant(temp);
+//            }
+//
+//            return result;
+        
+        if (!isQuadratic())
+        {
+            throw new ArithmeticException("Die Matrix muss quadratisch sein");
+        }
+        
+        return calculateDeterminant(values);
+    }
+    
+    
+    //Quelle: http://wiki.answers.com/Q/Determinant_of_matrix_in_java
+    private BigDecimal calculateDeterminant(BigDecimal[][] matrix)
+    {
+        if (matrix.length == 1)
+        {
+            return matrix[0][0];
+        }
+        
+        if (matrix.length == 2)
+        {
+            return matrix[0][0].multiply(matrix[1][1]).subtract(matrix[0][1].multiply(matrix[1][0]));
+        }
+        
+        BigDecimal result = BigDecimal.ZERO;
+        
+        for (int col = 0; col < matrix[0].length; col++)
+        {
+            BigDecimal tmpMatrix[][] = new BigDecimal[matrix.length - 1][matrix[0].length - 1];
+            
+            for (int row = 1; row < matrix.length; row++)
+            {
+                System.arraycopy(matrix[row], 0, tmpMatrix[row - 1], 0, col);
+                System.arraycopy(matrix[row], col + 1, tmpMatrix[row - 1], col, matrix[0].length - col - 1);
+            }
+            result = result.add(matrix[0][col].multiply(calculateDeterminant(tmpMatrix)));
+            if (col % 2 == 1)
+            {
+                result = result.negate();
+            }
+        }
+        
+        return result;
     }
     
     

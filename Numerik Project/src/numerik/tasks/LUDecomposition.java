@@ -17,7 +17,7 @@ import numerik.ui.misc.Recorder;
 public final class LUDecomposition implements Task
 {
     private TaskPane taskPane;
-
+    
     
     @Override
     public void init(OutputFrame frame, TaskPane taskPane)

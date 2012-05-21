@@ -174,8 +174,8 @@ public class DocumentLoader
     {
         try
         {
-            BufferedWriter bw = new BufferedWriter(new FileWriter(file));
-            bw.write("\n");
+            BufferedWriter bw = new BufferedWriter(new FileWriter(file, true));
+            bw.write("\n\n");
             bw.write("Matrix#");
             bw.write(matrix.name);
             
@@ -191,10 +191,11 @@ public class DocumentLoader
                     }
                 }
             }
+            bw.close();
         }
-        catch (IOException e)
+        catch (IOException ex)
         {
-            e.printStackTrace();
+            ex.printStackTrace();
         }
     }
 }
