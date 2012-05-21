@@ -33,7 +33,6 @@ public class ExpressionTask implements Task, ActionListener, KeyListener, Expres
     @Override
     public void init(OutputFrame frame, TaskPane taskPane)
     {
-        
         this.frame = frame;
         this.taskPane = taskPane;
         
@@ -69,7 +68,7 @@ public class ExpressionTask implements Task, ActionListener, KeyListener, Expres
         BoxLayout box = new BoxLayout(pnlExpressionOutput, BoxLayout.Y_AXIS);
         pnlExpressionOutput.setLayout(box);
         pnlExpressionOutput.setBackground(Color.WHITE);
-        
+                
         txtExpressionInput = new JTextArea();
         try
         {

@@ -31,12 +31,12 @@ public final class OutputFrame extends JFrame
     {
         super("Numerik");
         this.setIconImages(icons);
-        
+
         initLookAndFeel();
-        
+                
         TabbedTaskPane tabMain = new TabbedTaskPane(this);
         tabMain.addTab("Expression", new ExpressionTask());
-        tabMain.addTab("Dez->Bin",    new dezToBin());
+        tabMain.addTab("Dez->Bin",    new DezimalToBinary());
         tabMain.addTab("LU-Zerlegung", new LUDecomposition());
         tabMain.addTab("Newton Wurzel", new NewtonIteration());
         tabMain.addTab("Non-Lin-GS", new SolveNonLinearEquation());

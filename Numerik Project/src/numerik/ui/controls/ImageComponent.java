@@ -6,6 +6,8 @@ import java.awt.Graphics;
 import java.awt.Image;
 
 import javax.swing.JComponent;
+import javax.swing.JInternalFrame;
+import javax.swing.JRootPane;
 
 public final class ImageComponent extends JComponent
 {
@@ -50,7 +52,7 @@ public final class ImageComponent extends JComponent
     
     @Override
     protected void paintComponent(Graphics g)
-    {
+    {        
         g.setColor(backGround);
         g.fillRect(g.getClipBounds().x, g.getClipBounds().y, g.getClipBounds().width, g.getClipBounds().height);
         if (image != null)
