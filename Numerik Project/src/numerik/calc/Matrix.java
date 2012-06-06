@@ -413,52 +413,81 @@ public class Matrix {
         Vector x = substitution( U, y,       "backward" );
         
         return x;
-    }
-    
+    }   
     
     public Matrix getL()
     {
-        return doLUDecomposition(0, null); // 0 liefert L zurück
-    }
-    
-    
+        return doLUDecomposition(0, null).item2; // 0 liefert L zurück
+    } 
     
     public Matrix getU()
     {
-        return doLUDecomposition(1, null); // 1 liefert U zurück
+        return doLUDecomposition(1, null).item2; // 1 liefert U zurück
     }
     
+    public Vector getlperm()
+    {
+        return doLUDecomposition(2, null).item1; // 2 liefert Permutationen zurück (Reihenfolge der Zeilenvertauschung einer Matrix)
+    }
     
     public Matrix getL(Vector b)
     {
-        return doLUDecomposition( 0, b );
+        return doLUDecomposition(0, b).item2;
     }
-    
     
     public Matrix getU(Vector b)
     {
-        return doLUDecomposition( 1, b );
+        return doLUDecomposition(1, b).item2;
     }
     
+    public Vector getlperm(Vector b)
+    {
+        return doLUDecomposition(2, b).item1;
+    }
     
-    private Matrix doLUDecomposition(int which_matrix, Vector b) {
+    /**
+     * Gibt eine Tuple zurück, die entweder eine Matrix (für L oder U) hält oder ein Vector (für die Permutationen)
+     * @param which_matrix Gibt an, ob L (=0), U (=1), oder lperm(=2) zurückgegeben wird
+     * @param b Ist ein Vektor, der die Ergebnisse von den Gleichungssystemen darstellt
+     */
+    private Tuple<Vector, Matrix> doLUDecomposition(int which_matrix, Vector b) {
         
         BigDecimal temp = BigDecimal.ZERO;
         Matrix        U = clone();
         Matrix        L = identity();
-             
-        if(  name == null)   name = "A";
-        if(b.name == null) b.name = "b";
         
-        if (b!=null && recorder.isActive())
+        //Reihenfolge der Vertauschung bei der Pivotstrategie(Permutationen)
+        Vector    lperm = new Vector(rows);
+        
+        // Ergebnis ist [1, 2, 3, 4, ...] als Vektor
+        for (int cellOfVector = 0; cellOfVector < rows; cellOfVector++)
         {
+            lperm.set(cellOfVector, new BigDecimal(cellOfVector + 1));
+        }
+             
+        if (name == null)
+        {
+            name = "A";
+        }
+        
+        if (b != null)
+        {
+            if (recorder.isActive())
+            {
+                if(b.name == null) b.name = "b";
+            }
+            
             formula.addNewLine(2).addSolidLine().addNewLine(1);
             formula.addText("LU-Zerlegung").addNewLine(2);
         }
         
-        for(int row=0; row<L.rows; row++) 
-        { // Pivotisierung + Gaussschritte, reduzierte Zeilenstufenform
-            if (MathLib.isPivotStrategy()) U = pivotColumnStrategy( U, b, row ); 
+        for(int row=0; row < L.rows; row++) 
+        { 
+            // Pivotisierung + Gaussschritte, reduzierte Zeilenstufenform
+            if (MathLib.isPivotStrategy())
+            {
+                lperm = lperm.swapRows(row, pivotColumnStrategy(U, b, row )); 
+            }
             
             for(int t=row; t<U.rows-1; t++) 
             {
@@ -499,11 +528,15 @@ public class Matrix {
         
         if(which_matrix == 0) 
         {
-            return L;
-        } 
-        else 
+            return new Tuple<Vector, Matrix>(null, L);
+        }
+        if(which_matrix == 1)
         {
-            return U;
+            return new Tuple<Vector, Matrix>(null, U);
+        }
+        else
+        {
+            return new Tuple<Vector, Matrix>(lperm, null);
         }
     }
     
@@ -566,12 +599,20 @@ public class Matrix {
         return y;
     }
     
-    
-    public Matrix pivotColumnStrategy( Matrix matrix, Vector b, int row )
+    /**
+     * Anwenden der Zeilenpivotstrategie, bei welcher Zeilen vertauscht werden nach dem Kriterium,
+     * dass eine absolute Zeilensumme ermittelt wird und die Zeile mit der höchsten Summe
+     * wird mit der aktuellen Reihe int row getauscht
+     * Zum Schluss wird die Zeile als int ausgegeben, die die maximale Zeilensumme besitzt
+     * @param matrix Matrix, für die die Pivotstrategie angewendet werden soll
+     * @param vector Vektor, für die die Pivotstrategie angewendet werden soll
+     * @param row Anfangsreihe, bei welcher angefangen wird, die Zeilen zu vertauschen
+     */
+    public int pivotColumnStrategy( Matrix matrix, Vector b, int row )
     {
         BigDecimal maximum = BigDecimal.ZERO;
         BigDecimal    temp = BigDecimal.ZERO;
-        int    rowposition = 0;
+        int    rowposition = row;
         boolean    rowswap = false;
         
         for(int t=0; t<matrix.getRows()-row; t++)
@@ -601,10 +642,12 @@ public class Matrix {
                     b.set(row, b.get(rowposition));
                     b.set(rowposition, temp);
                 }
+                
                 rowswap = false;
             }
         }
-        return matrix;
+        
+        return rowposition;
     }
       
     

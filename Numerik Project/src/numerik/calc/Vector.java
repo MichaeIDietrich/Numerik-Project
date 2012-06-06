@@ -262,6 +262,21 @@ public final class Vector
         return euklidNorm;
     }
     
+    /**
+     * Tauscht die Reihen eines Vektors durch zwei Indizes
+     * @param rowIndex1 erster Index
+     * @param rowIndex2 zweiter Index
+     */
+    public Vector swapRows(int rowIndex1, int rowIndex2)
+    {
+        Vector tempVector = clone();
+        
+        BigDecimal tempBigDecimal = get(rowIndex1);
+        tempVector.set(rowIndex1, get(rowIndex2));
+        tempVector.set(rowIndex2, tempBigDecimal);
+        
+        return tempVector;
+    }
     
     public Double[] toDoubleArray() {
         
