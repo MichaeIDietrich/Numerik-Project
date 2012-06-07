@@ -303,14 +303,14 @@ public class Matrix {
         for (int i = 0; i < rows; i++)
         {
             for (int j = 0; j < matrix.getCols(); j++)
-            {
-                
+            {               
                 BigDecimal sum = BigDecimal.ZERO;
                 
                 for (int j2 = 0; j2 < cols; j2++)
                 {
                     sum = sum.add( MathLib.round( values[i][j2].multiply( matrix.get(j2, j) )));
                 }
+                
                 v[i][j] = sum;
             }
         }
@@ -540,8 +540,14 @@ public class Matrix {
         }
     }
     
-    
-    public Vector substitution( Matrix matrix, Vector b, String str )
+    /**
+     * Ermöglicht die Vorwärts und Rückwärtssubstitution von einer Matrix mit einem Vector b
+     * 
+     * @param matrix Matrix, die man Substituieren will
+     * @param b Vektor, den man Substituieren will
+     * @param str gibt an, wie man Substituieren will "forward" oder "backward"
+     */
+    public Vector substitution(Matrix matrix, Vector b, String str)
     {
         BigDecimal term0 = BigDecimal.ZERO;
         BigDecimal term1 = BigDecimal.ZERO;
@@ -601,9 +607,10 @@ public class Matrix {
     
     /**
      * Anwenden der Zeilenpivotstrategie, bei welcher Zeilen vertauscht werden nach dem Kriterium,
-     * dass eine absolute Zeilensumme ermittelt wird und die Zeile mit der höchsten Summe
-     * wird mit der aktuellen Reihe int row getauscht
-     * Zum Schluss wird die Zeile als int ausgegeben, die die maximale Zeilensumme besitzt
+     * dass ein absoluter Wert aus einer Zeile der aktuellen Spalte ermittelt wird und die Zeile 
+     * mit dem höchsten Wert wird mit der aktuellen Reihe int row getauscht
+     * Zum Schluss wird die Zeile als int ausgegeben, die den maximalen Wert einer Zeile von der aktuellen
+     * Spalte besitzt.
      * @param matrix Matrix, für die die Pivotstrategie angewendet werden soll
      * @param vector Vektor, für die die Pivotstrategie angewendet werden soll
      * @param row Anfangsreihe, bei welcher angefangen wird, die Zeilen zu vertauschen

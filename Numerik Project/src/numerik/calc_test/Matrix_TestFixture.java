@@ -214,9 +214,9 @@ public class Matrix_TestFixture
         
         V2 = M1.getlperm();
         
-        assertEquals("3", V2.get(1).toPlainString());
-        assertEquals("1", V2.get(2).toPlainString());
-        assertEquals("2", V2.get(3).toPlainString());
+        assertEquals("2", V2.get(0).toPlainString());
+        assertEquals("1", V2.get(1).toPlainString());
+        assertEquals("3", V2.get(2).toPlainString());
     }
     
     @Test
