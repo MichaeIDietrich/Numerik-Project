@@ -89,16 +89,17 @@ public final class LUDecomposition implements Task
         formula.addFormula( recorder.get( true ) );
         formula.addText("x = ").addVector(x).addText(",     Exakt: "+A.name+"^{-1}").addSymbol("*").addText(b.name+" = ")
                .addVector(invAb).addNewLine(2);
-        formula.addText(A.name+"^{-1} = ").addMatrix(invA).addNewLine(2);
+        formula.addText(A.name+"^{-1} = ").addMatrix(invA).addNewLine(4);
 
         MathLib.setRoundingMode( MathLib.NORMAL );
         formula.addText(A.name).addSymbol("*").addText(A.name+"^{-1} = ").addMatrix(AinvA).addNewLine(3);
         formula.addTextUL("relativer\\;Fehler\\;als\\;obere\\;Schranke:").addNewLine(1);
         formula.addSymbol("kappa").addText("("+A.name+") = ").addMatrixNorm(A.name).addSymbol("*").addMatrixNorm(A.name+"^{-1}")
-               .addText(" = "+kappa).addNewLine(2);
-        
+               .addText(" = "+kappa).addNewLine(1);
+        formula.addLatexString("r = "+A.name+" \\cdot ").addLatexString("x - "+b.name+" = ").addVector(r).addNewLine(1);
         formula.addRelError("x").addText(" = ").addSymbol("kappa").addText("("+A.name+")").addSymbol("*").addVektornormXdivY("r", b.name, true)
-               .addLatexString("\\;\\;\\le\\;\\;").addText( ""+relFehler ).addNewLine(3);
+               .addLatexString("\\;\\;\\le\\;\\;").addText( ""+relFehler ).addNewLine(4);
+        
         formula.addTextUL("relativer\\;Fehler\\;als\\;exakter\\;Wert:").addNewLine(1);
         formula.addRelError("x").addText(" = ")
                .addVektornormXdivY("x-"+A.name+"^{-1}"+b.name, A.name+"^{-1}"+b.name, false)

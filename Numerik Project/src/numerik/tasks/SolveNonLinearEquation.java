@@ -2,6 +2,8 @@
 package numerik.tasks;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import numerik.calc.MathLib;
 import numerik.calc.Matrix;
 import numerik.calc.Vector;
@@ -35,7 +37,7 @@ public class SolveNonLinearEquation implements Task
         MathLib.setPrecision( 16 );    // Achtung: Präzision > 16 führt zu Endlosschleife!!!
         
         // Lösen nichtlinearer Gleichungssysteme
-        BigDecimal[] startvector = {new BigDecimal(-0.7) , new BigDecimal(-0.5)};
+        BigDecimal[] startvector = {new BigDecimal(1.5) , new BigDecimal(-1)};
         
         Vector iterx = new Vector( startvector );
         Vector    x = new Vector( startvector.length );
@@ -43,8 +45,11 @@ public class SolveNonLinearEquation implements Task
         Matrix   jm = new Matrix( startvector.length, startvector.length );
         int       i = 0;
         
+        
+        // Abbruchbedingung 'obereschranke' bei x.norm() < 2^(-50) < eps
+        BigDecimal obereschranke = BigDecimal.ONE.divide(new BigDecimal(2).pow(50), 16, RoundingMode.HALF_UP);
 
-        while (( x.norm()).compareTo( BigDecimal.ZERO )==1) 
+        while (( x.norm()).compareTo( obereschranke )==1) 
         {
             iterformula.addLatexString("x_{"+ i +"} = ").addVector(iterx).addNewLine(1);
             i++;
@@ -79,10 +84,10 @@ public class SolveNonLinearEquation implements Task
         Double[]        x = vector.toDoubleArray();
         
         // Hier die >> Ableitungen << der Funktionen eintragen:
-        derivation.set(0,0, BigDecimal.valueOf(   2*x[0]      ));
-        derivation.set(0,1, BigDecimal.valueOf(   2*x[1]+0.6  ));
-        derivation.set(1,0, BigDecimal.valueOf(   2*x[0]+1    ));
-        derivation.set(1,1, BigDecimal.valueOf(  -2*x[1]-1.6  ));
+        derivation.set(0,0, BigDecimal.valueOf(   -1.0             ));
+        derivation.set(0,1, BigDecimal.valueOf(   -Math.sin(x[1])  ));
+        derivation.set(1,0, BigDecimal.valueOf(    Math.cos(x[0])  ));
+        derivation.set(1,1, BigDecimal.valueOf(   -1.0             ));
         
         return derivation;
     }
@@ -91,11 +96,11 @@ public class SolveNonLinearEquation implements Task
     public Vector getFunctionsValue(Vector vector) {
         
         Vector function = new Vector( vector.getLength() );
-        Double[]      x = vector.toDoubleArray();           // x[0] = x_1 ; x[1] = x_2 ; usw.
+        Double[]      x = vector.toDoubleArray();           // x[0] = x ; x[1] = y ; x[2] = z usw.
         
         // Hier die >> Funktionen << eintragen:
-        function.set(0, BigDecimal.valueOf(     x[0]*x[0] +x[1]*x[1]       +0.6*x[1] -0.16     ).negate());
-        function.set(1, BigDecimal.valueOf(     x[0]*x[0] -x[1]*x[1] +x[0] -1.6*x[1] -0.14     ).negate());
+        function.set(0, BigDecimal.valueOf(     1.0 - x[0] + Math.cos(x[1])     ).negate());
+        function.set(1, BigDecimal.valueOf(    -1.4 - x[1] + Math.sin(x[0])     ).negate());
         
         return function;
     }

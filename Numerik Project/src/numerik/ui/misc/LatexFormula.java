@@ -93,12 +93,18 @@ public class LatexFormula
     }
     
     
+    public LatexFormula addTextIT(String str)
+    {
+        return addText(str, false, true, false);
+    }
+    
+    
     public LatexFormula addTextUL(String str)
     {
         return addText(str, false, false, true);
     }
     
-    
+
     public LatexFormula addExponent(String exponent)
     {
         formula.append("^{");
@@ -253,6 +259,13 @@ public class LatexFormula
     }
     
     
+    public LatexFormula addLEQ() 
+    {
+        formula.append(" \\leq ");
+        return this;
+    }
+    
+    
     public LatexFormula addMatrix(Matrix matrix)
     {
         formula.append("\\begin{pmatrix}");
@@ -384,6 +397,17 @@ public class LatexFormula
                 "\\partial{x_n}}\\\\\\vdots&\\ddots&\\vdots\\\\" +
                 "\\frac{\\partial{f_n}}{\\partial{x_1}}&\\hdots&\\frac{\\partial{f_n}}{" +
                 "\\partial{x_n}}\\end{pmatrix}").append("\\text{  }\\equiv\\text{Jakobi-Matrix}");
+        return this;
+    }
+    
+    
+    public LatexFormula relErrorDeltaInput() 
+    {
+        addRelError("x").addLEQ().addLatexString("\\frac{").addSymbol("kappa").addText("(A)").
+        addLatexString("}{1 - \\kappa").addText("(A)").addSymbol("*").addRelError("A").
+        addLatexString("}").addSymbol("*").addLatexString("\\left(").addRelError("b").
+        addText(" + ").addRelError("A").addLatexString("\\right)");
+        
         return this;
     }
     
