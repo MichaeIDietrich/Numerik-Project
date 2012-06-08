@@ -62,7 +62,6 @@ public final class ToolTippedComboBox
                 @Override
                 public void mouseMoved(MouseEvent e)
                 {
-                    super.mouseMoved(e);
                     JList<?> list = (JList<?>) e.getSource();
                     
                     int newIndex = list.locationToIndex(e.getPoint());
@@ -127,12 +126,17 @@ public final class ToolTippedComboBox
                 @Override
                 public void mouseMoved(MouseEvent e)
                 {
-                    super.mouseMoved(e);
                     JList<?> list = (JList<?>) e.getSource();
                     
                     int newIndex = list.locationToIndex(e.getPoint());
                     if (newIndex != index)
                     {
+                        if (newIndex >= images.size())
+                        {
+                            popupManager.disposeAll();
+                            index = -1;
+                            return;
+                        }
                         index = newIndex;
                         new ImagePopup(list, e.getXOnScreen() + 16, e.getYOnScreen(), images.get(index), backGround, true);
                     }
