@@ -13,6 +13,8 @@ public class Matrix_TestFixture
     //private Matrix MSub;
     private Matrix MMul;
     //private Matrix MDiv;
+    private Vector V1;
+    private Vector V2;
     
     @Test
     public void add__2x2_Matrizen_addieren()
@@ -120,6 +122,257 @@ public class Matrix_TestFixture
         assertEquals("2.835", diagonalMatrix.get(2, 2).toPlainString());
     }
     
+    @Test
+    public void getL__Test_To_Get_Lower_Triangular_Matrix_Including_Pivotstrategy_From_A_Matrix()
+    {
+        MathLib.setPivotStrategy(true);
+        MathLib.setPrecision(5);
+        
+        M1 = new Matrix(3, 3);
+        
+        M1.set(0, 0, new BigDecimal("2.1"));
+        M1.set(0, 1, new BigDecimal("2512.0"));
+        M1.set(0, 2, new BigDecimal("-2516.0"));
+        
+        M1.set(1, 0, new BigDecimal("-1.3"));
+        M1.set(1, 1, new BigDecimal("8.8"));
+        M1.set(1, 2, new BigDecimal("-7.6"));
+        
+        M1.set(2, 0, new BigDecimal("0.9"));
+        M1.set(2, 1, new BigDecimal("-6.2"));
+        M1.set(2, 2, new BigDecimal("4.6"));
+        
+        M2 = M1.getL();
+        
+        assertEquals("1", M2.get(0, 0).toPlainString());
+        assertEquals("0", M2.get(0, 1).toPlainString());
+        assertEquals("0", M2.get(0, 2).toPlainString());
+        
+        assertEquals("-0.61905", M2.get(1, 0).toPlainString());
+        assertEquals("1", M2.get(1, 1).toPlainString());
+        assertEquals("0", M2.get(1, 2).toPlainString());
+        
+        assertEquals("0.42857", M2.get(2, 0).toPlainString());
+        assertEquals("-0.69237", M2.get(2, 1).toPlainString());
+        assertEquals("1", M2.get(2, 2).toPlainString());
+    }
+    
+    @Test
+    public void getU__Test_To_Get_Upper_Triangular_Matrix_Including_Pivotstrategy_From_A_Matrix()
+    {
+        MathLib.setPivotStrategy(true);
+        MathLib.setPrecision(5);
+        
+        M1 = new Matrix(3, 3);
+        
+        M1.set(0, 0, new BigDecimal("2.1"));
+        M1.set(0, 1, new BigDecimal("2512.0"));
+        M1.set(0, 2, new BigDecimal("-2516.0"));
+        
+        M1.set(1, 0, new BigDecimal("-1.3"));
+        M1.set(1, 1, new BigDecimal("8.8"));
+        M1.set(1, 2, new BigDecimal("-7.6"));
+        
+        M1.set(2, 0, new BigDecimal("0.9"));
+        M1.set(2, 1, new BigDecimal("-6.2"));
+        M1.set(2, 2, new BigDecimal("4.6"));
+        
+        M2 = M1.getU();
+        
+        assertEquals("2.1", M2.get(0, 0).toPlainString());
+        assertEquals("2512.0", M2.get(0, 1).toPlainString());
+        assertEquals("-2516.0", M2.get(0, 2).toPlainString());
+        
+        assertEquals("0", M2.get(1, 0).toPlainString());
+        assertEquals("1563.9", M2.get(1, 1).toPlainString());
+        assertEquals("-1565.1", M2.get(1, 2).toPlainString());
+        
+        assertEquals("0", M2.get(2, 0).toPlainString());
+        assertEquals("0", M2.get(2, 1).toPlainString());
+        assertEquals("-0.7", M2.get(2, 2).toPlainString());
+    }
+    
+    @Test
+    public void getlperm__Test_To_Get_Permutationmatrix_Including_Pivotstrategy_From_A_Matrix()
+    {
+        MathLib.setPivotStrategy(true);
+        MathLib.setPrecision(5);
+        
+        M1 = new Matrix(3, 3);
+        
+        M1.set(0, 0, new BigDecimal("0.8"));
+        M1.set(0, 1, new BigDecimal("2512.0"));
+        M1.set(0, 2, new BigDecimal("-2516.0"));
+        
+        M1.set(1, 0, new BigDecimal("-1.3"));
+        M1.set(1, 1, new BigDecimal("8.8"));
+        M1.set(1, 2, new BigDecimal("-7.6"));
+        
+        M1.set(2, 0, new BigDecimal("0.9"));
+        M1.set(2, 1, new BigDecimal("-6.2"));
+        M1.set(2, 2, new BigDecimal("4.6"));
+        
+        V2 = M1.getlperm();
+        
+        assertEquals("2", V2.get(0).toPlainString());
+        assertEquals("1", V2.get(1).toPlainString());
+        assertEquals("3", V2.get(2).toPlainString());
+    }
+    
+    @Test
+    public void getL__Test_To_Get_Lower_Triangular_Matrix_Including_Pivotstrategy_From_A_Matrix_And_Corresponding_Vector()
+    {
+        MathLib.setPivotStrategy(true);
+        MathLib.setPrecision(5);
+        
+        M1 = new Matrix(3, 3);
+        
+        M1.set(0, 0, new BigDecimal("2.1"));
+        M1.set(0, 1, new BigDecimal("2512.0"));
+        M1.set(0, 2, new BigDecimal("-2516.0"));
+        
+        M1.set(1, 0, new BigDecimal("-1.3"));
+        M1.set(1, 1, new BigDecimal("8.8"));
+        M1.set(1, 2, new BigDecimal("-7.6"));
+        
+        M1.set(2, 0, new BigDecimal("0.9"));
+        M1.set(2, 1, new BigDecimal("-6.2"));
+        M1.set(2, 2, new BigDecimal("4.6"));
+        
+        V1 = new Vector(3);
+        
+        V1.set(0, new BigDecimal("6.5"));
+        V1.set(1, new BigDecimal("-5.3"));
+        V1.set(2, new BigDecimal("2.9"));
+        
+        M2 = M1.getL(V1);
+        
+        assertEquals("1", M2.get(0, 0).toPlainString());
+        assertEquals("0", M2.get(0, 1).toPlainString());
+        assertEquals("0", M2.get(0, 2).toPlainString());
+        
+        assertEquals("-0.61905", M2.get(1, 0).toPlainString());
+        assertEquals("1", M2.get(1, 1).toPlainString());
+        assertEquals("0", M2.get(1, 2).toPlainString());
+        
+        assertEquals("0.42857", M2.get(2, 0).toPlainString());
+        assertEquals("-0.69237", M2.get(2, 1).toPlainString());
+        assertEquals("1", M2.get(2, 2).toPlainString());
+        
+        assertEquals("6.5", V1.get(0).toPlainString());
+        assertEquals("-5.3", V1.get(1).toPlainString());
+        assertEquals("2.9", V1.get(2).toPlainString());
+    }
+    
+    @Test
+    public void getU__Test_To_Get_Upper_Triangular_Matrix_Including_Pivotstrategy_From_A_Matrix_And_Corresponding_Vector()
+    {
+        MathLib.setPivotStrategy(true);
+        MathLib.setPrecision(5);
+        
+        M1 = new Matrix(3, 3);
+        
+        M1.set(0, 0, new BigDecimal("2.1"));
+        M1.set(0, 1, new BigDecimal("2512.0"));
+        M1.set(0, 2, new BigDecimal("-2516.0"));
+        
+        M1.set(1, 0, new BigDecimal("-1.3"));
+        M1.set(1, 1, new BigDecimal("8.8"));
+        M1.set(1, 2, new BigDecimal("-7.6"));
+        
+        M1.set(2, 0, new BigDecimal("0.9"));
+        M1.set(2, 1, new BigDecimal("-6.2"));
+        M1.set(2, 2, new BigDecimal("4.6"));
+        
+        V1 = new Vector(3);
+        
+        V1.set(0, new BigDecimal("6.5"));
+        V1.set(1, new BigDecimal("-5.3"));
+        V1.set(2, new BigDecimal("2.9"));
+        
+        M2 = M1.getU(V1);
+        
+        assertEquals("2.1", M2.get(0, 0).toPlainString());
+        assertEquals("2512.0", M2.get(0, 1).toPlainString());
+        assertEquals("-2516.0", M2.get(0, 2).toPlainString());
+        
+        assertEquals("0", M2.get(1, 0).toPlainString());
+        assertEquals("1563.9", M2.get(1, 1).toPlainString());
+        assertEquals("-1565.1", M2.get(1, 2).toPlainString());
+        
+        assertEquals("0", M2.get(2, 0).toPlainString());
+        assertEquals("0", M2.get(2, 1).toPlainString());
+        assertEquals("-0.7", M2.get(2, 2).toPlainString());
+        
+        assertEquals("6.5", V1.get(0).toPlainString());
+        assertEquals("-5.3", V1.get(1).toPlainString());
+        assertEquals("2.9", V1.get(2).toPlainString());
+    }
+    
+    @Test
+    public void getlperm__Test_To_Get_Permutationmatrix_Including_Pivotstrategy_From_A_Matrix_And_Corresponding_Vector()
+    {
+        MathLib.setPivotStrategy(true);
+        MathLib.setPrecision(5);
+        
+        M1 = new Matrix(3, 3);
+        
+        M1.set(0, 0, new BigDecimal("0.8"));
+        M1.set(0, 1, new BigDecimal("2512.0"));
+        M1.set(0, 2, new BigDecimal("-2516.0"));
+        
+        M1.set(1, 0, new BigDecimal("-1.3"));
+        M1.set(1, 1, new BigDecimal("8.8"));
+        M1.set(1, 2, new BigDecimal("-7.6"));
+        
+        M1.set(2, 0, new BigDecimal("0.9"));
+        M1.set(2, 1, new BigDecimal("-6.2"));
+        M1.set(2, 2, new BigDecimal("4.6"));
+        
+        V1 = new Vector(3);
+        
+        V1.set(0, new BigDecimal("6.5"));
+        V1.set(1, new BigDecimal("-5.3"));
+        V1.set(2, new BigDecimal("2.9"));
+        
+        V2 = M1.getlperm(V1);
+        
+        assertEquals("2", V2.get(0).toPlainString());
+        assertEquals("1", V2.get(1).toPlainString());
+        assertEquals("3", V2.get(2).toPlainString());
+        
+        assertEquals("-5.3", V1.get(0).toPlainString());
+        assertEquals("6.5", V1.get(1).toPlainString());
+        assertEquals("2.9", V1.get(2).toPlainString());
+    }
+    
+    @Test
+    public void getlperm__Test_To_Get_Permutationmatrix_Excluding_Pivotstrategy_From_A_Matrix_And_Corresponding_Vector()
+    {
+        MathLib.setPivotStrategy(false);
+        MathLib.setPrecision(5);
+        
+        M1 = new Matrix(3, 3);
+        
+        M1.set(0, 0, new BigDecimal("2.1"));
+        M1.set(0, 1, new BigDecimal("2512.0"));
+        M1.set(0, 2, new BigDecimal("-2516.0"));
+        
+        M1.set(1, 0, new BigDecimal("-1.3"));
+        M1.set(1, 1, new BigDecimal("8.8"));
+        M1.set(1, 2, new BigDecimal("-7.6"));
+        
+        M1.set(2, 0, new BigDecimal("0.9"));
+        M1.set(2, 1, new BigDecimal("-6.2"));
+        M1.set(2, 2, new BigDecimal("4.6"));
+        
+        V1 = M1.getlperm();
+        
+        assertEquals("1", V1.get(0).toPlainString());
+        assertEquals("2", V1.get(1).toPlainString());
+        assertEquals("3", V1.get(2).toPlainString());
+    }
+    
     /* Setzen von allgemeinen Werten, die bei jedem Test verwendet werden */
     @Before
     public void setUp()
@@ -129,8 +382,8 @@ public class Matrix_TestFixture
     }
     
     /*
-     * Zurücksetzen von Werten, um Ausgangszustand eines Tests zu erreichen -->
-     * wichtig für weitere Tests
+     * Zurï¿½cksetzen von Werten, um Ausgangszustand eines Tests zu erreichen -->
+     * wichtig fï¿½r weitere Tests
      */
     @After
     public void tearDown()
@@ -139,7 +392,12 @@ public class Matrix_TestFixture
         M2 = null;
         MAdd = null;
         MMul = null;
+        
+        V1 = null;
+        V2 = null;
+        
         MathLib.enableRound(false);
+        MathLib.setPivotStrategy(false);
     }
     
 }

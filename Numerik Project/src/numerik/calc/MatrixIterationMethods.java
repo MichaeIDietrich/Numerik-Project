@@ -1,7 +1,9 @@
 package numerik.calc;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
+import numerik.calc.Matrix.SubstitutionDirection;
 import numerik.ui.misc.LatexFormula;
 import numerik.ui.misc.Recorder;
 
@@ -100,7 +102,7 @@ public class MatrixIterationMethods
             
             yVectors[iteration] = startVector;
             
-            lam[iteration] = startVector.toMatrix().getTransposed().mult(matrixM).mult(startVector).get(0);
+            lam[iteration] = MathLib.round(startVector.toMatrix().getTransposed().mult(matrixM).mult(startVector).get(0));
         }
         
         return new Tuple<BigDecimal[], Vector[]>(lam, yVectors);
@@ -118,6 +120,88 @@ public class MatrixIterationMethods
      */
     public static Tuple<BigDecimal, Vector[]> inverseIteration(Matrix matrixA, BigDecimal mue, Vector startVectorY0, int maxIterations) throws Exception
     {
-        throw new Exception("Noch nicht implementiert!");
+        Vector[] resultOfIteration = new Vector[maxIterations];
+        
+        Vector y = startVectorY0.clone();
+        
+        //set pivotstrategy on or off here
+        MathLib.setPivotStrategy(true);
+        
+        Matrix matrixForLU = matrixA.subtract(matrixA.identity().mult(mue));
+        
+        Matrix L = matrixForLU.getL();
+        Matrix U = matrixForLU.getU();
+        Vector lperm = matrixForLU.getlperm();
+        
+        for (int i = 0; i < maxIterations; i++)
+        {
+            Vector forwardSubstituted = forwardSubstitution(L, y, lperm);
+            
+            //Substitutionsmethode ist nicht static!! muss noch verbessert werden
+            y = U.substitution(U, forwardSubstituted, SubstitutionDirection.BACKWARD);
+            
+            MathLib.setNorm(1);
+            
+            y = y.divide(y.norm());
+            
+            resultOfIteration[i] = y.clone();
+        }
+        
+        BigDecimal resultingEigenvalue = y.toMatrix().getTransposed().mult(matrixA).mult(y.toMatrix()).get(0, 0);
+        resultingEigenvalue = MathLib.round(resultingEigenvalue.divide(y.toMatrix().getTransposed().mult(y.toMatrix()).get(0, 0), MathLib.getPrecision(), MathLib.getRoundingMode()));
+        
+        return new Tuple<BigDecimal, Vector[]>(resultingEigenvalue, resultOfIteration);
+    }
+    
+    /**
+     * Ermöglicht die Vorwärts von einer Matrix mit einem Vector b in
+     * Abhängigkeit von einem Startvektor y0 
+     * Speziell angepasst für die inverse Iteration!!!
+     * @param matrix Matrix, die man Substituieren will
+     * @param b Vektor, den man Substituieren will
+     * @param y0 Vektor, der für die bsp. Inversen Iteration benutzt wird (bei null wird dies optional)
+     */
+    private static Vector forwardSubstitution(Matrix matrix, Vector b, Vector y0)
+    {
+        BigDecimal term0 = BigDecimal.ZERO;
+        BigDecimal term1 = BigDecimal.ZERO;
+        BigDecimal term2 = BigDecimal.ZERO;
+        Vector         y = new Vector(b.getLength());
+        Matrix     mtemp = matrix.clone();
+        Vector     btemp = b.clone();
+        
+        if (y0 != null)
+        {
+            for (int i = 0; i < matrix.getRows(); i++)
+            {
+                BigDecimal bigDecimalToDivide = y0.get(i);
+                
+                btemp.set(i, MathLib.round(btemp.get(i).divide(MathLib.round(bigDecimalToDivide), MathLib.getPrecision(), MathLib.getRoundingMode())));
+                
+                for (int j = 0; j < matrix.getCols(); j++)
+                {
+                    mtemp.set(i, j, MathLib.round(mtemp.get(i, j).divide(MathLib.round(bigDecimalToDivide), MathLib.getPrecision(), MathLib.getRoundingMode())));
+                }
+
+            }
+        }
+        
+        y.set(0, btemp.get(0));
+        
+        for(int row=1; row<mtemp.getRows(); row++)
+        {
+            term0 = BigDecimal.ZERO;
+            
+            for(int i=0; i < y.getLength() - 1; i++)
+            {
+                term0 = MathLib.round( mtemp.values[row][i].multiply( y.get(i) )).add( term0 );
+            }
+            term1 = MathLib.round( btemp.get(row).subtract( term0 ));
+            term2 = MathLib.round( term1.divide( mtemp.values[row][row], MathLib.getInversePrecision(), RoundingMode.HALF_UP ));
+            
+            y.set( row, term2);
+        }
+        
+        return y;
     }
 }

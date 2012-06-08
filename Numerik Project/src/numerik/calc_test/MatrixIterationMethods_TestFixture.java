@@ -206,17 +206,17 @@ public class MatrixIterationMethods_TestFixture
         assertEquals("0.47585", tupleOutput.item2[0].get(2).toPlainString());
         assertEquals("-0.594812", tupleOutput.item2[0].get(3).toPlainString());
         
-        assertEquals("-0.426378", tupleOutput.item1[9].toPlainString());
-        assertEquals("-0.33526", tupleOutput.item2[9].get(0).toPlainString());
-        assertEquals("0.560322", tupleOutput.item2[9].get(1).toPlainString());
-        assertEquals("-0.433957", tupleOutput.item2[9].get(2).toPlainString());
-        assertEquals("0.620741", tupleOutput.item2[9].get(3).toPlainString());
+        assertEquals("-0.426376", tupleOutput.item1[9].toPlainString());
+        assertEquals("-0.335259", tupleOutput.item2[9].get(0).toPlainString());
+        assertEquals("0.560319", tupleOutput.item2[9].get(1).toPlainString());
+        assertEquals("-0.433956", tupleOutput.item2[9].get(2).toPlainString());
+        assertEquals("0.620744", tupleOutput.item2[9].get(3).toPlainString());
         
-        assertEquals("-0.426432", tupleOutput.item1[19].toPlainString());
+        assertEquals("-0.42643", tupleOutput.item1[19].toPlainString());
         assertEquals("-0.335115", tupleOutput.item2[19].get(0).toPlainString());
-        assertEquals("0.560682", tupleOutput.item2[19].get(1).toPlainString());
-        assertEquals("-0.434108", tupleOutput.item2[19].get(2).toPlainString());
-        assertEquals("0.620392", tupleOutput.item2[19].get(3).toPlainString());
+        assertEquals("0.56068", tupleOutput.item2[19].get(1).toPlainString());
+        assertEquals("-0.434105", tupleOutput.item2[19].get(2).toPlainString());
+        assertEquals("0.620394", tupleOutput.item2[19].get(3).toPlainString());
     }
     
     @Test
@@ -259,25 +259,27 @@ public class MatrixIterationMethods_TestFixture
         
         assertEquals("5.96408", inverseIterationResult.item1.toPlainString());
         
-        assertEquals("0.324958", inverseIterationResult.item2[0].get(0).toPlainString());
-        assertEquals("0.477066", inverseIterationResult.item2[0].get(1).toPlainString());
+        assertEquals("0.324957", inverseIterationResult.item2[0].get(0).toPlainString());
+        assertEquals("0.477065", inverseIterationResult.item2[0].get(1).toPlainString());
         assertEquals("-0.297302", inverseIterationResult.item2[0].get(2).toPlainString());
-        assertEquals("-0.76054", inverseIterationResult.item2[0].get(3).toPlainString());
+        assertEquals("-0.760539", inverseIterationResult.item2[0].get(3).toPlainString());
         
-        assertEquals("0.249531", inverseIterationResult.item2[1].get(0).toPlainString());
+        assertEquals("0.249532", inverseIterationResult.item2[1].get(0).toPlainString());
         assertEquals("0.485983", inverseIterationResult.item2[1].get(1).toPlainString());
         assertEquals("-0.22219", inverseIterationResult.item2[1].get(2).toPlainString());
-        assertEquals("-0.807581", inverseIterationResult.item2[1].get(3).toPlainString());
+        assertEquals("-0.807578", inverseIterationResult.item2[1].get(3).toPlainString());
         
-        assertEquals("0.225819", inverseIterationResult.item2[2].get(0).toPlainString());
-        assertEquals("0.491439", inverseIterationResult.item2[2].get(1).toPlainString());
+        assertEquals("0.225818", inverseIterationResult.item2[2].get(0).toPlainString());
+        assertEquals("0.491438", inverseIterationResult.item2[2].get(1).toPlainString());
         assertEquals("-0.198408", inverseIterationResult.item2[2].get(2).toPlainString());
-        assertEquals("-0.817391", inverseIterationResult.item2[2].get(3).toPlainString());
+        assertEquals("-0.817388", inverseIterationResult.item2[2].get(3).toPlainString());
         
-        assertEquals("0.218639", inverseIterationResult.item2[3].get(0).toPlainString());
-        assertEquals("0.493508", inverseIterationResult.item2[3].get(1).toPlainString());
-        assertEquals("-0.190984", inverseIterationResult.item2[3].get(2).toPlainString());
-        assertEquals("-0.819861", inverseIterationResult.item2[3].get(3).toPlainString());
+        assertEquals("0.218641", inverseIterationResult.item2[3].get(0).toPlainString());
+        assertEquals("0.493511", inverseIterationResult.item2[3].get(1).toPlainString());
+        assertEquals("-0.190985", inverseIterationResult.item2[3].get(2).toPlainString());
+        assertEquals("-0.819863", inverseIterationResult.item2[3].get(3).toPlainString());
+        
+
     }
     
     /* Setzen von allgemeinen Werten, die bei jedem Test verwendet werden */
@@ -290,8 +292,8 @@ public class MatrixIterationMethods_TestFixture
     }
     
     /*
-     * Zurücksetzen von Werten, um Ausgangszustand eines Tests zu erreichen -->
-     * wichtig für weitere Tests
+     * Zurï¿½cksetzen von Werten, um Ausgangszustand eines Tests zu erreichen -->
+     * wichtig fï¿½r weitere Tests
      */
     @After
     public void tearDown()
