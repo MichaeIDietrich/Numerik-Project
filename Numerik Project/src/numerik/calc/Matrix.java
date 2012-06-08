@@ -13,7 +13,10 @@ import numerik.ui.misc.Recorder;
 
 
 public class Matrix {
-
+    
+    public enum SubstitutionDirection { FORWARD, BACKWARD }
+    
+    
     private int     rows;
     private int     cols;
     public  String  name;                                        // Name der Matrix für Ausgabe
@@ -401,24 +404,29 @@ public class Matrix {
 
     public Vector solveX(Vector b) 
     {
+        boolean recorderState = recorder.isActive();
+        
         Vector clone_b = b.clone();
         
         recorder.setActive( false );
         Matrix L = getL( b.clone());
         
-        recorder.setActive( true );
+        recorder.setActive( recorderState );
         Matrix U = getU( clone_b );
         
-        Vector y = substitution( L, clone_b, "forward"  );
-        Vector x = substitution( U, y,       "backward" );
+        Vector y = substitution( L, clone_b, SubstitutionDirection.FORWARD  );
+        Vector x = substitution( U, y,       SubstitutionDirection.BACKWARD );
         
         return x;
-    }   
+    }
+    
     
     public Matrix getL()
     {
         return doLUDecomposition(0, null).item2; // 0 liefert L zurück
     } 
+    
+    
     
     public Matrix getU()
     {
@@ -540,6 +548,7 @@ public class Matrix {
         }
     }
     
+    
     /**
      * Ermöglicht die Vorwärts und Rückwärtssubstitution von einer Matrix mit einem Vector b
      * 
@@ -547,14 +556,14 @@ public class Matrix {
      * @param b Vektor, den man Substituieren will
      * @param str gibt an, wie man Substituieren will "forward" oder "backward"
      */
-    public Vector substitution(Matrix matrix, Vector b, String str)
+    public Vector substitution( Matrix matrix, Vector b, SubstitutionDirection direction )
     {
         BigDecimal term0 = BigDecimal.ZERO;
         BigDecimal term1 = BigDecimal.ZERO;
         BigDecimal term2 = BigDecimal.ZERO;
         Vector         y = new Vector( b.getLength());
         
-        if ( str.equals("forward"))
+        if ( direction == SubstitutionDirection.FORWARD)
         {
             y.set( 0, b.get(0) );
             
@@ -583,7 +592,7 @@ public class Matrix {
         }
         
         
-        if ( str.equals("backward") )
+        if ( direction == SubstitutionDirection.BACKWARD )
         {
             int dim = matrix.getRows()-1;
             
@@ -845,12 +854,12 @@ public class Matrix {
     }
     
     
-    public BigDecimal norm()
+    public BigDecimal norm() throws RuntimeException
     {
         if( MathLib.getNorm()==0 ) return zeilensummenNorm();
         if( MathLib.getNorm()==1 ) return frobeniusNorm();
         
-        return null;
+        throw new RuntimeException("'MathLib.getNorm()' liefert keinen gültigen Wert");
     }
     
     

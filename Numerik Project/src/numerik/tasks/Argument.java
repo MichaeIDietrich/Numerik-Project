@@ -30,6 +30,12 @@ public class Argument
     }
     
     
+    public Argument(String name, ArgType argumentType, int controlWidth)
+    {
+        this(name, argumentType, null, controlWidth);
+    }
+    
+    
     public Argument(String name, ArgType argumentType, String defaultValue, int controlWidth)
     {
         this.name = name == null ? "" : name;
