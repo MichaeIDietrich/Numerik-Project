@@ -20,6 +20,10 @@ public class JacobiIteration implements Task
     @Override
     public void init(OutputFrame frame, TaskPane taskPane)
     {
+<<<<<<< HEAD
+=======
+        MathLib.setPrecision( 6 ); 
+>>>>>>> origin/master
         MathLib.enableRound( true );
         MathLib.setRoundingMode( MathLib.NORMAL ); 
         MathLib.setNorm( MathLib.ZEILENSUMMENNORM );
@@ -40,13 +44,17 @@ public class JacobiIteration implements Task
         
         Matrix A = parameters[0].toMatrix();
         Vector b = parameters[1].toVector();
+<<<<<<< HEAD
         MathLib.setPrecision( parameters[2].toDecimal().intValue() ); 
+=======
+>>>>>>> origin/master
         
         Matrix matrixInput;
         Vector vectorInput;
         
         matrixInput = A.getDiagonalMatrix().getInverse().mult(BigDecimal.ONE.negate()).mult( (A.subtract( A.getDiagonalMatrix() )) );
         vectorInput = A.getDiagonalMatrix().getInverse().mult(b);
+<<<<<<< HEAD
         
 //        matrixInput = new Matrix(4, 4);
 //        
@@ -77,6 +85,10 @@ public class JacobiIteration implements Task
 //        vectorInput.set(2, new BigDecimal("-1.1"));
 //        vectorInput.set(3, new BigDecimal("1.875"));
 //        
+=======
+
+        
+>>>>>>> origin/master
         Vector startVectorX0 = new Vector(4);
         
         startVectorX0.set(0, new BigDecimal("0"));
@@ -98,7 +110,6 @@ public class JacobiIteration implements Task
         MatrixIterationMethods.jacobiIteration(matrixInput, vectorInput, startVectorX0, 20);
          
         formula.addNewLine(4).addTextUL("Beginne\\;mit\\;Iteration").addNewLine(1).addFormula( recorder.get(true) );
-        
         
         
         taskPane.setViewPortView(new TaskScrollPane(formula));
