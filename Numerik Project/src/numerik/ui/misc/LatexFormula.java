@@ -27,7 +27,6 @@ public class LatexFormula
         characterTable = new HashMap<String, String>();
         characterTable.put( "mal", "\\cdot" );
         characterTable.put( "*",   "\\cdot" );
-        
     }
     
     
@@ -262,6 +261,13 @@ public class LatexFormula
     public LatexFormula addLEQ() 
     {
         formula.append(" \\leq ");
+        return this;
+    }
+    
+    
+    public LatexFormula addHorizSpace(int millimeter) 
+    {
+        formula.append("\\hspace{"+millimeter+"}");
         return this;
     }
     

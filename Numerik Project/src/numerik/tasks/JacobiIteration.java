@@ -6,13 +6,15 @@ import numerik.calc.*;
 import numerik.expression.Value;
 import numerik.ui.controls.ImageComponent;
 import numerik.ui.controls.TaskPane;
+import numerik.ui.controls.TaskScrollPane;
 import numerik.ui.dialogs.OutputFrame;
+import numerik.ui.misc.LatexFormula;
 import numerik.ui.misc.Recorder;
 
 public class JacobiIteration implements Task
 {
     private TaskPane taskPane;
-    
+
     
     @Override
     public void init(OutputFrame frame, TaskPane taskPane)
@@ -24,6 +26,10 @@ public class JacobiIteration implements Task
     @Override
     public void run(Value... parameters)
     {
+        LatexFormula formula  = new LatexFormula();
+        Recorder recorder = Recorder.getInstance();
+        recorder.clear();
+        
         Matrix matrixInput;
         Vector vectorInput;
         
@@ -63,8 +69,28 @@ public class JacobiIteration implements Task
         startVectorX0.set(2, new BigDecimal("0"));
         startVectorX0.set(3, new BigDecimal("0"));
         
-        MatrixIterationMethods.jacobiIteration(matrixInput, vectorInput, startVectorX0, 20);
         
-        taskPane.setViewPortView(new ImageComponent(Recorder.getInstance().get(true).toImage()));
+        
+        MathLib.setPrecision( 6 ); 
+        MathLib.enableRound( true );
+        MathLib.setRoundingMode( MathLib.NORMAL ); 
+        MathLib.setNorm( MathLib.ZEILENSUMMENNORM );
+        BigDecimal normM = matrixInput.norm();
+        
+        formula.addText("M = ").addMatrix(matrixInput).addText(", ").addNewLine(1);
+        formula.addText("x = ").addVector(vectorInput).addNewLine(2);
+        formula.addText(" \\rho(M) ").addLEQ().addMatrixNorm("M").addText(" = "+normM).addNewLine(1);
+        if (normM.compareTo( BigDecimal.ONE )==-1 || normM.compareTo( BigDecimal.ONE )==0) {
+            formula.addLatexString("\\rightarrow ").addText("Lösung existiert, da \\rho(M)").addLEQ().addText("1").addNewLine(1);
+        }
+        
+        
+        MatrixIterationMethods.jacobiIteration(matrixInput, vectorInput, startVectorX0, 20);
+         
+        formula.addNewLine(4).addTextUL("Beginne\\;mit\\;Iteration").addNewLine(1).addFormula( recorder.get(true) );
+        
+        
+        
+        taskPane.setViewPortView(new TaskScrollPane(formula));
     }
 }
