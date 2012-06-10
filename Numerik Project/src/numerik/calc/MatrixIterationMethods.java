@@ -67,7 +67,7 @@ public class MatrixIterationMethods
             
             resultVectorArray[iteration] = startVector;
             
-            formula.addLatexString("x_{"+iteration+"} = ");
+            formula.addLatexString("x_{"+(iteration+1)+"} = ");
             formula.addVector(startVector).addNewLine();
         }
         

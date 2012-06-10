@@ -32,8 +32,8 @@ public class GaussIntegrationOrder4 implements Task
     public void init(OutputFrame frame, TaskPane taskPane)
     {
         this.taskPane = taskPane;
-        taskPane.createJToolBarByArguments(new Argument("obere Grenze:", ArgType.DECIMAL, "10"), 
-                                           new Argument("untere Grenze:", ArgType.DECIMAL, "6"), 
+        taskPane.createJToolBarByArguments(new Argument("obere Grenze:",   ArgType.DECIMAL, "10"), 
+                                           new Argument("untere Grenze:",  ArgType.DECIMAL, "6"), 
                                            new Argument("Mantissenlänge:", ArgType.DOUBLEPRECISION, "5"), Argument.RUN_BUTTON);
     }
 
@@ -57,7 +57,8 @@ public class GaussIntegrationOrder4 implements Task
         iterformula.clear();
         
         iterformula.addNewLine(2);
-        iterformula.addTextUL("Funktionswerte\\;von\\;f(x)\\;an\\;den\\;Stellen\\;0,1:").addNewLine(1);
+        formula.addText("6.2. ").addColorBoxBegin("green").addText("4-Punkt Gauss Integration").addColorBoxEnd().addNewLine(2);
+        iterformula.addTextUL("Funktionswerte\\;von\\;f(x)\\;an\\;den\\;Stellen\\;0\\;und\\;1:").addNewLine(1);
         iterformula.addLatexString("f(0) = "+MathLib.round( getFunctionsValue( new BigDecimal(0) ))).addNewLine(1);
         iterformula.addLatexString("f(1) = "+MathLib.round( getFunctionsValue( new BigDecimal(1) ))).addNewLine(8);
         iterformula.addTextUL("4-Punkt\\;Gaussintegration:").addNewLine(1);

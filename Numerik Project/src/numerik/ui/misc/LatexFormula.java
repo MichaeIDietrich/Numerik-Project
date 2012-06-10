@@ -368,7 +368,7 @@ public class LatexFormula
     }
     
     
-    public LatexFormula setColorBoxBegin(String color)
+    public LatexFormula addColorBoxBegin(String color)
     {
         switch (color) {
             case "black":   break;
@@ -389,7 +389,7 @@ public class LatexFormula
     }
     
     
-    public LatexFormula setColorBoxEnd()
+    public LatexFormula addColorBoxEnd()
     {
         formula.append("}");
         

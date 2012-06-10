@@ -478,13 +478,10 @@ public class Matrix {
             name = "A";
         }
         
-        if (b != null)
+        if (b != null && recorder.isActive())
         {
-            if (recorder.isActive())
-            {
-                if(b.name == null) b.name = "b";
-            }
-            
+            if(b.name == null) b.name = "b";
+
             formula.addNewLine(2).addSolidLine().addNewLine(1);
             formula.addText("LU-Zerlegung").addNewLine(2);
         }
@@ -731,7 +728,7 @@ public class Matrix {
     }
     
     
-    public BigDecimal determinant()
+    public BigDecimal getDeterminant()
     {
 //            double result = 0;
 //

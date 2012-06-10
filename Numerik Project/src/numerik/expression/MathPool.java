@@ -243,7 +243,7 @@ public final class MathPool
                     
                     if (args[0].getType() == ValueType.MATRIX)
                     {
-                        return new Value(args[0].toMatrix().determinant());
+                        return new Value(args[0].toMatrix().getDeterminant());
                     }
                 }
                 

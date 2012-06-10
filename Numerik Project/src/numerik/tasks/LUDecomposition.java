@@ -23,7 +23,8 @@ public final class LUDecomposition implements Task
     public void init(OutputFrame frame, TaskPane taskPane)
     {
         this.taskPane = taskPane;
-        taskPane.createJToolBarByArguments(new Argument("Matrix:", ArgType.MATRIX, 100), new Argument("Vektor:", ArgType.VECTOR, 100),
+        taskPane.createJToolBarByArguments(
+                new Argument("Matrix:", ArgType.MATRIX, 100),   new Argument("Vektor:", ArgType.VECTOR, 100),
                 new Argument("Normalisieren", ArgType.BOOLEAN), new Argument("Pivot-Strategie", ArgType.BOOLEAN), 
                 new Argument("Norm:", "Zeilensummen-Norm", "Frobenius-Euklid-Norm"), Argument.PRECISION, Argument.RUN_BUTTON);
     }
@@ -33,11 +34,12 @@ public final class LUDecomposition implements Task
     public void run(Value... parameters)
     {
         Recorder recorder = Recorder.getInstance();
+        recorder.setActive(true);
         recorder.clear();
         String name;
         
         // ####### Alle Berechnungen werden mit niedriger Präzision ausgeführt #########
-        MathLib.setPrecision( parameters[5].toDecimal().intValue() );                                        // Mantissenlänge
+        MathLib.setPrecision( parameters[5].toDecimal().intValue() );     // Mantissenlänge
         MathLib.setPivotStrategy( parameters[3].toBoolean() );
         MathLib.setRoundingMode( MathLib.EXACT );                         // exact = Mantissen genau, normal = Nachkomma genau
         MathLib.setNorm( parameters[4].toText().equals("Zeilensummen-Norm") ? MathLib.ZEILENSUMMENNORM : MathLib.FROBENIUSEUKLIDNORM );  // ZEILENSUMMENNORM oder FROBENIUSEUKILDNORM
@@ -48,7 +50,7 @@ public final class LUDecomposition implements Task
         Matrix trueA = A.clone();
         Vector trueb = b.clone();
         
-        A.mult(b);     // Prüfe: Matrix und Vektor verkettet; sonst Fehler.
+        A.mult(b);     // Prüfe: Matrix und Vektor verkettet? -> sonst Fehler.
          
         if (parameters[2].toBoolean())
         {
@@ -66,7 +68,7 @@ public final class LUDecomposition implements Task
             b = P.mult(b);
             b.name = name;
         } 
-        
+
         Vector x = A.solveX(b);
         
         

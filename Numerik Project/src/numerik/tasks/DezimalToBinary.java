@@ -117,7 +117,7 @@ public class DezimalToBinary implements Task
         String showtmpval = toPlain( tmpval.toString() );
         String showrecalc = toPlain( recalc.toString() );
         
-        formula.setColorBoxBegin("cyan").addLatexString(showtmpval+"_{10} \\cong "+binary+"_{b} = "+showrecalc+"_{10}").setColorBoxEnd().addNewLine(4);
+        formula.addColorBoxBegin("cyan").addLatexString(showtmpval+"_{10} \\cong "+binary+"_{b} = "+showrecalc+"_{10}").addColorBoxEnd().addNewLine(4);
         formula.addText("Eingabe: "+showtmpval).addNewLine(1);
         formula.addText("Ausgabe: "+showrecalc).addNewLine(4);
         formula.addLatexString("abs.\\;Fehler\\;=\\;|\\;"+showtmpval+"-"+showrecalc+"\\;|\\;=\\;"
@@ -133,14 +133,14 @@ public class DezimalToBinary implements Task
             formula.addLatexString("0").addNewLine(4);  
         }
 
-        formula.setColorBoxBegin("red");
-        formula.addText("Problem: wenn bspw. bei der Zahl 0.00567 die Mantissenlänge 9 ").setColorBoxEnd().addNewLine(1);
-        formula.setColorBoxBegin("red");
+        formula.addColorBoxBegin("red");
+        formula.addText("Problem: wenn bspw. bei der Zahl 0.00567 die Mantissenlänge 9 ").addColorBoxEnd().addNewLine(1);
+        formula.addColorBoxBegin("red");
         formula.addText("               überschreitet, wird falsch gerundet.");
-        formula.setColorBoxEnd().addNewLine(2);
-        formula.setColorBoxBegin("green");
+        formula.addColorBoxEnd().addNewLine(2);
+        formula.addColorBoxBegin("green");
         formula.addText("Fehler behoben. Bitte noch testen (also ein bisschen herumspielen).");
-        formula.setColorBoxEnd();
+        formula.addColorBoxEnd();
         
         taskPane.setViewPortView(new TaskScrollPane(formula));
     }   
