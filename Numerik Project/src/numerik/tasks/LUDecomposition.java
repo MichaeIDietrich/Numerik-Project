@@ -87,6 +87,8 @@ public final class LUDecomposition implements Task
         // ####### Ausgabe mit niedriger Präzision / Achtung! Ausgabe sollte Mantissengenauigkeit haben. #########
         LatexFormula formula = new LatexFormula();
         
+        formula.addTextBold("2. ");
+        formula.addColorBoxBegin("green").addText("LU-Zerlegung mit Pivotstrategie und Fehlerabschätzung").addColorBoxEnd().addNewLine(1);
         formula.addNewLine(2).addText(A.name+" = ").addMatrix(A).addText(", "+b.name+" = ").addVector(b).addNewLine(2);
         formula.addFormula( recorder.get( true ) );
         formula.addText("x = ").addVector(x).addText(",     Exakt: "+A.name+"^{-1}").addSymbol("*").addText(b.name+" = ")

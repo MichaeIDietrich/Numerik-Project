@@ -56,8 +56,9 @@ public class GaussIntegrationOrder4 implements Task
         formula.clear();
         iterformula.clear();
         
+        // Ausgabe
         iterformula.addNewLine(2);
-        formula.addText("6.2. ").addColorBoxBegin("green").addText("4-Punkt Gauss Integration").addColorBoxEnd().addNewLine(2);
+        formula.addTextBold("6.2. ").addColorBoxBegin("green").addText("4-Punkt Gauss Integration").addColorBoxEnd().addNewLine(2);
         iterformula.addTextUL("Funktionswerte\\;von\\;f(x)\\;an\\;den\\;Stellen\\;0\\;und\\;1:").addNewLine(1);
         iterformula.addLatexString("f(0) = "+MathLib.round( getFunctionsValue( new BigDecimal(0) ))).addNewLine(1);
         iterformula.addLatexString("f(1) = "+MathLib.round( getFunctionsValue( new BigDecimal(1) ))).addNewLine(8);

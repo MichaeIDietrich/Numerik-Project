@@ -62,7 +62,7 @@ public class SolveNonLinearEquation implements Task
         // Ausgabe: Latex-Formula-String
         LatexFormula formula = new LatexFormula();
         
-        formula.addText("3.E) ").addColorBoxBegin("green").addText("Iteratives Verfahren zum Lösen nichtlinearer Gleichungssysteme").addColorBoxEnd().addNewLine(2);
+        formula.addTextBold("3.E) ").addColorBoxBegin("green").addText("Iteratives Verfahren z. Lösung nichtlinearer Gleichungssysteme").addColorBoxEnd().addNewLine(2);
         formula.addText("Ableitungen der Gleichungen ").addLatexString("f_{i}(x_1,..., x_n)").addText(" in:").addTextBold(" derivations()").addNewLine(1);
         formula.addText("Die Gleichungen selbst stehen in: ").addTextBold(" getFunctionsValue()").addNewLine(1);
 

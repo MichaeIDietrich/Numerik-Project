@@ -56,7 +56,7 @@ public class JacobiIteration implements Task
         
         
         // Ausgabe
-        formula.addText("2.3. ").addColorBoxBegin("green");
+        formula.addTextBold("2.3. ").addColorBoxBegin("green");
         formula.addText("Iteratives Verfahren zur Lösung linearer Gleichungssysteme").addColorBoxEnd().addNewLine(3);
         formula.addLatexString("\\bullet").addHorizSpace(10).addText(A.name+" sei lineares Gleichungssystem").addNewLine(1);
         formula.addLatexString("\\bullet").addHorizSpace(10).addText("B sei Trace("+A.name+")").addNewLine(1);
@@ -69,8 +69,6 @@ public class JacobiIteration implements Task
         formula.addText("c = ").addVector(vectorInput).addNewLine(3);
         
         formula.addTextUL("Wähle\\;Startvektor").addNewLine(1);
-        formula.addText("Zum ändern des Startvektors ").addLatexString("x_0").addText(", den Vektor in der Klasse").addNewLine(1);
-        formula.addText("Jakobi-Iteration/setStartVector ändern.").addNewLine(1);
         formula.addLatexString("x_0").addText(" = ").addVector(startVectorX0).addNewLine(4);
         
         formula.addTextUL("Prüfe\\;Konvergenzverhalten - \\;existiert\\;eine\\;Lösung?").addNewLine(1);

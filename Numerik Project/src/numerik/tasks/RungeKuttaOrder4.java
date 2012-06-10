@@ -13,7 +13,7 @@ public class RungeKuttaOrder4
     
     public void init()
     {
-        formula.addText("");
+        formula.addText("leer");
     }
     
     public LatexFormula getFormula() {
