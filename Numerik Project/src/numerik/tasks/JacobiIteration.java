@@ -49,9 +49,8 @@ public class JacobiIteration implements Task
         MathLib.setPrecision( parameters[4].toDecimal().intValue() ); 
 
         // Berechne M und c
-        Matrix matrixInput = A.getDiagonalMatrix().getInverse().mult(BigDecimal.ONE.negate())
-                              .mult( (A.subtract( A.getDiagonalMatrix() )) );
-        Vector vectorInput = A.getDiagonalMatrix().getInverse().mult(b);
+        Matrix matrixInput = MatrixIterationMethods.getM(A);
+        Vector vectorInput = MatrixIterationMethods.getc(A, b);
         
         BigDecimal normM = matrixInput.norm();
         
