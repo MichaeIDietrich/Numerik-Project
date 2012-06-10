@@ -47,12 +47,11 @@ public class JacobiIteration implements Task
         MathLib.setPrecision( parameters[3].toDecimal().intValue() ); 
 
         // Berechne M und c
-        Matrix matrixInput = A.getDiagonalMatrix().getInverse().mult(BigDecimal.ONE.negate())
-                              .mult( (A.subtract( A.getDiagonalMatrix() )) );
-        Vector vectorInput = A.getDiagonalMatrix().getInverse().mult(b);
+        Matrix matrixInput = MatrixIterationMethods.getM(A);
+        Vector vectorInput = MatrixIterationMethods.getc(A, b);
 
-        // Hole Startvektor x_0
-        Vector startVectorX0 = setStartVector(4);
+        // Hole Startvektor x_0 + bei benutzerdefinierten Startvektoren, den startVectorX0 hier die Werte zuweisen
+        Vector startVectorX0 = new Vector(matrixInput.getRows());
         
         BigDecimal normM = matrixInput.norm();
         
@@ -94,19 +93,5 @@ public class JacobiIteration implements Task
         formula.addLatexString("x_0 = ").addVector(startVectorX0).addNewLine(1).addFormula( recorder.get(true) );
         
         taskPane.setViewPortView(new TaskScrollPane(formula));
-    }
-
-    
-    // hier den Startvektor x_0 eintragen
-    private Vector setStartVector(int length)
-    {
-        Vector startVectorX0 = new Vector(length);
-        
-        startVectorX0.set(0, new BigDecimal("0"));
-        startVectorX0.set(1, new BigDecimal("0"));
-        startVectorX0.set(2, new BigDecimal("0"));
-        startVectorX0.set(3, new BigDecimal("0"));
-        
-        return startVectorX0;
     }
 }
