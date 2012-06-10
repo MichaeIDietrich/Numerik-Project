@@ -39,6 +39,12 @@ Matrix#F
 Vector#f
 6,-3,13
 
+Vector#n
+0,0,0
+
+Vector#m
+0,0,0,0
+
 Matrix#G
 10,-1,2,0
 -1,11,-1,3

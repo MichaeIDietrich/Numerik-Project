@@ -22,6 +22,7 @@ public class JacobiIteration implements Task
         this.taskPane = taskPane;
         taskPane.createJToolBarByArguments(new Argument("Matrix:", ArgType.MATRIX, 100), 
                                            new Argument("Vektor:", ArgType.VECTOR, 100),
+                                           new Argument("Startvektor:", ArgType.VECTOR, 100),
                                            new Argument("n = ", ArgType.PRECISION, "20"),
                                            new Argument("Mant = ", ArgType.PRECISION,  "7"),
                                                Argument.RUN_BUTTON);
@@ -41,18 +42,16 @@ public class JacobiIteration implements Task
         recorder.clear();
         
         // Übergabe Parameter aus Toolbar
-        int iterationen = parameters[2].toDecimal().intValue();
+        int iterationen = parameters[3].toDecimal().intValue();
+        Vector startVectorX0 = parameters[2].toVector();
         Matrix A = parameters[0].toMatrix();
         Vector b = parameters[1].toVector();
-        MathLib.setPrecision( parameters[3].toDecimal().intValue() ); 
+        MathLib.setPrecision( parameters[4].toDecimal().intValue() ); 
 
         // Berechne M und c
         Matrix matrixInput = A.getDiagonalMatrix().getInverse().mult(BigDecimal.ONE.negate())
                               .mult( (A.subtract( A.getDiagonalMatrix() )) );
         Vector vectorInput = A.getDiagonalMatrix().getInverse().mult(b);
-
-        // Hole Startvektor x_0
-        Vector startVectorX0 = setStartVector(4);
         
         BigDecimal normM = matrixInput.norm();
         
@@ -70,7 +69,7 @@ public class JacobiIteration implements Task
         formula.addText("M = ").addMatrix(matrixInput).addText(", ").addNewLine(1);
         formula.addText("c = ").addVector(vectorInput).addNewLine(3);
         
-        formula.addTextUL("Wähle\\;Startvektor\\;mit").addNewLine(1);
+        formula.addTextUL("Wähle\\;Startvektor").addNewLine(1);
         formula.addText("Zum ändern des Startvektors ").addLatexString("x_0").addText(", den Vektor in der Klasse").addNewLine(1);
         formula.addText("Jakobi-Iteration/setStartVector ändern.").addNewLine(1);
         formula.addLatexString("x_0").addText(" = ").addVector(startVectorX0).addNewLine(4);
@@ -94,19 +93,5 @@ public class JacobiIteration implements Task
         formula.addLatexString("x_0 = ").addVector(startVectorX0).addNewLine(1).addFormula( recorder.get(true) );
         
         taskPane.setViewPortView(new TaskScrollPane(formula));
-    }
-
-    
-    // hier den Startvektor x_0 eintragen
-    private Vector setStartVector(int length)
-    {
-        Vector startVectorX0 = new Vector(length);
-        
-        startVectorX0.set(0, new BigDecimal("0"));
-        startVectorX0.set(1, new BigDecimal("0"));
-        startVectorX0.set(2, new BigDecimal("0"));
-        startVectorX0.set(3, new BigDecimal("0"));
-        
-        return startVectorX0;
     }
 }

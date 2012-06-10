@@ -56,14 +56,14 @@ public class SolveNonLinearEquation implements Task
             x = jm.jakobiMatrix( derivations(iterx) ).solveX( getFunctionsValue(iterx) );
             iterx = iterx.add( x );
         }
-        
+        iterformula.addNewLine(2);
+        iterformula.addText("Abbruch bei ").addLatexString("\\; x_"+i+" = x_"+(i-1)+" \\;\\; \\leftrightarrow \\;\\; \\arrowvert{ x_{"+(i)+"}-x_{"+(i-1)+"} }\\arrowvert \\leq eps");
         
         // Ausgabe: Latex-Formula-String
         LatexFormula formula = new LatexFormula();
         
-        
         formula.addText("3.E) ").addColorBoxBegin("green").addText("Iteratives Verfahren zum Lösen nichtlinearer Gleichungssysteme").addColorBoxEnd().addNewLine(2);
-        formula.addText("Ableitungen der Gleichungen ").addLatexString("f_{i}(x_1,..., x_n) in:").addTextBold(" derivations()").addNewLine(1);
+        formula.addText("Ableitungen der Gleichungen ").addLatexString("f_{i}(x_1,..., x_n)").addText(" in:").addTextBold(" derivations()").addNewLine(1);
         formula.addText("Die Gleichungen selbst stehen in: ").addTextBold(" getFunctionsValue()").addNewLine(1);
 
         formula.addText("Der Vektor 'Startvektor' ist ").addLatexString("x_0.").addNewLine(3);

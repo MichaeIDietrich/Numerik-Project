@@ -133,11 +133,6 @@ public class DezimalToBinary implements Task
             formula.addLatexString("0").addNewLine(4);  
         }
 
-        formula.addColorBoxBegin("red");
-        formula.addText("Problem: wenn bspw. bei der Zahl 0.00567 die Mantissenlänge 9 ").addColorBoxEnd().addNewLine(1);
-        formula.addColorBoxBegin("red");
-        formula.addText("               überschreitet, wird falsch gerundet.");
-        formula.addColorBoxEnd().addNewLine(2);
         formula.addColorBoxBegin("green");
         formula.addText("Fehler behoben. Bitte noch testen (also ein bisschen herumspielen).");
         formula.addColorBoxEnd();
