@@ -46,7 +46,10 @@ public class NewtonIteration implements Task
         double  a = parameters[1].toDecimal().doubleValue();
         
         LatexFormula formula = new LatexFormula();
+        
         // Ausgabe 
+        formula.addTextBold("3.A) ");
+        formula.addColorBoxBegin("green").addText("Iteratives Verfahren z. Lösung nichtlinearer Gleichungen").addColorBoxEnd().addNewLine(1);
         formula.addText("Newton-Verfahren zur Bestimmung  ").addLatexString("x = \\sqrt[k\\hspace{0.8mm}]{a}").addNewLine(2);
         formula.addText("1. Forme dazu  ").addLatexString("x = \\sqrt[k\\hspace{1mm}]{a}").addText(" derart um, dass ").addLatexString("f(x)=0").addText(" entsteht.").addNewLine(1);
         formula.addText("    In diesem Fall:  ").addLatexString("f(x) = x^{k}-a = 0").addNewLine(1);

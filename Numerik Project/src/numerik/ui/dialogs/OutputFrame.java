@@ -38,10 +38,12 @@ public final class OutputFrame extends JFrame
         tabMain.addTab("Expression", new ExpressionTask());
         tabMain.addTab("Dez->Bin",    new DezimalToBinary());
         tabMain.addTab("LU-Zerlegung", new LUDecomposition());
+        tabMain.addTab("Jakobi-Iter", new JacobiIteration());
         tabMain.addTab("Newton Wurzel", new NewtonIteration());
         tabMain.addTab("Non-Lin-GS", new SolveNonLinearEquation());
         tabMain.addTab("Gauss 4P", new GaussIntegrationOrder4());
-        tabMain.addTab("Jakobi", new JacobiIteration());
+        tabMain.addTab("RungeKutta4", new RungeKuttaOrder4());
+        
         
         this.add(tabMain);
         

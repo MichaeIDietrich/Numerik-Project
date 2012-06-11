@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 
+import numerik.io.DocumentLoader;
 import numerik.ui.misc.LatexFormula;
 import numerik.ui.misc.Recorder;
 
@@ -78,48 +79,50 @@ public class Matrix {
 
 
     public Matrix(String file, String name) {
-
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-
-            String line;
-            boolean transmit = false;
-            ArrayList<ArrayList<BigDecimal>> entries = new ArrayList<ArrayList<BigDecimal>>();
-            while ((line = br.readLine()) != null) {
- 
-                if(line.contains("Matrix#"+name) || line.equals("") ) 
-                    transmit = false;
-                
-                if (transmit) 
-                {
-                    ArrayList<BigDecimal> entry = new ArrayList<BigDecimal>();
-                    entries.add(entry);
-                
-                    for (String number : line.split(",")) {
-                        entry.add(new BigDecimal(number));
-                    }
-                }
-                
-                if(line.contains("Matrix#"+name)) 
-                    transmit = true;
-            }
-
-            rows = entries.size();
-            cols = entries.get(0).size();
-            this.name = name;
-            
-            values = new BigDecimal[rows][cols];
-
-            for (int n = 0; n < rows; n++) {
-                for (int m = 0; m < cols; m++) {
-                    values[n][m] = entries.get(n).get(m);
-                }
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        
+//        try {
+//            BufferedReader br = new BufferedReader(new FileReader(file));
+//            
+//            String line;
+//            boolean transmit = false;
+//            ArrayList<ArrayList<BigDecimal>> entries = new ArrayList<ArrayList<BigDecimal>>();
+//            while ((line = br.readLine()) != null) {
+//                
+//                if(line.equals("Matrix#"+name) || line.equals("") ) 
+//                    transmit = false;
+//                
+//                if (transmit) 
+//                {
+//                    ArrayList<BigDecimal> entry = new ArrayList<BigDecimal>();
+//                    entries.add(entry);
+//                
+//                    for (String number : line.split(",")) {
+//                        entry.add(new BigDecimal(number));
+//                    }
+//                }
+//                
+//                if(line.equals("Matrix#"+name)) 
+//                    transmit = true;
+//            }
+//            
+//            rows = entries.size();
+//            cols = entries.get(0).size();
+//            this.name = name;
+//            
+//            values = new BigDecimal[rows][cols];
+//            
+//            for (int n = 0; n < rows; n++) {
+//                for (int m = 0; m < cols; m++) {
+//                    values[n][m] = entries.get(n).get(m);
+//                }
+//            }
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        
+        this(new DocumentLoader().readMatrix(file, name));
     }
     
     public Matrix(ArrayList<BigDecimal> values, int cols)
@@ -139,6 +142,15 @@ public class Matrix {
                 m++;
             }
         }
+    }
+    
+    
+    public Matrix(Matrix matrix) {
+        Matrix copy = matrix.clone();
+        this.name = copy.name;
+        this.values = copy.values;
+        this.cols = copy.getCols();
+        this.rows = copy.getRows();
     }
     
     
@@ -433,7 +445,7 @@ public class Matrix {
         return doLUDecomposition(1, null).item2; // 1 liefert U zurück
     }
     
-    public Vector getlperm()
+    public Vector getLPerm()
     {
         return doLUDecomposition(2, null).item1; // 2 liefert Permutationen zurück (Reihenfolge der Zeilenvertauschung einer Matrix)
     }
@@ -478,13 +490,10 @@ public class Matrix {
             name = "A";
         }
         
-        if (b != null)
+        if (b != null && recorder.isActive())
         {
-            if (recorder.isActive())
-            {
-                if(b.name == null) b.name = "b";
-            }
-            
+            if(b.name == null) b.name = "b";
+
             formula.addNewLine(2).addSolidLine().addNewLine(1);
             formula.addText("LU-Zerlegung").addNewLine(2);
         }
@@ -731,7 +740,7 @@ public class Matrix {
     }
     
     
-    public BigDecimal determinant()
+    public BigDecimal getDeterminant()
     {
 //            double result = 0;
 //

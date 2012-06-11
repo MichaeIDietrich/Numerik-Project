@@ -23,7 +23,8 @@ public final class LUDecomposition implements Task
     public void init(OutputFrame frame, TaskPane taskPane)
     {
         this.taskPane = taskPane;
-        taskPane.createJToolBarByArguments(new Argument("Matrix:", ArgType.MATRIX, 100), new Argument("Vektor:", ArgType.VECTOR, 100),
+        taskPane.createJToolBarByArguments(
+                new Argument("Matrix:", ArgType.MATRIX, 100),   new Argument("Vektor:", ArgType.VECTOR, 100),
                 new Argument("Normalisieren", ArgType.BOOLEAN), new Argument("Pivot-Strategie", ArgType.BOOLEAN), 
                 new Argument("Norm:", "Zeilensummen-Norm", "Frobenius-Euklid-Norm"), Argument.PRECISION, Argument.RUN_BUTTON);
     }
@@ -33,11 +34,12 @@ public final class LUDecomposition implements Task
     public void run(Value... parameters)
     {
         Recorder recorder = Recorder.getInstance();
+        recorder.setActive(true);
         recorder.clear();
         String name;
         
         // ####### Alle Berechnungen werden mit niedriger Präzision ausgeführt #########
-        MathLib.setPrecision( parameters[5].toDecimal().intValue() );                                        // Mantissenlänge
+        MathLib.setPrecision( parameters[5].toDecimal().intValue() );     // Mantissenlänge
         MathLib.setPivotStrategy( parameters[3].toBoolean() );
         MathLib.setRoundingMode( MathLib.EXACT );                         // exact = Mantissen genau, normal = Nachkomma genau
         MathLib.setNorm( parameters[4].toText().equals("Zeilensummen-Norm") ? MathLib.ZEILENSUMMENNORM : MathLib.FROBENIUSEUKLIDNORM );  // ZEILENSUMMENNORM oder FROBENIUSEUKILDNORM
@@ -48,7 +50,7 @@ public final class LUDecomposition implements Task
         Matrix trueA = A.clone();
         Vector trueb = b.clone();
         
-        A.mult(b);     // Prüfe: Matrix und Vektor verkettet; sonst Fehler.
+        A.mult(b);     // Prüfe: Matrix und Vektor verkettet? -> sonst Fehler.
          
         if (parameters[2].toBoolean())
         {
@@ -66,7 +68,7 @@ public final class LUDecomposition implements Task
             b = P.mult(b);
             b.name = name;
         } 
-        
+
         Vector x = A.solveX(b);
         
         
@@ -85,20 +87,23 @@ public final class LUDecomposition implements Task
         // ####### Ausgabe mit niedriger Präzision / Achtung! Ausgabe sollte Mantissengenauigkeit haben. #########
         LatexFormula formula = new LatexFormula();
         
+        formula.addTextBold("2. ");
+        formula.addColorBoxBegin("green").addText("LU-Zerlegung mit Pivotstrategie und Fehlerabschätzung").addColorBoxEnd().addNewLine(1);
         formula.addNewLine(2).addText(A.name+" = ").addMatrix(A).addText(", "+b.name+" = ").addVector(b).addNewLine(2);
         formula.addFormula( recorder.get( true ) );
         formula.addText("x = ").addVector(x).addText(",     Exakt: "+A.name+"^{-1}").addSymbol("*").addText(b.name+" = ")
                .addVector(invAb).addNewLine(2);
-        formula.addText(A.name+"^{-1} = ").addMatrix(invA).addNewLine(2);
+        formula.addText(A.name+"^{-1} = ").addMatrix(invA).addNewLine(4);
 
         MathLib.setRoundingMode( MathLib.NORMAL );
         formula.addText(A.name).addSymbol("*").addText(A.name+"^{-1} = ").addMatrix(AinvA).addNewLine(3);
         formula.addTextUL("relativer\\;Fehler\\;als\\;obere\\;Schranke:").addNewLine(1);
         formula.addSymbol("kappa").addText("("+A.name+") = ").addMatrixNorm(A.name).addSymbol("*").addMatrixNorm(A.name+"^{-1}")
-               .addText(" = "+kappa).addNewLine(2);
-        
+               .addText(" = "+kappa).addNewLine(1);
+        formula.addLatexString("r = "+A.name+" \\cdot ").addLatexString("x - "+b.name+" = ").addVector(r).addNewLine(1);
         formula.addRelError("x").addText(" = ").addSymbol("kappa").addText("("+A.name+")").addSymbol("*").addVektornormXdivY("r", b.name, true)
-               .addLatexString("\\;\\;\\le\\;\\;").addText( ""+relFehler ).addNewLine(3);
+               .addLatexString("\\;\\;\\le\\;\\;").addText( ""+relFehler ).addNewLine(4);
+        
         formula.addTextUL("relativer\\;Fehler\\;als\\;exakter\\;Wert:").addNewLine(1);
         formula.addRelError("x").addText(" = ")
                .addVektornormXdivY("x-"+A.name+"^{-1}"+b.name, A.name+"^{-1}"+b.name, false)

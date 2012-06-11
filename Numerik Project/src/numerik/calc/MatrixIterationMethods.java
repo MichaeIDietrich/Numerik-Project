@@ -31,7 +31,8 @@ public class MatrixIterationMethods
      * Berechnet die Vektor M aus folgender Formel
      * c = B^-1 * b
      * @param matrixA Ist die Matrix A, die für die obere Formel eigesetzt wird und B ist die Diagonalmatrix von A
-     * @param vectorb Vektor b ist ein Vektor, der für eine lineare Gleichung gebraucht wird und steht immer für ein Ergebnis einer Gleichung (wenn eine bessere Erklärung gefunden werden kann, dann ergänzen!)
+     * @param vectorb Vektor b ist ein Vektor, der für eine lineare Gleichung gebraucht wird und steht immer für ein
+     *        Ergebnis einer Gleichung (wenn eine bessere Erklärung gefunden werden kann, dann ergänzen!)
      */
     public static Vector getc(Matrix matrixA, Vector vectorb)
     {
@@ -43,7 +44,7 @@ public class MatrixIterationMethods
     /**
      * Ermöglicht das Berechnen einer einer Lösung für lineare Gleichungen (näherungsweise)
      * mittels der Formel x = Mx* + c
-     * Gibt als Endergebnis einen Array von x-Vectoren als Lösungen aus, wobei die erste Iteration
+     * Gibt als Endergebnis einen Array von x-Vektoren als Lösungen aus, wobei die erste Iteration
      * des Verfahrens Matrix[0] entspricht
      * @param matrixM Nötig für die Formel x = Mx* + c
      * @param vectorC Nötig für die Formel x = Mx* + c
@@ -66,6 +67,7 @@ public class MatrixIterationMethods
             
             resultVectorArray[iteration] = startVector;
             
+            formula.addLatexString("x_{"+(iteration+1)+"} = ");
             formula.addVector(startVector).addNewLine();
         }
         
@@ -131,13 +133,13 @@ public class MatrixIterationMethods
         
         Matrix L = matrixForLU.getL();
         Matrix U = matrixForLU.getU();
-        Vector lperm = matrixForLU.getlperm();
+        Vector lperm = matrixForLU.getLPerm();
         
         for (int i = 0; i < maxIterations; i++)
         {
             Vector forwardSubstituted = forwardSubstitution(L, y, lperm);
             
-            //Substitutionsmethode ist nicht static!! muss noch verbessert werden
+            // Substitutionsmethode ist nicht static!! Muss noch verbessert werden.
             y = U.substitution(U, forwardSubstituted, SubstitutionDirection.BACKWARD);
             
             MathLib.setNorm(1);
@@ -182,7 +184,6 @@ public class MatrixIterationMethods
                 {
                     mtemp.set(i, j, MathLib.round(mtemp.get(i, j).divide(MathLib.round(bigDecimalToDivide), MathLib.getPrecision(), MathLib.getRoundingMode())));
                 }
-
             }
         }
         

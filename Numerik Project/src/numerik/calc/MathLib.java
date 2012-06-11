@@ -37,6 +37,8 @@ public final class MathLib
         
         if(value.compareTo(BigDecimal.ZERO)==0) return BigDecimal.ZERO;
         
+        value = stripTrailingZeros(value);
+        
         return value.stripTrailingZeros();
     }
     
@@ -110,6 +112,9 @@ public final class MathLib
         {
             if (plain[i] != '0')
             {
+                if (plain[i] == '.') { // Sonderfall, dass nach dem Komma nur Nullen stehen, dann fällt das Komma auch weg
+                    return new BigDecimal(new String(plain, 0, i));
+                }
                 return new BigDecimal(new String(plain, 0, i + 1));
             }
         }
