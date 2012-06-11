@@ -42,6 +42,7 @@ public final class OutputFrame extends JFrame
         tabMain.addTab("Newton Wurzel", new NewtonIteration());
         tabMain.addTab("Non-Lin-GS", new SolveNonLinearEquation());
         tabMain.addTab("Gauss 4P", new GaussIntegrationOrder4());
+        tabMain.addTab("RungeKutta4", new RungeKuttaOrder4());
         
         
         this.add(tabMain);
