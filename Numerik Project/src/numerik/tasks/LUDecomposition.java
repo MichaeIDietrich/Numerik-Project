@@ -89,7 +89,10 @@ public final class LUDecomposition implements Task
         
         formula.addTextBold("2. ");
         formula.addColorBoxBegin("green").addText("LU-Zerlegung mit Pivotstrategie und Fehlerabschätzung").addColorBoxEnd().addNewLine(1);
-        formula.addNewLine(2).addText(A.name+" = ").addMatrix(A).addText(", "+b.name+" = ").addVector(b).addNewLine(2);
+        
+        formula.addNewLine(2);
+        formula.addText("Löse Gleichung der Form ").addLatexString(A.name+" \\cdot x = "+b.name).addNewLine(2);
+        formula.addText(A.name+" = ").addMatrix(A).addText(", "+b.name+" = ").addVector(b).addNewLine(2);
         formula.addFormula( recorder.get( true ) );
         formula.addText("x = ").addVector(x).addText(",     Exakt: "+A.name+"^{-1}").addSymbol("*").addText(b.name+" = ")
                .addVector(invAb).addNewLine(2);

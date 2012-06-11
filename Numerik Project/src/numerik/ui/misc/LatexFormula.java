@@ -407,7 +407,7 @@ public class LatexFormula
     }
     
     
-    public LatexFormula relErrorDeltaInput() 
+    public LatexFormula addRelErrorDeltaInput() 
     {
         addRelError("x").addLEQ().addLatexString("\\frac{").addSymbol("kappa").addText("(A)").
         addLatexString("}{1 - \\kappa").addText("(A)").addSymbol("*").addRelError("A").

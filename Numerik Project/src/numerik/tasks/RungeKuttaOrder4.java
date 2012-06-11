@@ -28,6 +28,9 @@ public class RungeKuttaOrder4 implements Task
     @Override
     public void run(Value... parameters)
     {
+        MathLib.setPrecision(15);
+        MathLib.setRoundingMode(MathLib.EXACT);
+        
         formula = new LatexFormula();
         
         formula.addTextBold("7.B) ");
@@ -35,7 +38,7 @@ public class RungeKuttaOrder4 implements Task
         formula.addText("Runge-Kutta 4.O. zur Lösung v. Differenzialgleichungen 1.O.");
         formula.addColorBoxEnd().addNewLine(5);
         formula.addTextUL("Benutze\\;Formel").addNewLine();
-        formula.addLatexString("w_{i+1} = w_i + \\frac{1}{6} \\cdot (k_1 + 2\\cdot k_2 + 2\\cdot k_3 + k_4)").addNewLine(2);
+        formula.addLatexString("w_{i+1} = w_i + \\frac{1}{6} \\cdot (k_1 + 2 \\cdot k_2 + 2 \\cdot k_3 + k_4)").addNewLine(2);
         formula.addText("berechne ").addLatexString("k_{1}, \\; k_{2}, \\; k_{3}").addText(" und ").addLatexString("k_{4}").addText(" wie folgt").addNewLine(1);
         formula.addLatexString("k_1 = h \\cdot f( x, w_i )").addNewLine();
         formula.addLatexString("k_2 = h \\cdot f( x + \\frac{h}{2}, w_i + \\frac{k_1}{2} )").addNewLine();
@@ -69,8 +72,8 @@ public class RungeKuttaOrder4 implements Task
         double y = 0.5d;
 
         
-        internFormula.addText("Definiere Intervall: " + showRoundedVal(x) + " \\leq t \\leq " + showRoundedVal(timeTillBreak)).addNewLine();
-        internFormula.addText("Setze Schrittweite: h = " + h).addNewLine();
+        internFormula.addText("definiere Intervall: " + showRoundedVal(x) + " \\leq t \\leq " + showRoundedVal(timeTillBreak)).addNewLine();
+        internFormula.addText("setze Schrittweite: h = " + h).addNewLine();
         internFormula.addText("Aus Intervalllänge und Schrittweite folgt " + iterations + " Iterationsschritte nötig.").addNewLine(3);
         internFormula.addText("Löse DGL mit Anfangswertproblem:").addNewLine();
         internFormula.addLatexString("y("+showRoundedVal(x)+")="+showRoundedVal(y)+" \\; \\leftrightarrow \\; y = " + showRoundedVal(y))
@@ -78,7 +81,7 @@ public class RungeKuttaOrder4 implements Task
         
         internFormula.addTextUL("Beginne\\;mit\\;Iteration").addNewLine(2);
         internFormula.addLatexString("\\begin{tabular}{l|l|l}");
-        internFormula.addLatexString("\\textbf{$i$} & \\textbf{$x_{i}$} & \\textbf{$w_i$} \\\\ \\hline");
+        internFormula.addLatexString("$\\bf{i}$ & $\\bf{x_{i}}$ & $\\bf{w_i}$ \\\\ \\hline");
         
         // Funktion (Differenzialgleichung) zum Ausrechnen der Funktionswerte
         // + Ausrechnung des Anfangsfunktionswertes
@@ -120,9 +123,6 @@ public class RungeKuttaOrder4 implements Task
     
     public String showRoundedVal(double x) 
     {
-        MathLib.setPrecision(15);
-        MathLib.setRoundingMode(MathLib.EXACT);
-        
         BigDecimal temp = MathLib.round(new BigDecimal(x));
         
         return temp.toString();
