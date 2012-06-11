@@ -1,5 +1,6 @@
+//Double-Genauigkeit
+setPrecision(12)
 A=[[1,2],[3,4]]
-s=5+5-5⋅5+5
-B=s⋅A
-I=B^-1
+//Inverse
+I=A^-1
 E=I⋅A

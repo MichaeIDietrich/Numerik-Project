@@ -32,6 +32,8 @@ public class ExpressionTask implements Task, ActionListener, KeyListener, Expres
     private SyntaxTextArea txtExpressionInput;
     private JPanel pnlExpressionOutput;
     
+    ScriptEngine engine;
+    
     @Override
     public void init(OutputFrame frame, TaskPane taskPane)
     {
@@ -64,15 +66,19 @@ public class ExpressionTask implements Task, ActionListener, KeyListener, Expres
         taskPane.setJToolBar(toolBar);
         
         
-        
         JPanel pnlMain = new JPanel(new BorderLayout());
         
         pnlExpressionOutput = new JPanel();
         BoxLayout box = new BoxLayout(pnlExpressionOutput, BoxLayout.Y_AXIS);
         pnlExpressionOutput.setLayout(box);
         pnlExpressionOutput.setBackground(Color.WHITE);
+        
+        engine = new ScriptEngine();
+        
+        engine.addExpressionListener(this);
                 
-        txtExpressionInput = new SyntaxTextArea(Arrays.asList(MathPool.FUNCTIONS));
+        txtExpressionInput = new SyntaxTextArea(Arrays.asList(MathPool.FUNCTIONS), 
+                engine.getExpressionEngine().getVariableTable());
         try
         {
             StringBuilder buffer = new StringBuilder();
@@ -92,7 +98,7 @@ public class ExpressionTask implements Task, ActionListener, KeyListener, Expres
         }
         
         txtExpressionInput.setBorder(new LineBorder(Color.DARK_GRAY));
-        txtExpressionInput.setBackground(new Color(255, 255, 100));
+        txtExpressionInput.setBackground(new Color(255, 255, 150));
         txtExpressionInput.addKeyListener(this);
         
         JScrollPane scrExpressionOutput = new JScrollPane(pnlExpressionOutput);
@@ -116,9 +122,6 @@ public class ExpressionTask implements Task, ActionListener, KeyListener, Expres
         pnlExpressionOutput.removeAll();
         Recorder.getInstance().clear();
         
-        ScriptEngine engine = new ScriptEngine();
-        
-        engine.addExpressionListener(this);
         engine.run(txtExpressionInput.getText());
         
         taskPane.repaint();

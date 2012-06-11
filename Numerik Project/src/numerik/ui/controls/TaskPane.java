@@ -61,6 +61,7 @@ public final class TaskPane extends JPanel implements ActionListener
         
         JComboBox<String> combo;
         JTextField text;
+        SyntaxTextArea expression;
         JCheckBox check;
         JSpinner spinner;
         SpinnerModel model;
@@ -178,6 +179,14 @@ public final class TaskPane extends JPanel implements ActionListener
                     toolBar.add(pnlGroup);
                     break;
                     
+                case EXPRESSION:
+                    expression = new SyntaxTextArea(null, null);
+                    expression.setPreferredSize(new Dimension(arg.getControlWidth(), expression.getPreferredSize().height));
+                    arg.setRelatedControl(expression);
+                    pnlGroup.add(expression);
+                    toolBar.add(pnlGroup);
+                    break;
+                    
                 case BOOLEAN:
                     check = new JCheckBox(arg.getName() ,arg.getDefaultValue().equals("true"));
                     arg.setRelatedControl(check);
@@ -249,7 +258,7 @@ public final class TaskPane extends JPanel implements ActionListener
         };
         
         taskThread.start(); //asynchron
-//        taskThread.run(); //snychron
+//        taskThread.run(); //synchron
     }
     
     
@@ -289,6 +298,10 @@ public final class TaskPane extends JPanel implements ActionListener
                         
                     case INTEGER:
                         parameters.add(new Value(new BigDecimal(Integer.parseInt(((JTextField)arg.getRelatedControl()).getText()))));
+                        break;
+                        
+                    case EXPRESSION:
+                        parameters.add(new Value(((SyntaxTextArea)arg.getRelatedControl()).getText()));
                         break;
                         
                     case BOOLEAN:

@@ -42,29 +42,29 @@ public class WrappingToolbarLayout implements LayoutManager {
     public static final int RIGHT    = 2;
     public static final int LEADING  = 3;
     public static final int TRAILING = 4;
- 
+    
     int align;
     int hgap;
     int vgap;
- 
+    
     public WrappingToolbarLayout() {
         this(CENTER, 5, 5);
     }
- 
+    
     public WrappingToolbarLayout(int align) {
         this(align, 5, 5);
     }
- 
+    
     public WrappingToolbarLayout(int align, int hgap, int vgap) {
         this.hgap = hgap;
         this.vgap = vgap;
         setAlignment(align);
     }
- 
+    
     public int getAlignment() {
         return align;
     }
- 
+    
     public void setAlignment(int align) {
         switch (align) {
         case LEADING:
@@ -78,23 +78,23 @@ public class WrappingToolbarLayout implements LayoutManager {
             break;
         }
     }
- 
+    
     public int getHgap() {
         return hgap;
     }
- 
+    
     public void setHgap(int hgap) {
         this.hgap = hgap;
     }
- 
+    
     public int getVgap() {
         return vgap;
     }
- 
+    
     public void setVgap(int vgap) {
         this.vgap = vgap;
     }
- 
+    
     public Dimension preferredLayoutSize(Container parent) {
         synchronized(parent.getTreeLock()) {
             Dimension dim = new Dimension(0,0);
@@ -127,12 +127,12 @@ public class WrappingToolbarLayout implements LayoutManager {
             return dim;
         }
     }
- 
+    
     public Dimension minimumLayoutSize(Container parent) {
         synchronized(parent.getTreeLock()) {
             Dimension dim = new Dimension(0,0);
             int componentCount = parent.getComponentCount();
- 
+            
             for(int i = 0; i < componentCount; i++) {
                 Component c = parent.getComponent(i);
                 if(c.isVisible()) {
@@ -150,7 +150,7 @@ public class WrappingToolbarLayout implements LayoutManager {
             return dim;
         }
     }
- 
+    
     public void layoutContainer(Container parent) {
         synchronized(parent.getTreeLock()) {
             Insets insets = parent.getInsets();
@@ -160,7 +160,7 @@ public class WrappingToolbarLayout implements LayoutManager {
             int x = 0, y = insets.top + vgap;
             int rowh = 0, start = 0;
             boolean ltr = parent.getComponentOrientation().isLeftToRight();
- 
+            
             for(int i = 0; i < componentCount; i++) {
                 Component c = parent.getComponent(i);
                 if(c.isVisible()) {
@@ -186,7 +186,7 @@ public class WrappingToolbarLayout implements LayoutManager {
                            rowh, start, componentCount, ltr);
         }       
     }
- 
+    
     private int moveComponents(Container parent, int x, int y, int width,
                                int height, int rowStart, int rowEnd,
                                boolean ltr) {
@@ -221,7 +221,7 @@ public class WrappingToolbarLayout implements LayoutManager {
         }
         return height;
     }
- 
+    
     public void addLayoutComponent(String name, Component comp) { }
     public void removeLayoutComponent(Component comp) { }
 }

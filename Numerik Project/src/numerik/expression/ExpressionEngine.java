@@ -14,7 +14,8 @@ public final class ExpressionEngine
     
     enum Token
     {
-        NONE, EQUAL, UNEQUAL, GREATER, LESS, GREATEREQ, LESSEQ, ASSIGN, PLUS, MINUS, TIMES, DIVISION, POW, LGROUP, RGROUP, KOMMA, FUNCTION, NUMERIC, VARIABLE, LMATRIX, RMATRIX
+        NONE, EQUAL, UNEQUAL, GREATER, LESS, GREATEREQ, LESSEQ, ASSIGN, PLUS, MINUS, TIMES, DIVISION, POW, 
+        LGROUP, RGROUP, KOMMA, FUNCTION, NUMERIC, VARIABLE, LMATRIX, RMATRIX//, LINDEX, RINDEX
     }
     
     private final char END_OF_INPUT = 0;
@@ -290,7 +291,7 @@ public final class ExpressionEngine
         {
             
             int strBegin = index;
-            while (isAlpha(input[++index]));
+            while (isAlphaNum(input[++index]));
             
             if (input[index] == '(')
             {
@@ -625,7 +626,12 @@ public final class ExpressionEngine
     
     private boolean isAlpha(char c)
     {
-        return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z';
+        return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c == '_';
     }
     
+    
+    private boolean isAlphaNum(char c)
+    {
+        return isAlpha(c) || isDigit(c);
+    }
 }
