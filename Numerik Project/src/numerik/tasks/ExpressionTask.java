@@ -4,9 +4,11 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.*;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+import javax.swing.text.BadLocationException;
 
 import numerik.calc.Matrix;
 import numerik.expression.*;
@@ -27,7 +29,7 @@ public class ExpressionTask implements Task, ActionListener, KeyListener, Expres
     private OutputFrame frame;
     private TaskPane taskPane;
     
-    private JTextArea txtExpressionInput;
+    private SyntaxTextArea txtExpressionInput;
     private JPanel pnlExpressionOutput;
     
     @Override
@@ -70,7 +72,7 @@ public class ExpressionTask implements Task, ActionListener, KeyListener, Expres
         pnlExpressionOutput.setLayout(box);
         pnlExpressionOutput.setBackground(Color.WHITE);
                 
-        txtExpressionInput = new JTextArea();
+        txtExpressionInput = new SyntaxTextArea(Arrays.asList(MathPool.FUNCTIONS));
         try
         {
             StringBuilder buffer = new StringBuilder();
@@ -131,7 +133,14 @@ public class ExpressionTask implements Task, ActionListener, KeyListener, Expres
             Matrix matrix = NewMatrixWindow.createNewMatrix(frame, MouseInfo.getPointerInfo().getLocation());
             if (matrix != null)
             {
-                txtExpressionInput.insert(matrix.toString(), txtExpressionInput.getSelectionStart());
+                try
+                {
+                    txtExpressionInput.getStyledDocument().insertString(txtExpressionInput.getSelectionStart(), matrix.toString(), null);
+                }
+                catch (BadLocationException ex)
+                {
+                    ex.printStackTrace();
+                }
             }
         }
         else if (e.getActionCommand().equals(RUN_PAUSE))

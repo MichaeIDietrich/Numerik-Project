@@ -12,6 +12,9 @@ import numerik.ui.misc.Recorder;
 public final class MathPool
 {
     
+    public static final String[] FUNCTIONS = { "getPrecision", "setPrecision", "del", "delete", "det", "determinant", "L", "U", "solve", "get", "ln", 
+        "sqrt", "sin", "cos", "tan", "asin", "acos", "atan" };
+    
     private HashMap<String, Value> variables;
     
     
