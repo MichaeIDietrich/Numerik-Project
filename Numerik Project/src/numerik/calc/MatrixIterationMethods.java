@@ -133,7 +133,7 @@ public class MatrixIterationMethods
         
         Matrix L = matrixForLU.getL();
         Matrix U = matrixForLU.getU();
-        Vector lperm = matrixForLU.getlperm();
+        Vector lperm = matrixForLU.getLPerm();
         
         for (int i = 0; i < maxIterations; i++)
         {

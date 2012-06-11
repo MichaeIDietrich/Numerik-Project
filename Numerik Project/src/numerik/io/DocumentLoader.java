@@ -28,10 +28,6 @@ public class DocumentLoader
             }
             br.close();
         }
-        catch (FileNotFoundException ex)
-        {
-            ex.printStackTrace();
-        }
         catch (IOException ex)
         {
             ex.printStackTrace();
@@ -80,16 +76,40 @@ public class DocumentLoader
             }
             br.close();
         }
-        catch (FileNotFoundException ex)
-        {
-            ex.printStackTrace();
-        }
         catch (IOException ex)
         {
             ex.printStackTrace();
         }
         
         return names.toArray(new String[names.size()]);
+    }
+    
+    
+    public Matrix readMatrix(String file, String name) 
+    {
+        try
+        {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = br.readLine()) != null)
+            {
+                if (line.equals("Matrix#" + name))
+                {
+                    Matrix matrix = readMatrix(br);
+                    matrix.name = line.substring(7);
+                    br.close();
+                    
+                    return matrix;
+                }
+            }
+            br.close();
+        }
+        catch (IOException ex)
+        {
+            ex.printStackTrace();
+        }
+        
+        throw new RuntimeException("Matrix '" + name + "' nicht gefunden in Datei '" + file + "'");
     }
     
     
@@ -110,10 +130,6 @@ public class DocumentLoader
                 }
             }
             br.close();
-        }
-        catch (FileNotFoundException ex)
-        {
-            ex.printStackTrace();
         }
         catch (IOException ex)
         {
@@ -157,10 +173,6 @@ public class DocumentLoader
             }
             br.close();
         }
-        catch (FileNotFoundException ex)
-        {
-            ex.printStackTrace();
-        }
         catch (IOException ex)
         {
             ex.printStackTrace();
@@ -189,6 +201,33 @@ public class DocumentLoader
                     {
                         bw.write(",");
                     }
+                }
+            }
+            bw.close();
+        }
+        catch (IOException ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+    
+    
+    public void addVectorToFile(Vector vector, String file)
+    {
+        try
+        {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(file, true));
+            bw.write("\n\n");
+            bw.write("Vector#");
+            bw.write(vector.name);
+            bw.write("\n");
+            
+            for (int i = 0; i < vector.getLength(); i++)
+            {
+                bw.write(vector.get(i).toPlainString());
+                if (i < vector.getLength() - 1)
+                {
+                    bw.write(",");
                 }
             }
             bw.close();

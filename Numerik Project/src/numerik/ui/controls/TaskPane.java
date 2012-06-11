@@ -53,7 +53,7 @@ public final class TaskPane extends JPanel implements ActionListener
         {
             imgMatrices.add(new LatexFormula().addMatrix(matrix).toImage());
         }
-        ArrayList<Image> imgVectors = new ArrayList<Image>();
+        final ArrayList<Image> imgVectors = new ArrayList<Image>();
         for (Vector vector : docLoader.readVectors("Data.txt"))
         {
             imgVectors.add(new LatexFormula().addVector(vector).toImage());
@@ -121,6 +121,38 @@ public final class TaskPane extends JPanel implements ActionListener
                     
                 case VECTOR:
                     combo = new JComboBox<String>(vectors);
+                    combo.insertItemAt("...", vectors.length);
+                    
+                    combo.addItemListener(new ItemListener()
+                    {
+                        @Override
+                        public void itemStateChanged(ItemEvent e)
+                        {
+                            if (e.getItem().toString().equals("...") && e.getStateChange() == ItemEvent.SELECTED)
+                            {
+                                @SuppressWarnings("unchecked")
+                                JComboBox<String> combo = (JComboBox<String>) e.getSource();
+                                
+                                Vector vector = NewVectorWindow.createNewVector(frame, combo.getLocationOnScreen());
+                                
+                                if (vector == null)
+                                {
+                                    combo.setSelectedIndex(0);
+                                }
+                                else if ((vector.name = JOptionPane.showInputDialog(frame, "Bitte geben Sie den Namen des Vektors ein.", "Vektorname", JOptionPane.QUESTION_MESSAGE)) 
+                                        != null && !vector.name.equals(""))
+                                {
+                                    new DocumentLoader().addVectorToFile(vector, "Data.txt");
+                                    int index = combo.getItemCount() - 1;
+                                    combo.insertItemAt(vector.name, index);
+                                    combo.setSelectedIndex(index);
+                                    imgVectors.add(new LatexFormula().addVector(vector).toImage());
+                                    
+                                }
+                            }
+                        }
+                    });
+                    
                     new ToolTippedComboBox(combo, imgVectors, new Color(255, 255, 150));
                     combo.setPreferredSize(new Dimension(arg.getControlWidth(), combo.getPreferredSize().height));
                     arg.setRelatedControl(combo);

@@ -9,10 +9,10 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import numerik.calc.Matrix;
+import numerik.calc.Vector;
 import numerik.ui.misc.PopupManager;
 
-public final class NewMatrixWindow extends JDialog implements ActionListener
+public final class NewVectorWindow extends JDialog implements ActionListener
 {
     private final String ACCEPT = "ACCEPT";
     private final String CANCEL = "CANCEL";
@@ -22,8 +22,8 @@ public final class NewMatrixWindow extends JDialog implements ActionListener
     private final static Image rarrow = new ImageIcon("icons/arrow-right16.png").getImage();
     private final static Image uarrow = new ImageIcon("icons/arrow-up16.png").getImage();
     private final static Image darrow = new ImageIcon("icons/arrow-down16.png").getImage();
-    private final static Image luarrow = new ImageIcon("icons/arrow-left-up16.png").getImage();
-    private final static Image rdarrow = new ImageIcon("icons/arrow-right-down16.png").getImage();
+//    private final static Image luarrow = new ImageIcon("icons/arrow-left-up16.png").getImage();
+//    private final static Image rdarrow = new ImageIcon("icons/arrow-right-down16.png").getImage();
     private final static Image field = new ImageIcon("icons/field16.png").getImage();
     
     private final static Icon clean = new ImageIcon("icons/clean16.png");
@@ -31,18 +31,18 @@ public final class NewMatrixWindow extends JDialog implements ActionListener
     private final static Icon cancel = new ImageIcon("icons/cancel16.png");
     
     private int rows = 3;
-    private int cols = 3;
+    private int cols = 1;
     private String[][] matrix = new String[rows][cols];
     private int indents[] = new int[rows + 1];
     private Point sel = new Point(-1, -1);
     
-    private Matrix result;
+    private Vector result;
     
     private PopupManager popupManager = PopupManager.getInstance();
     
     JPanel pnlButtons;
     
-    private NewMatrixWindow(JFrame owner, Point position)
+    private NewVectorWindow(JFrame owner, Point position)
     {
         super(owner, true);
         this.setUndecorated(true);
@@ -80,7 +80,7 @@ public final class NewMatrixWindow extends JDialog implements ActionListener
                 
                 
                 g.setColor(Color.BLACK);
-                g.drawString("Matrix " + rows + "x" + cols, 5, 15);
+                g.drawString("Vektor " + rows + "x" + cols, 5, 15);
                 
                 
                 if (sel.y > -1 && sel.x > -1)
@@ -122,8 +122,8 @@ public final class NewMatrixWindow extends JDialog implements ActionListener
                 g2.drawImage(rarrow, this.getWidth() - 19, 5, this);
                 g2.drawImage(uarrow, 5, this.getHeight() - 38, this);
                 g2.drawImage(darrow, 5, this.getHeight() - 19, this);
-                g2.drawImage(luarrow, this.getWidth() - 30, this.getHeight() - 30, this);
-                g2.drawImage(rdarrow, this.getWidth() - 19, this.getHeight() - 19, this);
+//                g2.drawImage(luarrow, this.getWidth() - 30, this.getHeight() - 30, this);
+//                g2.drawImage(rdarrow, this.getWidth() - 19, this.getHeight() - 19, this);
             }
             
         };
@@ -150,28 +150,28 @@ public final class NewMatrixWindow extends JDialog implements ActionListener
                 
                 if (e.getX() >= rect.width - 38 && e.getX() < rect.width - 22 && e.getY() >= 5 && e.getY() < 21)
                 {
-                    updateMatrixSize(0, -1);
+                    updateVectorSize(0, -1);
                 }
                 if (e.getX() >= rect.width - 19 && e.getX() < rect.width - 3 && e.getY() >= 5 && e.getY() < 21)
                 {
-                    updateMatrixSize(0, 1);
+                    updateVectorSize(0, 1);
                 }
                 if (e.getY() >= rect.height - 38 && e.getY() < rect.height - 22 && e.getX() >= 5 && e.getX() < 21)
                 {
-                    updateMatrixSize(-1, 0);
+                    updateVectorSize(-1, 0);
                 }
                 if (e.getY() >= rect.height - 19 && e.getY() < rect.height - 3 && e.getX() >= 5 && e.getX() < 21)
                 {
-                    updateMatrixSize(1, 0);
+                    updateVectorSize(1, 0);
                 }
-                if (e.getX() >= rect.width - 30 && e.getX() < rect.width - 19 && e.getY() >= rect.height - 30 && e.getY() < rect.height - 19)
-                {
-                    updateMatrixSize(-1, -1);
-                }
-                if (e.getX() >= rect.width - 19 && e.getX() < rect.width - 3 && e.getY() >= rect.height - 19 && e.getY() < rect.height - 3)
-                {
-                    updateMatrixSize(1, 1);
-                }
+//                if (e.getX() >= rect.width - 30 && e.getX() < rect.width - 19 && e.getY() >= rect.height - 30 && e.getY() < rect.height - 19)
+//                {
+//                    updateMatrixSize(-1, -1);
+//                }
+//                if (e.getX() >= rect.width - 19 && e.getX() < rect.width - 3 && e.getY() >= rect.height - 19 && e.getY() < rect.height - 3)
+//                {
+//                    updateMatrixSize(1, 1);
+//                }
             }
             
         });
@@ -183,7 +183,7 @@ public final class NewMatrixWindow extends JDialog implements ActionListener
     }
     
     
-    public Matrix getResult()
+    public Vector getResult()
     {
         return result;
     }
@@ -212,10 +212,17 @@ public final class NewMatrixWindow extends JDialog implements ActionListener
     }
     
     
-    private void updateMatrixSize(int deltaRow, int deltaCol)
+    private void updateVectorSize(int deltaRow, int deltaCol)
     {
+        
         int rowsNew = rows + deltaRow;
         int colsNew = cols + deltaCol;
+        
+        if (deltaRow == 0) {
+            rowsNew = 1;
+        } else {
+            colsNew = 1;
+        }
         
         if (rowsNew == 0 || colsNew == 0)
         {
@@ -239,8 +246,8 @@ public final class NewMatrixWindow extends JDialog implements ActionListener
         
         matrix = newMatrix;
         
-        rows += deltaRow;
-        cols += deltaCol;
+        rows = rowsNew;
+        cols = colsNew;
         
         indents = new int[cols + 1];
         calcIndents();
@@ -256,7 +263,7 @@ public final class NewMatrixWindow extends JDialog implements ActionListener
         sel = new Point(col, row);
         this.repaint();
         
-        new EditPopup(NewMatrixWindow.this, x, y, matrix[sel.y][sel.x], new ChangeListener()
+        new EditPopup(NewVectorWindow.this, x, y, matrix[sel.y][sel.x], new ChangeListener()
         {
             @Override
             public void stateChanged(ChangeEvent e)
@@ -286,7 +293,7 @@ public final class NewMatrixWindow extends JDialog implements ActionListener
                         matrix[sel.y][sel.x] = e.getSource().toString();
                         System.out.println(e.getSource().toString());
                 }
-                NewMatrixWindow.this.repaint();
+                NewVectorWindow.this.repaint();
             }
         });
     }
@@ -310,9 +317,9 @@ public final class NewMatrixWindow extends JDialog implements ActionListener
     }
     
     
-    public static Matrix createNewMatrix(JFrame owner, Point position)
+    public static Vector createNewVector(JFrame owner, Point position)
     {
-        NewMatrixWindow mw = new NewMatrixWindow(owner, position);
+        NewVectorWindow mw = new NewVectorWindow(owner, position);
         
         return mw.getResult();
     }
@@ -341,7 +348,9 @@ public final class NewMatrixWindow extends JDialog implements ActionListener
                         return;
                     }
                 }
-                result = new Matrix(values, cols);
+//                result = new Matrix(values, cols);
+                result = new Vector(values.toArray(new BigDecimal[Math.max(rows, cols)]), cols != 1);
+                
                 this.dispose();
                 break;
         

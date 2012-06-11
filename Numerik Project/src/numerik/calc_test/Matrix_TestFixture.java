@@ -212,7 +212,7 @@ public class Matrix_TestFixture
         M1.set(2, 1, new BigDecimal("-6.2"));
         M1.set(2, 2, new BigDecimal("4.6"));
         
-        V2 = M1.getlperm();
+        V2 = M1.getLPerm();
         
         assertEquals("2", V2.get(0).toPlainString());
         assertEquals("1", V2.get(1).toPlainString());
@@ -366,7 +366,7 @@ public class Matrix_TestFixture
         M1.set(2, 1, new BigDecimal("-6.2"));
         M1.set(2, 2, new BigDecimal("4.6"));
         
-        V1 = M1.getlperm();
+        V1 = M1.getLPerm();
         
         assertEquals("1", V1.get(0).toPlainString());
         assertEquals("2", V1.get(1).toPlainString());
