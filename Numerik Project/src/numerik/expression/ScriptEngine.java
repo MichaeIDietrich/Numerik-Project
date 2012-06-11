@@ -120,7 +120,7 @@ public final class ScriptEngine implements TokenListener
                     listener.expressionParsed(expression, res);
                 }
             }
-            catch (InvalidExpressionException ex)
+            catch (InvalidExpressionException | RuntimeException ex)
             {
                 for (ExpressionListener listener : expressionListeners)
                 {
@@ -214,15 +214,23 @@ public final class ScriptEngine implements TokenListener
         }
     }
     
+    
     @Override
     public void matrixParsed(Matrix matrix)
     {
         formula.addMatrix(matrix);
     }
     
+    
     @Override
     public void vectorParsed(Vector vector)
     {
         formula.addVector(vector);
+    }
+    
+    
+    public ExpressionEngine getExpressionEngine()
+    {
+        return expression;
     }
 }

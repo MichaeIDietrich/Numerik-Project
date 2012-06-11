@@ -423,6 +423,33 @@ public final class MathPool
                 throw new InvalidExpressionException("Bitte Eingabe überprüfen, atan() nimmt als Parameter eine Dezimalzahl.");
         }
         
+        
+        //schauen, ob es sich um eine Matrix oder einen Vektor handelt und die Parameter als Indizes interpretieren 
+        if (variables.containsKey(funcName))
+        {
+            if (variables.get(funcName).getType() == ValueType.MATRIX && args.length == 2)
+            {
+                args[0] = resolveVariable(args[0]);
+                args[1] = resolveVariable(args[1]);
+                
+                if (args[0].getType() == ValueType.DECIMAL && args[1].getType() == ValueType.DECIMAL)
+                {
+                    return new Value(variables.get(funcName).toMatrix().get(
+                            args[0].toDecimal().intValue(), args[1].toDecimal().intValue()));
+                }
+            }
+            
+            if (variables.get(funcName).getType() == ValueType.MATRIX && args.length == 1)
+            {
+                args[0] = resolveVariable(args[0]);
+                
+                if (args[0].getType() == ValueType.DECIMAL)
+                {
+                    return new Value(variables.get(funcName).toVector().get(args[0].toDecimal().intValue()));
+                }
+            }
+        }
+        
         throw new InvalidExpressionException("Funktion '" + funcName + "' existiert nicht.");
     }
     

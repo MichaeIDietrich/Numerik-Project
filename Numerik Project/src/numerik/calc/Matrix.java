@@ -1,9 +1,5 @@
 package numerik.calc;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
@@ -179,7 +175,7 @@ public class Matrix {
     }
     
     
-    public BigDecimal get(int row, int col)
+    public BigDecimal get(int row, int col) throws IndexOutOfBoundsException
     {
         if (!isValidIndex(row, col))
         {
@@ -190,7 +186,7 @@ public class Matrix {
     }
     
     
-    public void set(int row, int col, BigDecimal value)
+    public void set(int row, int col, BigDecimal value) throws IndexOutOfBoundsException
     {
         if (!isValidIndex(row, col))
         {
@@ -239,7 +235,8 @@ public class Matrix {
     }
     
     
-    public Matrix add(Matrix x) {
+    public Matrix add(Matrix x) throws ArithmeticException
+    {
         if (rows != x.getRows() || cols != x.getCols())
         {
             throw new ArithmeticException("Beide Matrizen müssen der Form mxn entsprechen!");
@@ -269,7 +266,7 @@ public class Matrix {
         return new Matrix(v);
     }
     
-    public Matrix divide(BigDecimal x)
+    public Matrix divide(BigDecimal x) throws ArithmeticException
     {  
         if (x == BigDecimal.ZERO)
         {
@@ -282,7 +279,8 @@ public class Matrix {
         return mult(quotient);
     }
     
-    public Vector mult(Vector vector) {                       // Multipliziere Matrix und Vektor
+    public Vector mult(Vector vector) throws ArithmeticException
+    {                       // Multipliziere Matrix und Vektor
         if(cols != vector.getLength())
         {
             throw new ArithmeticException("Matrizen sind nicht verkettet, Spaltenanzahl der Matrix muss gleich der Länge des Vektors sein.");
@@ -307,7 +305,7 @@ public class Matrix {
     }
     
     
-    public Matrix mult(Matrix matrix)
+    public Matrix mult(Matrix matrix) throws ArithmeticException
     {
         if(cols != matrix.getRows())
         {
@@ -356,7 +354,7 @@ public class Matrix {
     }
     
     
-    public Matrix getInverse()
+    public Matrix getInverse() throws ArithmeticException
     {
         if(!isQuadratic()) 
         {
@@ -695,7 +693,7 @@ public class Matrix {
     }
     
     
-    public BigDecimal det()
+    public BigDecimal det() throws ArithmeticException
     {
         if (!isQuadratic() || (rows>3 && cols>3))
         {
@@ -740,7 +738,7 @@ public class Matrix {
     }
     
     
-    public BigDecimal getDeterminant()
+    public BigDecimal getDeterminant() throws ArithmeticException
     {
 //            double result = 0;
 //
@@ -844,8 +842,8 @@ public class Matrix {
     
     
     /**
-     * Rundet die aktuelle Matrix mit der Mantissenl�nge, die in der MathLib statisch enthalten ist.
-     * Gibt eine Matrix, die zu einer bestimmten Mantissenl�nge gerundet wurde.
+     * Rundet die aktuelle Matrix mit der Mantissenlänge, die in der MathLib statisch enthalten ist.
+     * Gibt eine Matrix, die zu einer bestimmten Mantissenlänge gerundet wurde.
      */
     public Matrix roundToMantissaLength()
     {
