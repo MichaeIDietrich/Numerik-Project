@@ -28,7 +28,7 @@ public class SolveNonLinearEquation implements Task
     public void init(OutputFrame frame, TaskPane taskPane)
     {
         this.taskPane = taskPane;
-        taskPane.createJToolBarByArguments( new Argument("Startvector:", ArgType.VECTOR, 100 ), Argument.RUN_BUTTON);
+        taskPane.createJToolBarByArguments( new Argument("Startvektor:", ArgType.VECTOR, 100 ), Argument.RUN_BUTTON);
     }
     
     
@@ -55,11 +55,16 @@ public class SolveNonLinearEquation implements Task
         {
             iterformula.addLatexString("x_{"+ i +"} = ").addVector(iterx).addNewLine(1);
             i++;
+            System.out.println(i);
+            
             x = jm.jakobiMatrix( derive(iterx) ).solveX( getFunctionsValue(iterx) );
+            
             iterx = iterx.add( x );
+            if (i==1000) break;
         }
+        
         iterformula.addNewLine(2);
-        iterformula.addText("Abbruch bei ").addLatexString("\\; x_"+i+" = x_"+(i-1)+" \\;\\; \\leftrightarrow \\;\\; \\arrowvert{ x_{"+(i)+"}-x_{"+(i-1)+"} }\\arrowvert \\leq eps");
+        iterformula.addText("Abbruch bei ").addLatexString("\\; x_{"+i+"} = x_{"+(i-1)+"} \\;\\; \\leftrightarrow \\;\\; \\arrowvert{ x_{"+(i)+"}-x_{"+(i-1)+"} }\\arrowvert \\leq eps");
         
         
         // Ausgabe: Latex-Formula-String
@@ -106,6 +111,8 @@ public class SolveNonLinearEquation implements Task
          dqPlus = new Vector(arguments);
         dqMinus = new Vector(arguments);
         
+//        System.out.println(arguments);
+        
         for(int i=0; i < arguments; i++)
         {
             for(int row=0; row < arguments; row++) 
@@ -115,18 +122,18 @@ public class SolveNonLinearEquation implements Task
                      dqPlus.set(i, x[i].add(      BigDecimal.ONE.divide(h) ));
                     dqMinus.set(i, x[i].subtract( BigDecimal.ONE.divide(h) ));
                 } else {
-                     dqPlus.set(row, BigDecimal.ZERO);
-                    dqMinus.set(row, BigDecimal.ZERO); 
+                     dqPlus.set(row, new BigDecimal(1.23456789123456789));  // Sollte Zufallszahl sein bzw. eine Zahl die keine
+                    dqMinus.set(row, new BigDecimal(1.23456789123456789));  // Asymptote der unten eingegebenen Funktionen ist!
                 } 
             }
-            
+
             // Berechne df(x,y) = ( f(x + 1/h ) - f(x - 1/h) ) * h/2
             storevalue = (getFunctionsValue(dqPlus).sub( getFunctionsValue(dqMinus) ));
 
             for(int t=0; t < arguments; t++) 
             {
                 storevalue.set(t, MathLib.round( storevalue.get(t).multiply( h.divide( new BigDecimal(2) ).negate() )));
-                dfunction.set(t, i, storevalue.get(t));
+                 dfunction.set(t, i, storevalue.get(t));
             }
         }
         return dfunction;
@@ -134,18 +141,27 @@ public class SolveNonLinearEquation implements Task
     
     
     /**
-     * Trage hier alle linearen Gleichungssysteme ein.
+     * Trage hier alle nicht-linearen Gleichungssysteme ein.
      * @param vector
      * @return Vector
      */
     public Vector getFunctionsValue(Vector vector) 
     {
+        
         Vector function = new Vector( vector.getLength() );
         Double[]      x = vector.toDoubleArray();           // x[0] = x ; x[1] = y ; x[2] = z usw.
         
+        for(int t=0; t < vector.getLength(); t++) function.set(t, BigDecimal.ZERO);
+        
         // Hier die >> Funktionen << eintragen:
-        function.set(0, BigDecimal.valueOf(   x[0]*x[0]+x[1]*x[1]+0.6*x[1]-0.16       ).negate());
-        function.set(1, BigDecimal.valueOf(   x[0]*x[0]-x[1]*x[1]+x[0]-1.6*x[1]-0.14  ).negate());
+//        function.set(0, BigDecimal.valueOf(   x[0]*x[0]+x[1]*x[1]+0.6*x[1]-0.16       ).negate());
+//        function.set(1, BigDecimal.valueOf(   x[0]*x[0]-x[1]*x[1]+x[0]-1.6*x[1]-0.14  ).negate());
+        
+//        function.set(0, BigDecimal.valueOf(    1-x[1]+Math.sin(x[0])  ).negate());
+//        function.set(1, BigDecimal.valueOf( -1.4-x[0]+Math.cos(x[1])  ).negate());
+        
+        function.set(0, BigDecimal.valueOf(    x[0]*x[0]*x[0]+10*x[1]-x[0]*x[1]  ).negate());
+        function.set(1, BigDecimal.valueOf( -1.4-x[0]+Math.cos(x[1])  ).negate());
         
         return function;
     }
