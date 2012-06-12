@@ -8,6 +8,7 @@ import numerik.calc.MathLib;
 import numerik.calc.Matrix;
 import numerik.calc.Vector;
 import numerik.expression.Value;
+import numerik.tasks.Argument.ArgType;
 import numerik.ui.controls.TaskPane;
 import numerik.ui.controls.TaskScrollPane;
 import numerik.ui.dialogs.OutputFrame;
@@ -25,8 +26,11 @@ public class SolveNonLinearEquation implements Task
     public void init(OutputFrame frame, TaskPane taskPane)
     {
         this.taskPane = taskPane;
+        
+//        taskPane.createJToolBarByArguments(new Argument("Jakobi-Matrix:", ArgType.EXPRESSION, "[[-1, cos(x)],[-sin(y),-1]", 250),
+//                new Argument("Ableitungen:", ArgType.EXPRESSION, "[-(1-xcos(y)),-(-1.4-y-sin(x))]", 250));
     }
-
+    
     
     @Override
     public void run(Value... values)

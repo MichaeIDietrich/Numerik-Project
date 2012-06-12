@@ -2,12 +2,11 @@ package numerik.ui.controls;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.HashMap;
+import java.util.Collection;
 
 import javax.swing.*;
 import javax.swing.text.*;
 
-import numerik.expression.Value;
 import numerik.ui.misc.ListFilter;
 
 public class SyntaxTextArea extends JTextPane
@@ -26,11 +25,11 @@ public class SyntaxTextArea extends JTextPane
     private static Style COMMENT;
     private static Style KEYWORD;
     
-    private HashMap<String, Value> variables;
+    private Collection<String> variables;
     
     private StyledDocument doc;
     
-    public SyntaxTextArea(java.util.List<String> functionNames, HashMap<String, Value> variables)
+    public SyntaxTextArea(Collection<String> functionNames, Collection<String> variables)
     {
         this.variables = variables;
         
@@ -405,7 +404,7 @@ public class SyntaxTextArea extends JTextPane
                 {
                     doc.setCharacterAttributes(start, end - start, ERROR, true);
                 }
-                else if (variables.keySet().contains(text.substring(start, end)))
+                else if (variables.contains(text.substring(start, end)))
                 {
                     doc.setCharacterAttributes(start, end - start, KNOWNVAR, true);
                 }

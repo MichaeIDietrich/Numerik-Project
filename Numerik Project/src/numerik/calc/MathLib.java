@@ -6,7 +6,14 @@ import java.math.*;
 public final class MathLib
 {
     
+    /**
+     * Es wird die komplette Mantisse zur Rundung betrachtet.
+     */
     public  static final int               EXACT = 0;
+    
+    /**
+     * Es werden nur die Zahlen nach dem Komma zur Rundung betrachtet.
+     */
     public  static final int              NORMAL = 1;
     
     public  static final int    ZEILENSUMMENNORM = 0;
@@ -107,15 +114,21 @@ public final class MathLib
     public static BigDecimal stripTrailingZeros(BigDecimal value)
     {
         
-        char[] plain = value.toPlainString().toCharArray();
-        for (int i = plain.length - 1; i > 0; i--)
+        String plainString = value.toPlainString();
+        char[] plain = plainString.toCharArray();
+        
+        int dotPos = plainString.indexOf('.');
+        if (dotPos > 0)
         {
-            if (plain[i] != '0')
+            for (int i = plain.length - 1; i >= dotPos; i--)
             {
-                if (plain[i] == '.') { // Sonderfall, dass nach dem Komma nur Nullen stehen, dann fällt das Komma auch weg
-                    return new BigDecimal(new String(plain, 0, i));
+                if (plain[i] != '0')
+                {
+                    if (i == dotPos) { // Sonderfall, dass nach dem Komma nur Nullen stehen, dann fällt das Komma auch weg
+                        return new BigDecimal(new String(plain, 0, i));
+                    }
+                    return new BigDecimal(new String(plain, 0, i + 1));
                 }
-                return new BigDecimal(new String(plain, 0, i + 1));
             }
         }
         return value;
