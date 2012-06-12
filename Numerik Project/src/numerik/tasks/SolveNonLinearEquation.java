@@ -17,7 +17,9 @@ import numerik.ui.misc.LatexFormula;
 
 public class SolveNonLinearEquation implements Task
 {
-    
+    Vector dqPlus;
+    Vector dqMinus;
+
     TaskPane taskPane;
     LatexFormula     formula = new LatexFormula();
     LatexFormula iterformula = new LatexFormula();
@@ -26,28 +28,24 @@ public class SolveNonLinearEquation implements Task
     public void init(OutputFrame frame, TaskPane taskPane)
     {
         this.taskPane = taskPane;
-        
-//        taskPane.createJToolBarByArguments(new Argument("Jakobi-Matrix:", ArgType.EXPRESSION, "[[-1, cos(x)],[-sin(y),-1]", 250),
-//                new Argument("Ableitungen:", ArgType.EXPRESSION, "[-(1-xcos(y)),-(-1.4-y-sin(x))]", 250));
+        taskPane.createJToolBarByArguments( new Argument("Startvector:", ArgType.VECTOR, 100 ), Argument.RUN_BUTTON);
     }
     
     
     @Override
-    public void run(Value... values)
+    public void run(Value... parameters)
     {
         iterformula.clear();
         
         MathLib.setNorm( MathLib.FROBENIUSEUKLIDNORM );
-        MathLib.setPrecision( 16 );    // Achtung: Präzision > 16 führt zu Endlosschleife!!!
+        MathLib.setRoundingMode( MathLib.EXACT );
+        MathLib.setPrecision( 16 ); 
         
-        // Lösen nichtlinearer Gleichungssysteme
-        BigDecimal[] startvector = {new BigDecimal(1.5) , new BigDecimal(-1)};
-        
-        Vector iterx = new Vector( startvector );
-        Vector    x = new Vector( startvector.length );
-        x = x.setUnitVector(x);
-        Matrix   jm = new Matrix( startvector.length, startvector.length );
-        int       i = 0;
+        Vector iterx = parameters[0].toVector();
+        Vector     x = new Vector( iterx.getLength() );
+        Matrix    jm = new Matrix( iterx.getLength(), iterx.getLength() );
+        int        i = 0;
+                   x = x.setUnitVector(x);
         
         
         // Abbruchbedingung 'obereschranke' bei x.norm() < 2^(-50) < eps
@@ -57,11 +55,12 @@ public class SolveNonLinearEquation implements Task
         {
             iterformula.addLatexString("x_{"+ i +"} = ").addVector(iterx).addNewLine(1);
             i++;
-            x = jm.jakobiMatrix( derivations(iterx) ).solveX( getFunctionsValue(iterx) );
+            x = jm.jakobiMatrix( derive(iterx) ).solveX( getFunctionsValue(iterx) );
             iterx = iterx.add( x );
         }
         iterformula.addNewLine(2);
         iterformula.addText("Abbruch bei ").addLatexString("\\; x_"+i+" = x_"+(i-1)+" \\;\\; \\leftrightarrow \\;\\; \\arrowvert{ x_{"+(i)+"}-x_{"+(i-1)+"} }\\arrowvert \\leq eps");
+        
         
         // Ausgabe: Latex-Formula-String
         LatexFormula formula = new LatexFormula();
@@ -83,30 +82,70 @@ public class SolveNonLinearEquation implements Task
         taskPane.setViewPortView(new TaskScrollPane(formula));
     }
     
-
-    public Matrix derivations(Vector vector)
+    
+    
+    /**
+     * Partielles Ableiten aller Funktionen in getFunctionsValue() und speichern
+     * aller Werte in einer Matrix, der Jakobimatrix. Der Parameter Vector dient 
+     * als Referenz für die Größe der Jakobimatrix und gleichzeitig als Container
+     * für die Stelle der Ableitung. 
+     * @param vector
+     * @return Matrix
+     */
+    public Matrix derive( Vector vector )
     {
-        Matrix derivation = new Matrix( vector.getLength(), vector.getLength() );
-        Double[]        x = vector.toDoubleArray();
+        int  arguments = vector.getLength();
+        BigDecimal[] x = new BigDecimal[ arguments ];
+        BigDecimal   h = BigDecimal.TEN.pow(10);
+        Vector storevalue;
         
-        // Hier die >> Ableitungen << der Funktionen eintragen:
-        derivation.set(0,0, BigDecimal.valueOf(   -1.0             ));
-        derivation.set(0,1, BigDecimal.valueOf(   -Math.sin(x[1])  ));
-        derivation.set(1,0, BigDecimal.valueOf(    Math.cos(x[0])  ));
-        derivation.set(1,1, BigDecimal.valueOf(   -1.0             ));
+        for(int i=0; i < arguments; i++) x[i]=vector.get(i); 
+
+        Matrix dfunction = new Matrix(arguments, arguments);
         
-        return derivation;
+         dqPlus = new Vector(arguments);
+        dqMinus = new Vector(arguments);
+        
+        for(int i=0; i < arguments; i++)
+        {
+            for(int row=0; row < arguments; row++) 
+            {
+                if (row==i) 
+                {
+                     dqPlus.set(i, x[i].add(      BigDecimal.ONE.divide(h) ));
+                    dqMinus.set(i, x[i].subtract( BigDecimal.ONE.divide(h) ));
+                } else {
+                     dqPlus.set(row, BigDecimal.ZERO);
+                    dqMinus.set(row, BigDecimal.ZERO); 
+                } 
+            }
+            
+            // Berechne df(x,y) = ( f(x + 1/h ) - f(x - 1/h) ) * h/2
+            storevalue = (getFunctionsValue(dqPlus).sub( getFunctionsValue(dqMinus) ));
+
+            for(int t=0; t < arguments; t++) 
+            {
+                storevalue.set(t, MathLib.round( storevalue.get(t).multiply( h.divide( new BigDecimal(2) ).negate() )));
+                dfunction.set(t, i, storevalue.get(t));
+            }
+        }
+        return dfunction;
     }
     
     
-    public Vector getFunctionsValue(Vector vector) {
-        
+    /**
+     * Trage hier alle linearen Gleichungssysteme ein.
+     * @param vector
+     * @return Vector
+     */
+    public Vector getFunctionsValue(Vector vector) 
+    {
         Vector function = new Vector( vector.getLength() );
         Double[]      x = vector.toDoubleArray();           // x[0] = x ; x[1] = y ; x[2] = z usw.
         
         // Hier die >> Funktionen << eintragen:
-        function.set(0, BigDecimal.valueOf(     1.0 - x[0] + Math.cos(x[1])     ).negate());
-        function.set(1, BigDecimal.valueOf(    -1.4 - x[1] + Math.sin(x[0])     ).negate());
+        function.set(0, BigDecimal.valueOf(   x[0]*x[0]+x[1]*x[1]+0.6*x[1]-0.16       ).negate());
+        function.set(1, BigDecimal.valueOf(   x[0]*x[0]-x[1]*x[1]+x[0]-1.6*x[1]-0.14  ).negate());
         
         return function;
     }
