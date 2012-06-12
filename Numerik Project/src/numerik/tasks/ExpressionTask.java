@@ -78,7 +78,7 @@ public class ExpressionTask implements Task, ActionListener, KeyListener, Expres
         engine.addExpressionListener(this);
                 
         txtExpressionInput = new SyntaxTextArea(Arrays.asList(MathPool.FUNCTIONS), 
-                engine.getExpressionEngine().getVariableTable());
+                engine.getExpressionEngine().getVariableTable().keySet());
         try
         {
             StringBuilder buffer = new StringBuilder();
