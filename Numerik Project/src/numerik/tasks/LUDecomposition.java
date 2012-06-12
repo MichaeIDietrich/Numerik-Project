@@ -51,7 +51,7 @@ public final class LUDecomposition implements Task
         Vector trueb = b.clone();
         
         A.mult(b);     // Prüfe: Matrix und Vektor verkettet? -> sonst Fehler.
-         
+        
         if (parameters[2].toBoolean())
         {
             MathLib.enableRound( false );

@@ -90,13 +90,13 @@ public class MatrixIterationMethods
         
         Vector startVector = startVectorY0;
         
-        BigDecimal[] lam = new BigDecimal[maxIterations];
+        BigDecimal[]  lam = new BigDecimal[maxIterations];
         Vector[] yVectors = new Vector[maxIterations];
         
         MathLib.setNorm(1);
         
-        formula.addLatexString("\\begin{tabular}{l|l|l}");
-        formula.addLatexString("$\\bf{n}$ & $\\bf{lam}$ & $\\bf{yVectors}$ \\\\ \\hline");
+        formula.addLatexString("\\begin{tabular}{c|c|c}");
+        formula.addLatexString("$\\bf{n}$ & $\\bf{\\lambda}$ & $\\bf{y-Vectors}$ \\\\ \\hline");
         
         for (int iteration = 0; iteration < maxIterations; iteration++)
         {
@@ -114,7 +114,7 @@ public class MatrixIterationMethods
         }
         
         formula.addLatexString("\\end{tabular}").addNewLine(3);
-        formula.addText("Der größte Eigenwert ist lam = " + lam[maxIterations-1]);
+        formula.addText("Der größte Eigenwert ist \\lambda = " + lam[maxIterations-1]);
         Recorder.getInstance().add(formula);
         
         return new Tuple<BigDecimal[], Vector[]>(lam, yVectors);

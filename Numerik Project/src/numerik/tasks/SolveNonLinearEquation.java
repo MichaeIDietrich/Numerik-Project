@@ -17,7 +17,7 @@ import numerik.ui.misc.LatexFormula;
 
 public class SolveNonLinearEquation implements Task
 {
-    Vector dqPlus;
+    Vector  dqPlus;
     Vector dqMinus;
 
     TaskPane taskPane;
@@ -55,9 +55,16 @@ public class SolveNonLinearEquation implements Task
         {
             iterformula.addLatexString("x_{"+ i +"} = ").addVector(iterx).addNewLine(1);
             i++;
-            System.out.println(i);
             
-            x = jm.jakobiMatrix( derive(iterx) ).solveX( getFunctionsValue(iterx) );
+            try
+            {
+                x = jm.jakobiMatrix( derive(iterx) ).solveX( getFunctionsValue(iterx) );
+            } 
+            catch(Exception e) 
+            {
+               showManual(iterx.getLength()); 
+               return;
+            }
             
             iterx = iterx.add( x );
             if (i==1000) break;
@@ -87,8 +94,8 @@ public class SolveNonLinearEquation implements Task
         taskPane.setViewPortView(new TaskScrollPane(formula));
     }
     
-    
-    
+
+
     /**
      * Partielles Ableiten aller Funktionen in getFunctionsValue() und speichern
      * aller Werte in einer Matrix, der Jakobimatrix. Der Parameter Vector dient 
@@ -110,8 +117,6 @@ public class SolveNonLinearEquation implements Task
         
          dqPlus = new Vector(arguments);
         dqMinus = new Vector(arguments);
-        
-//        System.out.println(arguments);
         
         for(int i=0; i < arguments; i++)
         {
@@ -139,6 +144,18 @@ public class SolveNonLinearEquation implements Task
         return dfunction;
     }
     
+    private void showManual(int length)
+    {
+        formula.clear();
+        
+        formula.addNewLine(4);
+        formula.addTextUL("Mögliche\\;Fehlerursachen").addNewLine(2);
+        formula.addText("I.    Länge des Vektors stimmt nicht mit der Anzahl der Gleichungen").addNewLine(1);
+        formula.addText("\\;     überein.").addNewLine(1);
+        formula.addText("II.  Gleichung enthält Infinity oder NaN.").addNewLine(1);
+        formula.addText("III. Die größte Fehlerquelle sitzt vor dem Bildschirm.").addNewLine(1);
+        taskPane.setViewPortView(new TaskScrollPane(formula)); 
+    }
     
     /**
      * Trage hier alle nicht-linearen Gleichungssysteme ein.
@@ -154,14 +171,14 @@ public class SolveNonLinearEquation implements Task
         for(int t=0; t < vector.getLength(); t++) function.set(t, BigDecimal.ZERO);
         
         // Hier die >> Funktionen << eintragen:
-//        function.set(0, BigDecimal.valueOf(   x[0]*x[0]+x[1]*x[1]+0.6*x[1]-0.16       ).negate());
-//        function.set(1, BigDecimal.valueOf(   x[0]*x[0]-x[1]*x[1]+x[0]-1.6*x[1]-0.14  ).negate());
+        function.set(0, BigDecimal.valueOf(   x[0]*x[0]+x[1]*x[1]+0.6*x[1]-0.16       ).negate());
+        function.set(1, BigDecimal.valueOf(   x[0]*x[0]-x[1]*x[1]+x[0]-1.6*x[1]-0.14  ).negate());
         
 //        function.set(0, BigDecimal.valueOf(    1-x[1]+Math.sin(x[0])  ).negate());
 //        function.set(1, BigDecimal.valueOf( -1.4-x[0]+Math.cos(x[1])  ).negate());
         
-        function.set(0, BigDecimal.valueOf(    x[0]*x[0]*x[0]+10*x[1]-x[0]*x[1]  ).negate());
-        function.set(1, BigDecimal.valueOf( -1.4-x[0]+Math.cos(x[1])  ).negate());
+//        function.set(0, BigDecimal.valueOf(      x[0]*x[0]*x[0]+10*x[1]-x[0]*x[1]  ).negate());
+//        function.set(1, BigDecimal.valueOf( -1.4-x[0]+Math.cos(x[1])               ).negate());
         
         return function;
     }

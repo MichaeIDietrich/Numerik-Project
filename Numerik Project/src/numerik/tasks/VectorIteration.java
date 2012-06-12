@@ -40,7 +40,7 @@ public class VectorIteration implements Task
         
         // Übergabe Parameter aus Toolbar
         MathLib.setPrecision( parameters[4].toDecimal().intValue() ); 
-        int iterations = parameters[3].toDecimal().intValue();
+        int       iterations = parameters[3].toDecimal().intValue();
         Vector startVectorY0 = parameters[2].toVector();
         Matrix A = parameters[0].toMatrix();
 
@@ -51,10 +51,10 @@ public class VectorIteration implements Task
         BigDecimal normM = matrixInput.norm();
         
         formula.addTextBold("2.4. ").addColorBoxBegin("green");
-        formula.addText("Iteratives Verfahren zur Bestimmung").addColorBoxEnd().addNewLine(1);
-        formula.addColorBoxBegin("green").addText("des größten Eigenwertes lam oder auch ").addLatexString("\\lambda").addColorBoxEnd().addNewLine(3);
+        formula.addText("Iteratives Verfahren zur Bestimmung").addText(" d. größten Eigenwertes ");
+        formula.addLatexString("\\lambda").addColorBoxEnd().addNewLine(3);
         formula.addLatexString("\\bullet").addHorizSpace(10).addText(A.name+" sei lineares Gleichungssystem").addNewLine(1);
-        formula.addLatexString("\\bullet").addHorizSpace(10).addText("M sei Substitution für -B^{-1}{\\cdot}("+A.name+"-B)").addNewLine(1);
+        formula.addLatexString("\\bullet").addHorizSpace(10).addText("M sei Substitution für -B^{-1}{\\cdot}("+A.name+"-B)").addNewLine(3);
         
         formula.addTextUL("Berechne\\;dafür\\;M").addNewLine(1);
         formula.addText("M = ").addMatrix(matrixInput).addText(", ").addNewLine(3);
@@ -80,8 +80,8 @@ public class VectorIteration implements Task
             recorder.add( new LatexFormula().addText("Keine Lösung! Der Lösungsvektor divergiert.") );
         }
         
-        formula.addNewLine(4).addTextUL("Beginne\\;mit\\;Iteration").addNewLine(1);
-        formula.addLatexString("y_0 = ").addVector(startVectorY0).addNewLine(1).addFormula( recorder.get(true) );
+        formula.addNewLine(4).addTextUL("Beginne\\;mit\\;Iteration").addNewLine(2);
+        formula.addLatexString("y_0 = ").addVector( startVectorY0 ).addNewLine(2).addFormula( recorder.get(true) );
         
         taskPane.setViewPortView(new TaskScrollPane(formula));
     }
