@@ -10,7 +10,7 @@ public class Matrix_TestFixture
     private Matrix M1;
     private Matrix M2;
     private Matrix MAdd;
-    //private Matrix MSub;
+    private Matrix MSub;
     private Matrix MMul;
     //private Matrix MDiv;
     private Vector V1;
@@ -41,7 +41,48 @@ public class Matrix_TestFixture
         assertEquals("9.82192", MAdd.get(0,1).toPlainString());
         assertEquals("10.992", MAdd.get(1,0).toPlainString());
         assertEquals("12.8259", MAdd.get(1,1).toPlainString());
-   }
+    }
+    
+    @Test
+    public void subtr_3x3_Matrizen_mit_Praezision_6()
+    {
+        MathLib.setPrecision(6);
+        
+        M1 = new Matrix(3,3);
+        M2 = new Matrix(3,3);
+        
+        M1.set(0, 0, new BigDecimal("1.53578"));
+        M1.set(0, 1, new BigDecimal("2.83493"));
+        M1.set(0, 2, new BigDecimal("1.13472"));
+        M1.set(1, 0, new BigDecimal("3.86645"));
+        M1.set(1, 1, new BigDecimal("4.64339"));
+        M1.set(1, 2, new BigDecimal("1.94389"));
+        M1.set(2, 0, new BigDecimal("1.59453"));
+        M1.set(2, 1, new BigDecimal("4.39971"));
+        M1.set(2, 2, new BigDecimal("2.78443"));
+        
+        
+        M2.set(0, 0, new BigDecimal("5.24865"));
+        M2.set(0, 1, new BigDecimal("6.98699"));
+        M2.set(0, 2, new BigDecimal("9.68713"));
+        M2.set(1, 0, new BigDecimal("7.12556"));
+        M2.set(1, 1, new BigDecimal("8.18253"));
+        M2.set(1, 2, new BigDecimal("6.64871"));
+        M2.set(2, 0, new BigDecimal("5.18689"));
+        M2.set(2, 1, new BigDecimal("8.81994"));
+        M2.set(2, 2, new BigDecimal("4.98699"));
+        
+        MSub = M2.subtract(M1);
+        assertEquals("3.71287", MSub.get(0,0).toPlainString());
+        assertEquals("4.15206", MSub.get(0,1).toPlainString());
+        assertEquals("8.55241", MSub.get(0,2).toPlainString());
+        assertEquals("3.25911", MSub.get(1,0).toPlainString());
+        assertEquals("3.53914", MSub.get(1,1).toPlainString());
+        assertEquals("4.70482", MSub.get(1,2).toPlainString());
+        assertEquals("3.59236", MSub.get(2,0).toPlainString());
+        assertEquals("4.42023", MSub.get(2,1).toPlainString());
+        assertEquals("2.20256", MSub.get(2,2).toPlainString());
+    }
     
     @Test
     public void mult__2x2_Matrizen_multiplizieren()
