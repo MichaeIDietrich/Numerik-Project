@@ -19,6 +19,8 @@ public class Matrix_TestFixture
     @Test
     public void add__2x2_Matrizen_addieren()
     {
+        MathLib.setPrecision(6);
+        
         M1 = new Matrix(2,2);
         M2 = new Matrix(2,2);
         
@@ -37,13 +39,15 @@ public class Matrix_TestFixture
                 
         assertEquals("6.78443", MAdd.get(0,0).toPlainString());
         assertEquals("9.82192", MAdd.get(0,1).toPlainString());
-        assertEquals("10.99201", MAdd.get(1,0).toPlainString());
-        assertEquals("12.82592", MAdd.get(1,1).toPlainString());
+        assertEquals("10.992", MAdd.get(1,0).toPlainString());
+        assertEquals("12.8259", MAdd.get(1,1).toPlainString());
    }
     
     @Test
     public void mult__2x2_Matrizen_multiplizieren()
     {
+        MathLib.setPrecision(6);
+        
         M1 = new Matrix(2,2);
         M2 = new Matrix(2,2);
 
@@ -59,7 +63,7 @@ public class Matrix_TestFixture
         
         MMul = M1.mult(M2);
         
-        assertEquals("28.2612", MMul.get(0,0).toPlainString());
+        assertEquals("28.2613", MMul.get(0,0).toPlainString());
         assertEquals("33.9274", MMul.get(0,1).toPlainString());
         assertEquals("53.3804", MMul.get(1,0).toPlainString());
         assertEquals("65.0095", MMul.get(1,1).toPlainString());
