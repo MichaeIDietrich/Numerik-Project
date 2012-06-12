@@ -2,7 +2,6 @@ package numerik.calc_test;
 
 import numerik.calc.*;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 import org.junit.*;
 

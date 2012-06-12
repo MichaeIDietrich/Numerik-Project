@@ -1,17 +1,18 @@
 package numerik.ui.misc;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.swing.DefaultListModel;
 
 public class ListFilter extends DefaultListModel<String>
 {
-    java.util.List<String> items;
+    Collection<String> items;
     java.util.List<String> filteredItems;
     String filter;
     
     
-    public ListFilter(java.util.List<String> list)
+    public ListFilter(Collection<String> list)
     {
         items = list;
         filter = "";
@@ -19,7 +20,7 @@ public class ListFilter extends DefaultListModel<String>
     }
     
     
-    public void setList(java.util.List<String> list)
+    public void setList(Collection<String> list)
     {
         items = list;
         filterList();
@@ -72,7 +73,7 @@ public class ListFilter extends DefaultListModel<String>
     }
     
     
-    public java.util.List<String> getList()
+    public Collection<String> getList()
     {
         return items;
     }

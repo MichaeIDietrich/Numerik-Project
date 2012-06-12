@@ -321,7 +321,8 @@ public class Matrix {
                 
                 for (int j2 = 0; j2 < cols; j2++)
                 {
-                    sum = sum.add( MathLib.round( values[i][j2].multiply( matrix.get(j2, j) )));
+//                    sum = sum.add( MathLib.round( values[i][j2].multiply( matrix.get(j2, j) )));
+                    sum = MathLib.round(sum.add( MathLib.round( values[i][j2].multiply( matrix.get(j2, j) ))));
                 }
                 
                 v[i][j] = sum;
@@ -635,7 +636,7 @@ public class Matrix {
     {
         BigDecimal maximum = BigDecimal.ZERO;
         BigDecimal    temp = BigDecimal.ZERO;
-        int    rowposition = row;
+        int    rowposition = 0;
         boolean    rowswap = false;
         
         for(int t=0; t<matrix.getRows()-row; t++)
