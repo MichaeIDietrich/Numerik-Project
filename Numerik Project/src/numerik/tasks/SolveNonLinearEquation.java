@@ -44,13 +44,12 @@ public class SolveNonLinearEquation implements Task
         MathLib.setPrecision( 16 ); 
         
         Vector iterx = parameters[0].toVector();
-        Vector stvec = iterx.clone();
         Vector     x = new Vector( iterx.getLength() );
         Matrix    jm = new Matrix( iterx.getLength(), iterx.getLength() );
         int        i = 0;
                    x = x.setUnitVector(x);
         
-        System.out.println( derive2(stvec) );           
+        System.out.println( derive2( parameters[0].toVector().clone() ) );           
         
         // Abbruchbedingung 'obereschranke' bei x.norm() < 2^(-50) < eps
         BigDecimal obereschranke = BigDecimal.ONE.divide(new BigDecimal(2).pow(50), 16, RoundingMode.HALF_UP);
@@ -156,6 +155,8 @@ public class SolveNonLinearEquation implements Task
         return dfunction;
     }
     
+    
+    
     //###################
     public Matrix derive2( Vector vector )
     {
@@ -178,8 +179,8 @@ public class SolveNonLinearEquation implements Task
             {
                 if (row==i) 
                 {
-                     dqPlus.set(i, x[i].add(      BigDecimal.ONE.divide( h.multiply(h) )));
-                    dqMinus.set(i, x[i].subtract( BigDecimal.ONE.divide( h.multiply(h) )));
+                     dqPlus.set(i, x[i].add(      BigDecimal.ONE.divide( h )));
+                    dqMinus.set(i, x[i].subtract( BigDecimal.ONE.divide( h )));
                           z.set(i, x[i]);
                 } else {
                      dqPlus.set(row, new BigDecimal(1.23456789123456789));  // Sollte Zufallszahl sein bzw. eine Zahl die keine
@@ -189,18 +190,21 @@ public class SolveNonLinearEquation implements Task
 //                System.out.println(z);
             }
 
-            // Berechne df(x,y) = ( f(x + 1/h² ) - 2*f(x) + f(x - 1/h²) ) * h²/2
+            // Berechne df(x,y) = ( f(x + 1/h ) - 2*f(x) + f(x - 1/h ) ) * h²/2
             storevalue = ( getFunctionsValue(dqPlus).sub( getFunctionsValue(z).add(getFunctionsValue(z)) ).add( getFunctionsValue(dqMinus) ));
 
             for(int t=0; t < arguments; t++) 
             {
-                storevalue.set(t, MathLib.round( storevalue.get(t).multiply( h.multiply(h).divide( new BigDecimal(2) ).negate() )));
+                storevalue.set(t, MathLib.round( storevalue.get(t).multiply( h.multiply(h) ).negate() ));
                  dfunction.set(t, i, storevalue.get(t));
             }
         }
         return dfunction;
     }
     //###################
+    
+    
+    
     
     private void showManual(String error)
     {
@@ -247,7 +251,7 @@ public class SolveNonLinearEquation implements Task
 //        function.set(1, BigDecimal.valueOf( -1.4-x[0]+Math.cos(x[1])               ).negate());
         
 //        System.out.println( Math.tan(x[0])-x[0] );
-        function.set(0, BigDecimal.valueOf( x[0]*x[0] ).negate()); //Math.tan(x[0])-x[0] ).negate());
+        function.set(0, BigDecimal.valueOf( Math.tan(x[0])-x[0] ).negate()); //Math.tan(x[0])-x[0] ).negate());
         
         return function;
     }
