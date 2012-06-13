@@ -99,3 +99,12 @@ Vector#Hans
 Matrix#A1
 1,2
 3,4
+
+Vector#deriveV
+-1.5,-1
+
+Vector#peter
+5
+
+Vector#i
+4.5
