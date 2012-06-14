@@ -13,7 +13,7 @@ public final class MathPool
 {
     
     public static final String[] FUNCTIONS = { "getPrecision", "setPrecision", "del", "delete", "det", "determinant", "L", "U", "solve", "get", "ln", 
-        "sqrt", "sin", "cos", "tan", "asin", "acos", "atan" };
+        "sqrt", "sin", "cos", "tan", "asin", "acos", "atan", "deg", "rad" };
     
     
     private static final BigDecimal PI = new BigDecimal("3.14159265358979");

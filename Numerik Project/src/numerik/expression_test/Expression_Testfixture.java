@@ -24,6 +24,19 @@ public class Expression_Testfixture
     
     
     @Test
+    public void easyFormula2() throws InvalidExpressionException
+    {
+        MathLib.setPrecision(12);
+        String input = "27/5*3^6+5+5-9/10";
+        ExpressionEngine engine = new ExpressionEngine();
+        
+        Value res = engine.solve(input);
+        
+        assertEquals("3945.7", res.toDecimal().toPlainString());
+    }
+    
+    
+    @Test
     public void tan7_5() throws InvalidExpressionException
     {
         MathLib.setPrecision(12);
@@ -71,7 +84,26 @@ public class Expression_Testfixture
         
         Value res = engine.solve(input);
         
+        // '[' und ']' müssen an dieser Stelle wohl scheinbar ersetzt werden, da 
+        // JUnit.assertEquals eckige Klammern als fehlerhaften Stringvergleich zu 
+        // interpretieren scheint
         assertEquals("((0.5,-0.125),(-0.5,0.25))", res.toMatrix().toString().replace('[', '(').replace(']', ')'));
+    }
+    
+    
+    @Test
+    public void matrix_multiplication() throws InvalidExpressionException
+    {
+        MathLib.setPrecision(12);
+        String input = "[[4,2],[8,8]]*[[5,5],[1,3]]";
+        ExpressionEngine engine = new ExpressionEngine();
+        
+        Value res = engine.solve(input);
+        
+        // '[' und ']' müssen an dieser Stelle wohl scheinbar ersetzt werden, da 
+        // JUnit.assertEquals eckige Klammern als fehlerhaften Stringvergleich zu 
+        // interpretieren scheint
+        assertEquals("((22,26),(48,64))", res.toMatrix().toString().replace('[', '(').replace(']', ')'));
     }
 
 }
