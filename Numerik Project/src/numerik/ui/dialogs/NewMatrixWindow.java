@@ -40,6 +40,7 @@ public final class NewMatrixWindow extends JDialog implements ActionListener
     
     private PopupManager popupManager = PopupManager.getInstance();
     
+    JPanel pnlBackground;
     JPanel pnlButtons;
     
     private NewMatrixWindow(JFrame owner, Point position)
@@ -68,7 +69,7 @@ public final class NewMatrixWindow extends JDialog implements ActionListener
         btnCancel.addActionListener(this);
         pnlButtons.add(btnCancel);
         
-        JPanel pnlBackground = new JPanel()
+        pnlBackground = new JPanel()
         {
             @Override
             public void paint(Graphics g)
@@ -273,7 +274,8 @@ public final class NewMatrixWindow extends JDialog implements ActionListener
                         System.out.println("tab");
                         int x = ++sel.x % cols;
                         int y = x == 0 ? ++sel.y % rows : sel.y;
-                        showInput(MouseInfo.getPointerInfo().getLocation().x, MouseInfo.getPointerInfo().getLocation().y, y, x);
+                        showInput((indents[x] + indents[x + 1]) / 2 + pnlBackground.getLocationOnScreen().x, 
+                                  (y + 1) * 50 - 9 + pnlBackground.getLocationOnScreen().y, y, x);
                         calcIndents();
                         resize();
                         break;

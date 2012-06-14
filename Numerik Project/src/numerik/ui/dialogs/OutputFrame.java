@@ -45,6 +45,7 @@ public final class OutputFrame extends JFrame
         tabMain.addTab("Gauss 4P", new GaussIntegrationOrder4());
         tabMain.addTab("Runge-Kutta-4O", new RungeKuttaOrder4());
         tabMain.addTab("Vektor-Iteration", new VectorIteration());
+        tabMain.addTab("Optionen", new Options());
         
         this.add(tabMain);
         
