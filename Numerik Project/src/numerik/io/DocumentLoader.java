@@ -237,4 +237,56 @@ public class DocumentLoader
             ex.printStackTrace();
         }
     }
+    
+    
+    public void deleteMatrix(String name, String file)
+    {
+        delete("Matrix#" + name, file);
+    }
+    
+    
+    public void deleteVector(String name, String file)
+    {
+        delete("Vector#" + name, file);
+    }
+    
+    
+    private void delete(String removingLine, String file)
+    {
+        StringBuilder buffer = new StringBuilder((int) new File(file).length());
+        
+        try
+        {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            boolean ignore = false;
+            
+            while ((line = br.readLine()) != null)
+            {
+                if (line.equals(removingLine))
+                {
+                    ignore = true;
+                }
+                else if (line.startsWith("Matrix#") || line.startsWith("Vector#"))
+                {
+                    ignore = false;
+                    buffer.append(line);
+                }
+                else if (!ignore)
+                {
+                    buffer.append(line);
+                }
+            }
+            br.close();
+            
+            BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+            bw.write(buffer.toString());
+            
+            bw.close();
+        }
+        catch (IOException ex)
+        {
+            ex.printStackTrace();
+        }
+    }
 }

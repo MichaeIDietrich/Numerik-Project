@@ -15,12 +15,16 @@ public final class MathPool
     public static final String[] FUNCTIONS = { "getPrecision", "setPrecision", "del", "delete", "det", "determinant", "L", "U", "solve", "get", "ln", 
         "sqrt", "sin", "cos", "tan", "asin", "acos", "atan" };
     
+    
+    private static final BigDecimal PI = new BigDecimal("3.14159265358979");
+    
     private HashMap<String, Value> variables;
     
     
     public MathPool()
     {
         variables = new HashMap<String, Value>();
+        variables.put("PI", new Value(PI));
     }
     
     
@@ -208,7 +212,7 @@ public final class MathPool
     
     public Value callFunction(String funcName, Value... args) throws InvalidExpressionException
     {
-        System.out.println(funcName);
+//        System.out.println("Funktion: " + funcName);
         switch (funcName)
         {
             case "getPrecision":
@@ -421,6 +425,34 @@ public final class MathPool
                 }
                 
                 throw new InvalidExpressionException("Bitte Eingabe überprüfen, atan() nimmt als Parameter eine Dezimalzahl.");
+                
+            case "deg":
+                
+                if (args.length == 1)
+                {
+                    args[0] = resolveVariable(args[0]);
+                    
+                    if (args[0].getType() == ValueType.DECIMAL)
+                    {
+                        return new Value(args[0].toDecimal().multiply(new BigDecimal(180)).divide(PI, MathLib.getPrecision(), RoundingMode.HALF_UP));
+                    }
+                }
+                
+                throw new InvalidExpressionException("Bitte Eingabe überprüfen, deg() nimmt als Parameter eine Radianten (Dezimalzahl).");
+                
+            case "rad":
+                
+                if (args.length == 1)
+                {
+                    args[0] = resolveVariable(args[0]);
+                    
+                    if (args[0].getType() == ValueType.DECIMAL)
+                    {
+                        return new Value(args[0].toDecimal().multiply(PI).divide(new BigDecimal(180), MathLib.getPrecision(), RoundingMode.HALF_UP));
+                    }
+                }
+                
+                throw new InvalidExpressionException("Bitte Eingabe überprüfen, deg() nimmt als Parameter eine Gradzahl (Dezimalzahl).");
         }
         
         

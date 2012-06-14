@@ -5,10 +5,13 @@ import java.awt.*;
 import java.awt.event.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import javax.swing.*;
 
 import numerik.calc.Matrix;
 import numerik.calc.Vector;
+import numerik.expression.MathPool;
 import numerik.expression.Value;
 import numerik.io.DocumentLoader;
 import numerik.tasks.*;
@@ -17,7 +20,7 @@ import numerik.ui.dialogs.*;
 import numerik.ui.misc.LatexFormula;
 import numerik.ui.misc.WrappingToolbarLayout;
 
-    
+
 public final class TaskPane extends JPanel implements ActionListener
 {
     
@@ -25,6 +28,8 @@ public final class TaskPane extends JPanel implements ActionListener
     private OutputFrame frame;
     private Task task;
     private Argument[] args;
+    
+    private Thread taskThread;
     
     
     public TaskPane(OutputFrame frame, Task task, boolean scrollable)
@@ -113,6 +118,18 @@ public final class TaskPane extends JPanel implements ActionListener
                         }
                     });
                     
+                    combo.addKeyListener(new KeyAdapter()
+                    {
+                        @Override
+                        public void keyPressed(KeyEvent e)
+                        {
+                            if (e.getKeyCode() == KeyEvent.VK_DELETE)
+                            {
+                                
+                            }
+                        }
+                    });
+                    
                     new ToolTippedComboBox(combo, imgMatrices, new Color(255, 255, 150));
                     combo.setPreferredSize(new Dimension(arg.getControlWidth(), combo.getPreferredSize().height));
                     arg.setRelatedControl(combo);
@@ -180,8 +197,9 @@ public final class TaskPane extends JPanel implements ActionListener
                     break;
                     
                 case EXPRESSION:
-                    expression = new SyntaxTextArea(null, null);
+                    expression = new SyntaxTextArea(Arrays.asList(MathPool.FUNCTIONS), null);
                     expression.setPreferredSize(new Dimension(arg.getControlWidth(), expression.getPreferredSize().height));
+                    expression.setText(arg.getDefaultValue());
                     arg.setRelatedControl(expression);
                     pnlGroup.add(expression);
                     toolBar.add(pnlGroup);
@@ -220,6 +238,14 @@ public final class TaskPane extends JPanel implements ActionListener
                     
                 case RUN_BUTTON:
                     button = new JButton(new ImageIcon("icons/button_go_small.png"));
+                    button.setActionCommand("RUN");
+                    button.addActionListener(this);
+                    toolBar.add(button);
+                    break;
+                    
+                case STOP_BUTTON:
+                    button = new JButton(new ImageIcon("icons/stop-button.png"));
+                    button.setActionCommand("STOP");
                     button.addActionListener(this);
                     toolBar.add(button);
             }
@@ -237,7 +263,7 @@ public final class TaskPane extends JPanel implements ActionListener
     
     public void runTask()
     {
-        Thread taskThread = new Thread()
+        taskThread = new Thread()
         {
             @Override
             public void run()
@@ -331,10 +357,22 @@ public final class TaskPane extends JPanel implements ActionListener
     }
     
     
+    @SuppressWarnings("deprecation")
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        runTask();
+        switch (e.getActionCommand())
+        {
+            case "RUN":
+                runTask();
+                break;
+                
+            case "STOP":
+                if (taskThread != null && taskThread.isAlive())
+                {
+                    taskThread.stop(); // nicht unbedingt schön, aber was solls
+                }
+        }
     }
     
     

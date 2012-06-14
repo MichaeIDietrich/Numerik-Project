@@ -915,7 +915,7 @@ public class Matrix {
             buffer.append("[");
             for (int col = 0; col < cols; col++)
             {
-                buffer.append(values[row][col].toPlainString());
+                buffer.append(MathLib.round(values[row][col]).toPlainString());
                 if (col < cols - 1)
                 {
                     buffer.append(",");
