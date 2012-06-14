@@ -96,7 +96,7 @@ public class MatrixIterationMethods
         MathLib.setNorm(1);
         
         formula.addLatexString("\\begin{tabular}{c|c|c}");
-        formula.addLatexString("$\\bf{n}$ & $\\bf{\\lambda}$ & $\\bf{y-Vectors}$ \\\\ \\hline");
+        formula.addLatexString("$\\bf{n}$ & $\\bf{\\lambda}$ & $\\bf{Eigenvektor}$ \\\\ \\hline");
         
         for (int iteration = 0; iteration < maxIterations; iteration++)
         {
