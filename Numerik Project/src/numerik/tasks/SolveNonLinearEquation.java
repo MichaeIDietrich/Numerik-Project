@@ -175,11 +175,11 @@ public class SolveNonLinearEquation implements Task
         Matrix  dfunc = derive(  testvector );
         Matrix ddfunc = derive2( testvector );
         
-        recorder = recorder.getInstance();
+        recorder = Recorder.getInstance();
         recorder.clear();
         recorder.add( 
                 formula.addLatexString("\\frac{").addVector(func).addText(" \\cdot ").addMatrix(ddfunc).addLatexString("}" +
-                	    "{").addMatrix(dfunc).addText(" \\cdot ").addMatrix(dfunc).addLatexString("}").addNewLine(1)
+                        "{").addMatrix(dfunc).addText(" \\cdot ").addMatrix(dfunc).addLatexString("}").addNewLine(1)
         );
         
         int    length = func.getLength();
