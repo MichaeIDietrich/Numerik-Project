@@ -25,9 +25,25 @@ public class SyntaxTextArea extends JTextPane
     private static Style COMMENT;
     private static Style KEYWORD;
     
+    private static Font TEXTFONT;
+    
     private Collection<String> variables;
     
     private StyledDocument doc;
+    
+    static
+    {
+        for (String font : GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames())
+        {
+            if (font.equals("Consolas") || font.equals("Courier New") || font.equals("Monospaced"))
+            {
+                System.out.println("Font: " + font);
+                TEXTFONT = new Font(font, Font.PLAIN, 12);
+                break;
+            }
+        }
+
+    }
     
     public SyntaxTextArea(Collection<String> functionNames, Collection<String> variables)
     {
@@ -36,7 +52,7 @@ public class SyntaxTextArea extends JTextPane
         filter = new ListFilter(functionNames);
         list = new JList<String>(filter);
         
-        initFont();
+        this.setFont(TEXTFONT);
         
         doc = this.getStyledDocument();
         
@@ -202,19 +218,6 @@ public class SyntaxTextArea extends JTextPane
         });
     }
     
-    private void initFont()
-    {
-        for (String font : GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames())
-        {
-            if (font.equals("Consolas") || font.equals("Courier New") || font.equals("Monospaced"))
-            {
-                System.out.println("Font: " + font);
-                this.setFont(new Font(font, Font.PLAIN, 12));
-                return;
-            }
-        }
-    }
-    
     public void setList(java.util.List<String> items)
     {
         filter.setList(items);
@@ -352,6 +355,15 @@ public class SyntaxTextArea extends JTextPane
             while (++start < doc.getLength())
             {
                 
+                if (content[start] == '[' || content[start] == ']' || content[start] == ',')
+                {
+                    doc.setCharacterAttributes(end, start - end, NORMAL, true);
+                    
+                    doc.setCharacterAttributes(start, 1, KEYWORD, true);
+                    
+                    end = start + 1;
+                }
+                
                 if (isWord(content[start]))
                     break;
                 
@@ -404,7 +416,7 @@ public class SyntaxTextArea extends JTextPane
                 {
                     doc.setCharacterAttributes(start, end - start, ERROR, true);
                 }
-                else if (variables.contains(text.substring(start, end)))
+                else if (variables != null && variables.contains(text.substring(start, end)))
                 {
                     doc.setCharacterAttributes(start, end - start, KNOWNVAR, true);
                 }

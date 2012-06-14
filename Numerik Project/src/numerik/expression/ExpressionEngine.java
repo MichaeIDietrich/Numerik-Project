@@ -20,9 +20,9 @@ public final class ExpressionEngine
     
     private final char END_OF_INPUT = 0;
     
-    private ArrayList<TokenListener> tokenListeners;
-    
     private static HashMap<Token, Token[]> tokenRelationMap;
+    
+    private ArrayList<TokenListener> tokenListeners;
     
     private char[] input;
     private int index;
@@ -316,7 +316,7 @@ public final class ExpressionEngine
     {
         Token nextToken = parseNextToken();
         
-        System.out.println("check: " + lastToken + " -> " + nextToken);
+//        System.out.println("check: " + lastToken + " -> " + nextToken);
         for (Token token : tokenRelationMap.get(lastToken))
         {
             if (token == nextToken)

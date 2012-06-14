@@ -1,4 +1,4 @@
-package numerik.calc_test;
+package numerik.tests;
 
 import numerik.calc.*;
 import java.math.BigDecimal;
