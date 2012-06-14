@@ -2,6 +2,7 @@
 package numerik.tasks;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 
 import numerik.calc.MathLib;
@@ -13,17 +14,20 @@ import numerik.ui.controls.TaskPane;
 import numerik.ui.controls.TaskScrollPane;
 import numerik.ui.dialogs.OutputFrame;
 import numerik.ui.misc.LatexFormula;
+import numerik.ui.misc.Recorder;
 
 
 public class SolveNonLinearEquation implements Task
 {
     Vector  dqPlus;
     Vector dqMinus;
+    Vector choosenvector;
     Vector z;
     
     TaskPane taskPane;
     LatexFormula     formula = new LatexFormula();
     LatexFormula iterformula = new LatexFormula();
+    Recorder recorder;
     
     @Override
     public void init(OutputFrame frame, TaskPane taskPane)
@@ -48,7 +52,13 @@ public class SolveNonLinearEquation implements Task
         int        i = 0;
                    x = x.setUnitVector(x);
         
-        System.out.println( derive2( parameters[0].toVector().clone() ) );           
+        choosenvector = iterx.clone();         
+                   
+//        System.out.println( 
+//                sumVectorValues( getFunctionsValue(parameters[0].toVector().clone())).multiply( sumVectorValues(derive2( parameters[0].toVector().clone() ) )));           
+//        
+        
+        
         
         // Abbruchbedingung 'obereschranke' bei x.norm() < 2^(-50) < eps
         BigDecimal obereschranke = BigDecimal.ONE.divide(new BigDecimal(2).pow(50), 16, RoundingMode.HALF_UP);
@@ -62,7 +72,7 @@ public class SolveNonLinearEquation implements Task
             {
                 x = jm.jakobiMatrix( derive(iterx) ).solveX( getFunctionsValue(iterx) );
             } 
-            catch(Exception e) 
+            catch(ArithmeticException e) 
             {
                if (e.getLocalizedMessage().equals("/ by zero") || e.getLocalizedMessage().equals("BigInteger divide by zero"))
                {
@@ -94,12 +104,15 @@ public class SolveNonLinearEquation implements Task
         formula.addText("Folgende Gleichungen werden benutzt:").addNewLine(1).addLatexString("\\Phi( x^{k} ) \\cdot \\Delta{x^{k+1}} = -f( x^{k} )");
         formula.addText("   und   ").addLatexString("x^{k+1} = x^{k} + \\Delta{x^{k+1}}").addText("  mit ").addNewLine(3).addLatexString("\\Phi( x ) = ");
         
-        formula.jakobiMatrix();
+        formula.jakobiMatrix().addNewLine(3);
+        formula.addTextUL("Kontraktionsintervall").addNewLine(1);
+        formula.addLatexString("|\\Phi(\\vec{x_{0}})| = ").addVector( getKontractionIntervall( choosenvector ) ).addLatexString(" < 1").addNewLine(1);
         formula.addNewLine(3).addTextUL("Start\\;der\\;Iteration").addNewLine(1);
         formula.addFormula( iterformula ).addNewLine(2);
         
 //        FunctionsDiscussion function = new FunctionsDiscussion();
 //        formula.addMatrix( function.getJacobiMatrix( parameters[0].toVector(), 1 ) ); 
+        
         
         taskPane.setViewPortView(new TaskScrollPane(formula));
     }
@@ -156,12 +169,62 @@ public class SolveNonLinearEquation implements Task
     
     
     
+    public Vector getKontractionIntervall( Vector testvector )
+    {
+        Vector   func = getFunctionsValue( testvector );
+        Matrix  dfunc = derive(  testvector );
+        Matrix ddfunc = derive2( testvector );
+        
+        recorder = recorder.getInstance();
+        recorder.clear();
+        recorder.add( 
+                formula.addLatexString("\\frac{").addVector(func).addText(" \\cdot ").addMatrix(ddfunc).addLatexString("}" +
+                	    "{").addMatrix(dfunc).addText(" \\cdot ").addMatrix(dfunc).addLatexString("}").addNewLine(1)
+        );
+        
+        int    length = func.getLength();
+        Vector kointv = new Vector( length );
+        
+        BigDecimal   f = BigDecimal.ZERO;
+        BigDecimal  df = BigDecimal.ZERO;
+        BigDecimal ddf = BigDecimal.ZERO;
+        
+        for(int i=0; i < length; i++)
+        {
+            f = func.get(i);
+            
+            for(int col=0; col < length; col++)
+            {
+                 df =  df.add(  dfunc.get(i, col));
+                ddf = ddf.add( ddfunc.get(i, col));
+            }
+            
+            kointv.set(i, (f.multiply(ddf)).abs().divide( df.multiply(df), MathLib.getPrecision(), RoundingMode.HALF_DOWN ));
+        }
+        
+        return kointv;
+    }
+    
+    
+    
+    /**
+     * Summiert alle Einträge der Spalte eines Vektors
+     * @param vector
+     * @return
+     */
+    public BigDecimal sumVectorValues(Vector vector)
+    {
+        BigDecimal sum = BigDecimal.ZERO;
+        for(int i=0; i<vector.getLength();i++) sum = sum.add(vector.get(i));
+        return sum;
+    }
+    
     //###################
     public Matrix derive2( Vector vector )
     {
         int  arguments = vector.getLength();
         BigDecimal[] x = new BigDecimal[ arguments ];
-        BigDecimal   h = BigDecimal.TEN.pow(5);
+        BigDecimal   h = BigDecimal.TEN.pow(5).multiply( new BigDecimal(0.78), new MathContext(16, RoundingMode.HALF_UP) );
         Vector storevalue;
         
         for(int i=0; i < arguments; i++) x[i]=vector.get(i); 
@@ -172,14 +235,16 @@ public class SolveNonLinearEquation implements Task
         dqMinus = new Vector(arguments);
               z = new Vector(arguments);
         
+        
+              
         for(int i=0; i < arguments; i++)
         {
             for(int row=0; row < arguments; row++) 
             {
                 if (row==i) 
                 {
-                     dqPlus.set(i, x[i].add(      BigDecimal.ONE.divide( h )));
-                    dqMinus.set(i, x[i].subtract( BigDecimal.ONE.divide( h )));
+                     dqPlus.set(i, x[i].add(      BigDecimal.ONE.divide( h, MathLib.getPrecision(), RoundingMode.HALF_DOWN )));
+                    dqMinus.set(i, x[i].subtract( BigDecimal.ONE.divide( h, MathLib.getPrecision(), RoundingMode.HALF_DOWN )));
                           z.set(i, x[i]);
                 } else {
                      dqPlus.set(row, new BigDecimal(1.23456789123456789));  // Sollte Zufallszahl sein bzw. eine Zahl die keine
@@ -220,7 +285,10 @@ public class SolveNonLinearEquation implements Task
         }
         else 
         {
-            formula.addText("Grund für Abbruch: "+error).addNewLine(1);
+            formula.addText("Grund für Abbruch: "+error).addNewLine(3);
+            formula.addTextUL("Kontraktionsintervall").addNewLine(1);
+            formula.addLatexString("|\\Phi(\\vec{x_{0}})| = ").addVector( getKontractionIntervall( choosenvector ) ).addLatexString(" \\nless 1").addNewLine(3);
+            formula.addFormula( recorder.get() );
         }
         
         taskPane.setViewPortView(new TaskScrollPane(formula)); 
@@ -249,8 +317,8 @@ public class SolveNonLinearEquation implements Task
 //        function.set(0, BigDecimal.valueOf(      x[0]*x[0]*x[0]+10*x[1]-x[0]*x[1]  ).negate());
 //        function.set(1, BigDecimal.valueOf( -1.4-x[0]+Math.cos(x[1])               ).negate());
         
-//        System.out.println( Math.tan(x[0])-x[0] );
-        function.set(0, BigDecimal.valueOf( Math.tan(x[0])-x[0] ).negate()); //Math.tan(x[0])-x[0] ).negate());
+        System.out.println( Math.tan(x[0])-x[0] );
+        function.set(0, BigDecimal.valueOf( Math.tan(x[0])-20*x[0] ).negate()); 
         
         return function;
     }

@@ -107,4 +107,7 @@ Vector#peter
 5
 
 Vector#i
+4.4
+
+Vector#j
 4.5
