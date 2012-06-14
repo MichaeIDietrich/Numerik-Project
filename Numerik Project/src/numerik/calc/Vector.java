@@ -281,7 +281,7 @@ public final class Vector
     public Double[] toDoubleArray() {
         
         Double x[] = new Double[ length ];
-        for(int i=0; i<=length-1; i++) x[i] = get(i).doubleValue();
+        for(int i=0; i < length; i++) x[i] = get(i).doubleValue();
         
         return x;
     }

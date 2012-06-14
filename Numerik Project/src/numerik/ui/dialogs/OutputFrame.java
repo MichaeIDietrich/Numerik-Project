@@ -44,7 +44,7 @@ public final class OutputFrame extends JFrame
         tabMain.addTab("Non-Lin-GS", new SolveNonLinearEquation());
         tabMain.addTab("Gauss 4P", new GaussIntegrationOrder4());
         tabMain.addTab("Runge-Kutta-4O", new RungeKuttaOrder4());
-        
+        tabMain.addTab("Vektor-Iteration", new VectorIteration());
         
         this.add(tabMain);
         

@@ -68,7 +68,7 @@ public class InputErrorEstimation implements Task
         formula.addRelError("b").addText(" = "+norm_dbdivb).addNewLine(4);
         
         formula.addTextUL("Berechne\\;Fehler;\\;setze\\;Zwischenwerte\\;in\\;Ungleichung\\;ein").addNewLine();
-        formula.addRelError("x").addText(" = "+ result).addNewLine(3);
+        formula.addRelError("x").addText(" \\leq "+ result).addNewLine(3);
         
         taskPane.setViewPortView(new TaskScrollPane(formula));
     }

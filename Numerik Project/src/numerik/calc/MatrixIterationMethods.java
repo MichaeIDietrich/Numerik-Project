@@ -53,7 +53,6 @@ public class MatrixIterationMethods
      */
     public static Vector[] jacobiIteration(Matrix matrixM, Vector vectorC, Vector startVectorX0, int maxIterations)
     {
-        
         LatexFormula formula = new LatexFormula();
         
         Vector[] resultVectorArray = new Vector[maxIterations];
@@ -87,12 +86,17 @@ public class MatrixIterationMethods
      */
     public static Tuple<BigDecimal[], Vector[]> vectorIteration(Matrix matrixM, Vector startVectorY0, int maxIterations)
     {
+        LatexFormula formula = new LatexFormula();
+        
         Vector startVector = startVectorY0;
         
-        BigDecimal[] lam = new BigDecimal[maxIterations];
+        BigDecimal[]  lam = new BigDecimal[maxIterations];
         Vector[] yVectors = new Vector[maxIterations];
         
         MathLib.setNorm(1);
+        
+        formula.addLatexString("\\begin{tabular}{c|c|c}");
+        formula.addLatexString("$\\bf{n}$ & $\\bf{\\lambda}$ & $\\bf{y-Vectors}$ \\\\ \\hline");
         
         for (int iteration = 0; iteration < maxIterations; iteration++)
         {
@@ -105,7 +109,13 @@ public class MatrixIterationMethods
             yVectors[iteration] = startVector;
             
             lam[iteration] = MathLib.round(startVector.toMatrix().getTransposed().mult(matrixM).mult(startVector).get(0));
+            
+            formula.addLatexString((iteration+1 + " & " + lam[iteration] + " & ")).addVector(yVectors[iteration]).addLatexString("\\\\");
         }
+        
+        formula.addLatexString("\\end{tabular}").addNewLine(3);
+        formula.addText("Der größte Eigenwert ist \\lambda = " + lam[maxIterations-1]);
+        Recorder.getInstance().add(formula);
         
         return new Tuple<BigDecimal[], Vector[]>(lam, yVectors);
     }

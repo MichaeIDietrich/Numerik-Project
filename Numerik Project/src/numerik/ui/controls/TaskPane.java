@@ -278,7 +278,7 @@ public final class TaskPane extends JPanel implements ActionListener
                     label.setForeground(Color.RED);
                     setViewPortView(label);
                     
-                    //ex.printStackTrace();
+                    ex.printStackTrace();
                 }
             }
         };
