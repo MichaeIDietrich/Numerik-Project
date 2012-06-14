@@ -1,4 +1,4 @@
-package numerik.calc_test;
+package numerik.tests;
 
 import numerik.calc.*;
 
@@ -25,8 +25,8 @@ public class Vector_TestFixture
     }
     
     /*
-     * Zur¸cksetzen von Werten, um Ausgangszustand eines Tests zu erreichen -->
-     * wichtig f¸r weitere Tests
+     * Zur√ºcksetzen von Werten, um Ausgangszustand eines Tests zu erreichen -->
+     * wichtig f√ºr weitere Tests
      */
     @After
     public void tearDown()

@@ -1,4 +1,4 @@
-package numerik.expression_test;
+package numerik.tests;
 
 import static org.junit.Assert.*;
 
@@ -7,8 +7,27 @@ import numerik.expression.*;
 
 import org.junit.Test;
 
-public class Expression_Testfixture
+// WICHTIG: Da es einen Bug in Java 7 zu geben scheint, funktionieren diese Tests nur,
+// wenn man der Vm einen bestimmten Parameter übergibt!
+// Schritte: Run -> Run Configurations... -> Expression_Testfixture -> Arguments -> VM Arguments:
+// dort dann '-XX:-UseSplitVerifier' eintragen ohne '
+// jetzt sollten die Test funktionieren
+
+public final class Expression_TestFixture
 {
+    
+    @Test
+    public void double_PI() throws InvalidExpressionException
+    {
+        MathLib.setPrecision(12);
+        String input = "2*PI";
+        ExpressionEngine engine = new ExpressionEngine();
+        
+        Value res = engine.solve(input);
+        
+        assertEquals("6.28318530718", res.toDecimal().toPlainString());
+    }
+    
     
     @Test
     public void easyFormula() throws InvalidExpressionException
@@ -36,19 +55,21 @@ public class Expression_Testfixture
     }
     
     
+    // man beachte: atan() hat double-Genauigkeit
     @Test
-    public void tan7_5() throws InvalidExpressionException
+    public void atan2_70601386677() throws InvalidExpressionException
     {
         MathLib.setPrecision(12);
-        String input = "tan(7.5)";
+        String input = "atan(2.70601386677)";
         ExpressionEngine engine = new ExpressionEngine();
         
         Value res = engine.solve(input);
         
-        assertEquals("2.70601386677", res.toDecimal().toPlainString());
+        assertEquals("1.21681469282", res.toDecimal().toPlainString());
     }
     
     
+    // man beachte: cos() hat double-Genauigkeit
     @Test
     public void cos180() throws InvalidExpressionException
     {
@@ -62,6 +83,7 @@ public class Expression_Testfixture
     }
     
     
+    // man beachte: tan() hat double-Genauigkeit
     @Test
     public void sin3_5_mult_cos6_8() throws InvalidExpressionException
     {
