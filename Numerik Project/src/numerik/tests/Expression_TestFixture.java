@@ -8,7 +8,7 @@ import numerik.expression.*;
 import org.junit.Test;
 
 // WICHTIG: Da es einen Bug in Java 7 zu geben scheint, funktionieren diese Tests nur,
-// wenn man der Vm einen bestimmten Parameter übergibt!
+// wenn man der VM einen bestimmten Parameter übergibt!
 // Schritte: Run -> Run Configurations... -> Expression_Testfixture -> Arguments -> VM Arguments:
 // dort dann '-XX:-UseSplitVerifier' eintragen ohne '
 // jetzt sollten die Test funktionieren
