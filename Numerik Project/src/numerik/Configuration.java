@@ -1,7 +1,12 @@
 package numerik;
 
-public final class Configuration
+import java.io.*;
+
+public final class Configuration implements Serializable
 {
+    private static final long serialVersionUID = 262243528513865929L;
+    
+    
     private static Configuration activeConfiguration = null;
     
     private int fontSize;
@@ -18,6 +23,7 @@ public final class Configuration
         return activeConfiguration;
     }
     
+    
     public static void setActiveConfiguration(Configuration config)
     {
         activeConfiguration = config;
@@ -27,18 +33,46 @@ public final class Configuration
     public Configuration()
     {
         // Standardwerte einer neuen Configuration
-        fontSize = 20;
+        fontSize = 18;
         maximized = false;
     }
     
+    
     public void save()
     {
-        // noch nicht implementiert
+        try
+        {
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("config.dat"));
+            oos.writeObject(this);
+            
+            oos.close();
+        }
+        catch (IOException ex)
+        {
+            ex.printStackTrace();
+        }
     }
+    
     
     public void load()
     {
-        // noch nicht implementiert
+        if (new File("config.dat").exists())
+        {
+            try
+            {
+                ObjectInputStream ois = new ObjectInputStream(new FileInputStream("config.dat"));
+                Configuration config = (Configuration) ois.readObject();
+                
+                this.fontSize = config.getFontSize();
+                this.maximized = config.isMaximized();
+                
+                ois.close();
+            }
+            catch (IOException | ClassNotFoundException ex)
+            {
+                ex.printStackTrace();
+            }
+        }
     }
     
     

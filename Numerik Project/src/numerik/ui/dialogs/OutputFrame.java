@@ -1,6 +1,7 @@
 package numerik.ui.dialogs;
 
 import java.awt.*;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
@@ -53,12 +54,26 @@ public final class OutputFrame extends JFrame
         this.setSize(600, 720);
         this.setLocationRelativeTo(null);
         
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        
         if (Configuration.getActiveConfiguration().isMaximized())
         {
             this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         }
+        
+        this.addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosed(WindowEvent e)
+            {
+                // Configuration sichern
+                Configuration.getActiveConfiguration().save();
+            }
+            
+            @Override
+            public void windowClosing(WindowEvent e)
+            {
+                OutputFrame.this.dispose();
+            }
+        });
         
         this.setVisible(true);
     }

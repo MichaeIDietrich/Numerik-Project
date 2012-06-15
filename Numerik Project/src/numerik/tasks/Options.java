@@ -2,15 +2,19 @@ package numerik.tasks;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.event.*;
 
+import numerik.Configuration;
 import numerik.calc.*;
 import numerik.expression.Value;
 import numerik.io.DocumentLoader;
-import numerik.ui.controls.TaskPane;
+import numerik.ui.controls.*;
 import numerik.ui.dialogs.*;
+import numerik.ui.misc.*;
 
 public class Options implements Task
 {
@@ -25,7 +29,10 @@ public class Options implements Task
         
         JToolBar toolBar = new JToolBar();
         toolBar.setFloatable(false);
-        JComboBox<String> cboChoices = new JComboBox<>(new String[] { "Matrizen", "Vektoren", "Sonstiges" });
+        JComboBox<String> cboChoices = new JComboBox<>(new String[] { "Einstellungen", "Matrizen", "Vektoren" });
+        cboChoices.setPreferredSize(new Dimension(150, cboChoices.getPreferredSize().height));
+        cboChoices.setMinimumSize(new Dimension(150, cboChoices.getPreferredSize().height));
+        cboChoices.setMaximumSize(new Dimension(150, cboChoices.getPreferredSize().height));
         cboChoices.addItemListener(new ItemListener()
         {
             @Override
@@ -38,10 +45,11 @@ public class Options implements Task
             }
         });
         
+        toolBar.add(new JLabel(" Option: "));
         toolBar.add(cboChoices);
         taskPane.setJToolBar(toolBar);
         
-        setUpView(frame, taskPane, "Matrizen");
+        setUpView(frame, taskPane, "Einstellungen");
     }
     
     private void setUpView(final OutputFrame frame, final TaskPane taskPane, String group)
@@ -53,10 +61,11 @@ public class Options implements Task
             case "Matrizen":
             case "Vektoren":
                 
-                final boolean isMat = group.equals("Matrizen");
+                final boolean isMatrix = group.equals("Matrizen");
                 
+                // verfügbare Matrizen / Vektoren auslesen
                 String[] entries = null;
-                if (isMat)
+                if (isMatrix)
                 {
                     entries = docLoader.getAllMatrixNames("Data.txt");
                 }
@@ -73,7 +82,30 @@ public class Options implements Task
                 }
                 final JList<String> lstObjects = new JList<>(listModel);
                 
-                lstObjects.setBorder(new LineBorder(Color.DARK_GRAY));
+                lstObjects.setBorder(new LineBorder(Color.LIGHT_GRAY));
+                
+                // füge die Vorschaubilder zur JList hinzu
+                final ArrayList<Image> imgMatrices = new ArrayList<Image>();
+                final ArrayList<Image> imgVectors = new ArrayList<Image>();
+                
+                if (isMatrix)
+                {
+                    for (Matrix matrix : docLoader.readMatrices("Data.txt"))
+                    {
+                        imgMatrices.add(new LatexFormula().addMatrix(matrix).toImage());
+                    }
+                    
+                    new ListItemImageToolTip(lstObjects, imgMatrices, new Color(255, 255, 150));
+                }
+                else
+                {
+                    for (Vector vector : docLoader.readVectors("Data.txt"))
+                    {
+                        imgVectors.add(new LatexFormula().addVector(vector).toImage());
+                    }
+                    
+                    new ListItemImageToolTip(lstObjects, imgVectors, new Color(255, 255, 150));
+                }
                 
                 JButton btnNew = new JButton("Neu");
                 btnNew.addActionListener(new ActionListener()
@@ -81,7 +113,7 @@ public class Options implements Task
                     @Override
                     public void actionPerformed(ActionEvent e)
                     {
-                        if (isMat)
+                        if (isMatrix)
                         {
                             Matrix matrix = NewMatrixWindow.createNewMatrix(frame, MouseInfo.getPointerInfo().getLocation());
                             
@@ -96,7 +128,7 @@ public class Options implements Task
                                 int index = listModel.getSize();
                                 listModel.add(index, matrix.name);
                                 lstObjects.setSelectedIndex(index);
-    //                            lstObjects.add(new LatexFormula().addMatrix(matrix).toImage());
+                                imgMatrices.add(new LatexFormula().addMatrix(matrix).toImage());
                                 
                             }
                         }
@@ -115,7 +147,7 @@ public class Options implements Task
                                 int index = listModel.size();
                                 listModel.add(index, vector.name);
                                 lstObjects.setSelectedIndex(index);
-//                                imgVectors.add(new LatexFormula().addVector(vector).toImage());
+                                imgVectors.add(new LatexFormula().addVector(vector).toImage());
                                 
                             }
 
@@ -134,7 +166,7 @@ public class Options implements Task
                         if (item != null)
                         {
                             System.out.println("delete: " + item);
-                            if (isMat)
+                            if (isMatrix)
                             {
                                 docLoader.deleteMatrix(item, "Data.txt");
                             }
@@ -159,17 +191,50 @@ public class Options implements Task
                 pnlMain.add(pnlButtons, BorderLayout.PAGE_END);
                 break;
                 
-            case "Sonstiges":
-                pnlMain = new JPanel();
-                pnlMain.add(new JLabel("folgt noch^^"));
+            case "Einstellungen":
+                VerticalBox box = new VerticalBox();
+                box.setBorder(new EmptyBorder(10, 10, 10, 10));
+                
+                JLabel lblHead = new JLabel("Einstellungen");
+                lblHead.setFont(lblHead.getFont().deriveFont(20f));
+                box.add(lblHead, false);
+                box.addGap();
+                box.addGap();
+                
+                box.add(new JLabel("Standardschriftgröße:"));
+                
+                final JSpinner spnFontSize = new JSpinner(new SpinnerNumberModel(Configuration.getActiveConfiguration().getFontSize(), 1, 100, 1));
+                spnFontSize.setMaximumSize(spnFontSize.getPreferredSize());
+                spnFontSize.addChangeListener(new ChangeListener()
+                {
+                    @Override
+                    public void stateChanged(ChangeEvent e)
+                    {
+                        Configuration.getActiveConfiguration().setFontSize( (Integer) spnFontSize.getValue());
+                    }
+                });
+                box.add(spnFontSize);
+                
+                box.addGap();
+                
+                final JCheckBox chkMaximized = new JCheckBox("Maximiert starten");
+                chkMaximized.setSelected(Configuration.getActiveConfiguration().isMaximized());
+                chkMaximized.addActionListener(new ActionListener()
+                {
+                    @Override
+                    public void actionPerformed(ActionEvent e)
+                    {
+                        Configuration.getActiveConfiguration().setMaximized(chkMaximized.isSelected());
+                    }
+                });
+                box.add(chkMaximized);
+                
+                pnlMain = box;
         }
         
         taskPane.setViewPortView(pnlMain);
     }
     
     @Override
-    public void run(Value... parameters)
-    {
-        
-    }
+    public void run(Value... parameters) { } // wird nicht gebraucht
 }
