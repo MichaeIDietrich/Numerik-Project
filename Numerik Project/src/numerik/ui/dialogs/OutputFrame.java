@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 
+import numerik.Configuration;
 import numerik.tasks.*;
 import numerik.ui.controls.TabbedTaskPane;
 
@@ -53,6 +54,12 @@ public final class OutputFrame extends JFrame
         this.setLocationRelativeTo(null);
         
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        
+        if (Configuration.getActiveConfiguration().isMaximized())
+        {
+            this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+        }
+        
         this.setVisible(true);
     }
     
