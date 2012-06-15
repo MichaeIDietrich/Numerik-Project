@@ -21,7 +21,7 @@ public class SolveNonLinearEquation implements Task
 {
     Vector  dqPlus;
     Vector dqMinus;
-    Vector choosenvector;
+    Vector chosenvector;
     Vector z;
     
     TaskPane taskPane;
@@ -52,8 +52,8 @@ public class SolveNonLinearEquation implements Task
         int        i = 0;
                    x = x.setUnitVector(x);
         
-        choosenvector = iterx.clone();         
-                   
+        chosenvector = iterx.clone();
+        
 //        System.out.println( 
 //                sumVectorValues( getFunctionsValue(parameters[0].toVector().clone())).multiply( sumVectorValues(derive2( parameters[0].toVector().clone() ) )));           
 //        
@@ -106,7 +106,7 @@ public class SolveNonLinearEquation implements Task
         
         formula.jakobiMatrix().addNewLine(3);
         formula.addTextUL("Kontraktionsintervall").addNewLine(1);
-        formula.addLatexString("|\\Phi(\\vec{x_{0}})| = ").addVector( getKontractionIntervall( choosenvector ) ).addLatexString(" < 1").addNewLine(1);
+        formula.addLatexString("|\\Phi(\\vec{x_{0}})| = ").addVector( getKontractionIntervall( chosenvector ) ).addLatexString(" < 1").addNewLine(1);
         formula.addNewLine(3).addTextUL("Start\\;der\\;Iteration").addNewLine(1);
         formula.addFormula( iterformula ).addNewLine(2);
         
@@ -287,7 +287,7 @@ public class SolveNonLinearEquation implements Task
         {
             formula.addText("Grund für Abbruch: "+error).addNewLine(3);
             formula.addTextUL("Kontraktionsintervall").addNewLine(1);
-            formula.addLatexString("|\\Phi(\\vec{x_{0}})| = ").addVector( getKontractionIntervall( choosenvector ) ).addLatexString(" \\nless 1").addNewLine(3);
+            formula.addLatexString("|\\Phi(\\vec{x_{0}})| = ").addVector( getKontractionIntervall( chosenvector ) ).addLatexString(" \\nless 1").addNewLine(3);
             formula.addFormula( recorder.get() );
         }
         
