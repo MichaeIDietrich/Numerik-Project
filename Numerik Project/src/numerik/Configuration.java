@@ -42,7 +42,7 @@ public final class Configuration implements Serializable
     {
         try
         {
-            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("config.dat"));
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Config.dat"));
             oos.writeObject(this);
             
             oos.close();
@@ -56,11 +56,11 @@ public final class Configuration implements Serializable
     
     public void load()
     {
-        if (new File("config.dat").exists())
+        if (new File("Config.dat").exists())
         {
             try
             {
-                ObjectInputStream ois = new ObjectInputStream(new FileInputStream("config.dat"));
+                ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Config.dat"));
                 Configuration config = (Configuration) ois.readObject();
                 
                 this.fontSize = config.getFontSize();

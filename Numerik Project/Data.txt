@@ -111,3 +111,18 @@ Vector#i
 
 Vector#j
 4.5
+
+Matrix#m111
+1,1,1
+1,1,1
+1,1,1
+
+Matrix#m5
+5
+
+Matrix#m7
+7
+
+Matrix#m2
+2
+2

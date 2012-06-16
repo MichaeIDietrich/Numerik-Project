@@ -35,9 +35,9 @@ public final class OutputFrame extends JFrame
         this.setIconImages(icons);
         
         initLookAndFeel();
-                
+        
         TabbedTaskPane tabMain = new TabbedTaskPane(this);
-        tabMain.addTab("Expression", new ExpressionTask());
+        tabMain.addTab("Expression", new ExpressionTask(), "Eingabebereich, um mathematische Ausdrücke auszuwerten");
         tabMain.addTab("Dezimal->Binär",    new DezimalToBinary());
         tabMain.addTab("LU-Zerlegung", new LUDecomposition());
         tabMain.addTab("Eingabefehler-Abschätzung", new InputErrorEstimation());

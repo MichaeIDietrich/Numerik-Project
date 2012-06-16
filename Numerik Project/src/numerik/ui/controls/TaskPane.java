@@ -13,12 +13,11 @@ import numerik.calc.Matrix;
 import numerik.calc.Vector;
 import numerik.expression.MathPool;
 import numerik.expression.Value;
-import numerik.io.DocumentLoader;
 import numerik.tasks.*;
 import numerik.tasks.Argument.ArgType;
 import numerik.ui.dialogs.*;
-import numerik.ui.misc.LatexFormula;
-import numerik.ui.misc.WrappingToolbarLayout;
+import numerik.ui.misc.*;
+import numerik.ui.misc.MathDataSynchronizer.MathDataType;
 
 
 public final class TaskPane extends JPanel implements ActionListener
@@ -46,23 +45,8 @@ public final class TaskPane extends JPanel implements ActionListener
     public void createJToolBarByArguments(Argument... arguments)
     {
         toolBar = new JToolBar();
-        //toolBar.setLayout( new FlowLayout(FlowLayout.LEFT));
         toolBar.setLayout(new WrappingToolbarLayout(WrappingToolbarLayout.LEFT));
         toolBar.setFloatable(false);
-        
-        DocumentLoader docLoader = new DocumentLoader();
-        String[] matrices = docLoader.getAllMatrixNames("Data.txt");
-        String[] vectors = docLoader.getAllVectorNames("Data.txt");
-        final ArrayList<Image> imgMatrices = new ArrayList<Image>();
-        for (Matrix matrix : docLoader.readMatrices("Data.txt"))
-        {
-            imgMatrices.add(new LatexFormula().addMatrix(matrix).toImage());
-        }
-        final ArrayList<Image> imgVectors = new ArrayList<Image>();
-        for (Vector vector : docLoader.readVectors("Data.txt"))
-        {
-            imgVectors.add(new LatexFormula().addVector(vector).toImage());
-        }
         
         JComboBox<String> combo;
         JTextField text;
@@ -85,52 +69,8 @@ public final class TaskPane extends JPanel implements ActionListener
             switch (arg.getArgumentType())
             {
                 case MATRIX:
-                    combo = new JComboBox<String>(matrices);
-                    combo.insertItemAt("...", matrices.length);
-                    
-                    combo.addItemListener(new ItemListener()
-                    {
-                        @Override
-                        public void itemStateChanged(ItemEvent e)
-                        {
-                            if (e.getItem().toString().equals("...") && e.getStateChange() == ItemEvent.SELECTED)
-                            {
-                                @SuppressWarnings("unchecked")
-                                JComboBox<String> combo = (JComboBox<String>) e.getSource();
-                                
-                                Matrix matrix = NewMatrixWindow.createNewMatrix(frame, combo.getLocationOnScreen());
-                                
-                                if (matrix == null)
-                                {
-                                    combo.setSelectedIndex(0);
-                                }
-                                else if ((matrix.name = JOptionPane.showInputDialog(frame, "Bitte geben Sie den Namen der Matrix ein.", "Matrixname", JOptionPane.QUESTION_MESSAGE)) 
-                                        != null && !matrix.name.equals(""))
-                                {
-                                    new DocumentLoader().addMatrixToFile(matrix, "Data.txt");
-                                    int index = combo.getItemCount() - 1;
-                                    combo.insertItemAt(matrix.name, index);
-                                    combo.setSelectedIndex(index);
-                                    imgMatrices.add(new LatexFormula().addMatrix(matrix).toImage());
-                                    
-                                }
-                            }
-                        }
-                    });
-                    
-                    combo.addKeyListener(new KeyAdapter()
-                    {
-                        @Override
-                        public void keyPressed(KeyEvent e)
-                        {
-                            if (e.getKeyCode() == KeyEvent.VK_DELETE)
-                            {
-                                
-                            }
-                        }
-                    });
-                    
-                    new ToolTippedComboBox(combo, imgMatrices, new Color(255, 255, 150));
+                    combo = new MathDataComboBox(MathDataType.MATRIX, frame);
+                    new ToolTippedComboBox(combo, MathDataSynchronizer.getInstance().getMatrixImages(), new Color(255, 255, 150));
                     combo.setPreferredSize(new Dimension(arg.getControlWidth(), combo.getPreferredSize().height));
                     arg.setRelatedControl(combo);
                     pnlGroup.add(combo);
@@ -138,40 +78,8 @@ public final class TaskPane extends JPanel implements ActionListener
                     break;
                     
                 case VECTOR:
-                    combo = new JComboBox<String>(vectors);
-                    combo.insertItemAt("...", vectors.length);
-                    
-                    combo.addItemListener(new ItemListener()
-                    {
-                        @Override
-                        public void itemStateChanged(ItemEvent e)
-                        {
-                            if (e.getItem().toString().equals("...") && e.getStateChange() == ItemEvent.SELECTED)
-                            {
-                                @SuppressWarnings("unchecked")
-                                JComboBox<String> combo = (JComboBox<String>) e.getSource();
-                                
-                                Vector vector = NewVectorWindow.createNewVector(frame, combo.getLocationOnScreen());
-                                
-                                if (vector == null)
-                                {
-                                    combo.setSelectedIndex(0);
-                                }
-                                else if ((vector.name = JOptionPane.showInputDialog(frame, "Bitte geben Sie den Namen des Vektors ein.", "Vektorname", JOptionPane.QUESTION_MESSAGE)) 
-                                        != null && !vector.name.equals(""))
-                                {
-                                    new DocumentLoader().addVectorToFile(vector, "Data.txt");
-                                    int index = combo.getItemCount() - 1;
-                                    combo.insertItemAt(vector.name, index);
-                                    combo.setSelectedIndex(index);
-                                    imgVectors.add(new LatexFormula().addVector(vector).toImage());
-                                    
-                                }
-                            }
-                        }
-                    });
-                    
-                    new ToolTippedComboBox(combo, imgVectors, new Color(255, 255, 150));
+                    combo = new MathDataComboBox(MathDataType.VECTOR, frame);
+                    new ToolTippedComboBox(combo, MathDataSynchronizer.getInstance().getVectorImages(), new Color(255, 255, 150));
                     combo.setPreferredSize(new Dimension(arg.getControlWidth(), combo.getPreferredSize().height));
                     arg.setRelatedControl(combo);
                     pnlGroup.add(combo);

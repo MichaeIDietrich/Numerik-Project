@@ -187,7 +187,7 @@ public class Options implements Task
                 
                 pnlMain = new JPanel(new BorderLayout());
                 pnlMain.setBorder(new EmptyBorder(10, 10, 5, 10));
-                pnlMain.add(lstObjects);
+                pnlMain.add(new JScrollPane(lstObjects));
                 pnlMain.add(pnlButtons, BorderLayout.PAGE_END);
                 break;
                 

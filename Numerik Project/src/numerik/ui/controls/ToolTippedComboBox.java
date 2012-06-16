@@ -9,19 +9,19 @@ import javax.swing.plaf.basic.ComboPopup;
 public final class ToolTippedComboBox
 {
     
-    public ToolTippedComboBox(JComboBox<String> comboBox, ArrayList<Image> previewImages, Color backGround)
+    public ToolTippedComboBox(JComboBox<String> comboBox, ArrayList<Image> previewImages, Color background)
     {
         // an dieser Stelle muss zwischen den Betriebssystemen unterschieden werden, weil wir das jeweilige "native" Look&Feel unterstützen möchten
         // und wir deshalb von verschieden Klassen erben müssen und auch andere Sachen sich leicht unterscheiden (teilweise auch wegen Grafik-Bugs)
         switch (System.getProperty("os.name"))
         {
             case "Windows 7":
-                comboBox.setUI(new ToolTippedComboBoxUI_Windows7(previewImages, backGround));
+                comboBox.setUI(new ToolTippedComboBoxUI_Windows7(previewImages, background));
                 comboBox.setRenderer(new ComboBoxRenderer());
                 break;
             
             case "Linux": //nur für Ubuntu Unity getestet
-                comboBox.setUI(new ToolTippedComboBoxUI_Linux(previewImages, backGround));
+                comboBox.setUI(new ToolTippedComboBoxUI_Linux(previewImages, background));
                 comboBox.setRenderer(new ComboBoxRenderer());
                 break;
             
