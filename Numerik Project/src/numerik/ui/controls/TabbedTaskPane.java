@@ -22,14 +22,14 @@ public final class TabbedTaskPane extends JTabbedPane implements ChangeListener
     
     public void addTab(String title, Task task)
     {
-        TaskPane taskPane = new TaskPane(frame, task, true);
+        TaskPane taskPane = new TaskPane(frame, task);
         super.addTab(title, taskPane);
     }
     
     
     public void addTab(String title, Task task, String... toolTipLines)
     {
-        TaskPane taskPane = new TaskPane(frame, task, true);
+        TaskPane taskPane = new TaskPane(frame, task);
         
         StringBuilder buffer = new StringBuilder();
         

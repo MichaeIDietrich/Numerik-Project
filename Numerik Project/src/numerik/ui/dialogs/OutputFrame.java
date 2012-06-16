@@ -38,7 +38,7 @@ public final class OutputFrame extends JFrame
         
         TabbedTaskPane tabMain = new TabbedTaskPane(this);
         tabMain.addTab("Expression", new ExpressionTask(), "Eingabebereich, um mathematische Ausdrücke auszuwerten");
-        tabMain.addTab("Dezimal->Binär",    new DezimalToBinary());
+        tabMain.addTab("Dezimal->Binär", new DezimalToBinary());
         tabMain.addTab("LU-Zerlegung", new LUDecomposition());
         tabMain.addTab("Eingabefehler-Abschätzung", new InputErrorEstimation());
         tabMain.addTab("Jakobi-Iteration", new JacobiIteration());
@@ -47,7 +47,7 @@ public final class OutputFrame extends JFrame
         tabMain.addTab("Gauss 4P", new GaussIntegrationOrder4());
         tabMain.addTab("Runge-Kutta-4O", new RungeKuttaOrder4());
         tabMain.addTab("Vektor-Iteration", new VectorIteration());
-        tabMain.addTab("Optionen", new Options());
+        tabMain.addTab("Optionen", new Options(), "Einstellungen vornehmen", "Matrizen / Vektoren hinzufügen oder löschen");
         
         this.add(tabMain);
         

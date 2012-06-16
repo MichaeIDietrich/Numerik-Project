@@ -22,6 +22,8 @@ import numerik.ui.misc.MathDataSynchronizer.MathDataType;
 
 public final class TaskPane extends JPanel implements ActionListener
 {
+    private static final MathDataSynchronizer DATA = MathDataSynchronizer.getInstance();
+    
     
     private JToolBar toolBar;
     private OutputFrame frame;
@@ -30,15 +32,20 @@ public final class TaskPane extends JPanel implements ActionListener
     
     private Thread taskThread;
     
+    private boolean initialized = false;
     
-    public TaskPane(OutputFrame frame, Task task, boolean scrollable)
+    
+    public TaskPane(OutputFrame frame, Task task)
     {
         this.frame = frame;
         this.task = task;
         
         this.setLayout(new BorderLayout());
         
-        task.init(frame, this);
+        // Der Task wird jetzt erst initialisiert, wenn er das erste Mal ausgewählt 
+        // wird, um den Start der Anwendung zu beschleunigen
+//        
+//        task.init(frame, this);
     }
     
     
@@ -70,7 +77,8 @@ public final class TaskPane extends JPanel implements ActionListener
             {
                 case MATRIX:
                     combo = new MathDataComboBox(MathDataType.MATRIX, frame);
-                    new ToolTippedComboBox(combo, MathDataSynchronizer.getInstance().getMatrixImages(), new Color(255, 255, 150));
+                    new ToolTippedComboBox(combo, DATA.getMatrixImages(), new Color(255, 255, 150));
+                    DATA.addChangeListeners((MathDataComboBoxModel) combo.getModel());
                     combo.setPreferredSize(new Dimension(arg.getControlWidth(), combo.getPreferredSize().height));
                     arg.setRelatedControl(combo);
                     pnlGroup.add(combo);
@@ -79,7 +87,8 @@ public final class TaskPane extends JPanel implements ActionListener
                     
                 case VECTOR:
                     combo = new MathDataComboBox(MathDataType.VECTOR, frame);
-                    new ToolTippedComboBox(combo, MathDataSynchronizer.getInstance().getVectorImages(), new Color(255, 255, 150));
+                    new ToolTippedComboBox(combo, DATA.getVectorImages(), new Color(255, 255, 150));
+                    DATA.addChangeListeners((MathDataComboBoxModel) combo.getModel());
                     combo.setPreferredSize(new Dimension(arg.getControlWidth(), combo.getPreferredSize().height));
                     arg.setRelatedControl(combo);
                     pnlGroup.add(combo);
@@ -198,6 +207,12 @@ public final class TaskPane extends JPanel implements ActionListener
     
     public void showTask()
     {
+        if (!initialized)
+        {
+            task.init(frame, this);
+            initialized = true;
+        }
+        
         frame.setJToolBar(toolBar);
         runTask();
     }

@@ -72,29 +72,11 @@ Matrix#Test
 Vector#L1
 -0.7,-0.5
 
-Matrix#easy
-1,2,3
-4,5,6
-7,8,9
-
-Matrix#mat
-3,3
-2,1
-5,6
-
-Matrix#mat22
-500,100,200
-1,2,3
-4,5,5
-
 Matrix#V
 32
 
 Vector#v
 4
-
-Vector#Hans
-1
 
 Matrix#A1
 1,2
@@ -103,26 +85,15 @@ Matrix#A1
 Vector#deriveV
 -1.5,-1
 
-Vector#peter
-5
-
 Vector#i
 4.4
 
 Vector#j
 4.5
 
-Matrix#m111
-1,1,1
-1,1,1
-1,1,1
 
-Matrix#m5
-5
 
-Matrix#m7
-7
 
-Matrix#m2
-2
-2
+
+
+

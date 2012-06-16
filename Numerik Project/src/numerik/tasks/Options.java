@@ -150,8 +150,17 @@ public class Options implements Task
                                 imgVectors.add(new LatexFormula().addVector(vector).toImage());
                                 
                             }
-
                         }
+                    }
+                });
+                
+                JButton btnEdit = new JButton("Bearbeiten");
+                btnEdit.addActionListener(new ActionListener()
+                {
+                    @Override
+                    public void actionPerformed(ActionEvent e)
+                    {
+                        System.out.println("Muss noch implemtiert werden.");
                     }
                 });
                 
@@ -162,27 +171,29 @@ public class Options implements Task
                     public void actionPerformed(ActionEvent e)
                     {
                         String item = lstObjects.getSelectedValue();
+                        int index = lstObjects.getSelectedIndex();
                         
                         if (item != null)
                         {
                             System.out.println("delete: " + item);
                             if (isMatrix)
                             {
-                                docLoader.deleteMatrix(item, "Data.txt");
+                                MathDataSynchronizer.getInstance().removeMatrix(item);
                             }
                             else
                             {
-                                docLoader.deleteVector(item, "Data.txt");
+                                MathDataSynchronizer.getInstance().removeVector(item);
                             }
                             
                             listModel.removeElement(item);
-                            lstObjects.setSelectedIndex(0);
+                            lstObjects.setSelectedIndex(index);
                         }
                     }
                 });
                 
                 JPanel pnlButtons = new JPanel();
                 pnlButtons.add(btnNew);
+                pnlButtons.add(btnEdit);
                 pnlButtons.add(btnRemove);
                 
                 pnlMain = new JPanel(new BorderLayout());

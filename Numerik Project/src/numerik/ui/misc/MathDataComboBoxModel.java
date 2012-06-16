@@ -87,7 +87,7 @@ public class MathDataComboBoxModel implements ComboBoxModel<String>, ChangeListe
     {
         for (ListDataListener listener : listDataListeners)
         {
-            listener.contentsChanged(new ListDataEvent(null, ListDataEvent.CONTENTS_CHANGED, 0, this.getSize() - 1));
+            listener.contentsChanged(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, this.getSize() - 1));
         }
     }
 }

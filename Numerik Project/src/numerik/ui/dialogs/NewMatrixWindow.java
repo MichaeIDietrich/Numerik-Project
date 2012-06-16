@@ -32,8 +32,8 @@ public final class NewMatrixWindow extends JDialog implements ActionListener
     
     private int rows = 3;
     private int cols = 3;
-    private String[][] matrix = new String[rows][cols];
-    private int indents[] = new int[rows + 1];
+    private String[][] entryMatrix = new String[rows][cols];
+    private int[] indents = new int[rows + 1];
     private Point sel = new Point(-1, -1);
     
     private Matrix result;
@@ -43,9 +43,33 @@ public final class NewMatrixWindow extends JDialog implements ActionListener
     JPanel pnlBackground;
     JPanel pnlButtons;
     
+    
     private NewMatrixWindow(JFrame owner, Point position)
     {
+        this(owner, position, null);
+    }
+    
+    private NewMatrixWindow(JFrame owner, Point position, Matrix matrix)
+    {
         super(owner, true);
+        
+        if (matrix != null)
+        {
+            rows = matrix.getRows();
+            cols = matrix.getCols();
+            
+            entryMatrix = new String[rows][cols];
+            indents = new int[rows + 1];
+            
+            for (int row = 0; row < rows; row++)
+            {
+                for (int col = 0; col < cols; col++)
+                {
+                    entryMatrix[row][col] = matrix.get(row, col).toPlainString();
+                }
+            }
+        }
+        
         this.setUndecorated(true);
         this.setLocation(position);
         JPanel pnlMain = new JPanel(new BorderLayout());
@@ -94,20 +118,20 @@ public final class NewMatrixWindow extends JDialog implements ActionListener
                 {
                     for (int col = 0; col < cols; col++)
                     {
-                        if (matrix[row][col] == null)
+                        if (entryMatrix[row][col] == null)
                         {
                             g2.drawImage(field, (indents[col] + indents[col + 1]) / 2 - 8, (row + 1) * 50 - 17, this);
                         }
                         else
                         {
                             g2.setColor(Color.RED);
-                            if (isNumeric(matrix[row][col]))
+                            if (isNumeric(entryMatrix[row][col]))
                             {
                                 g2.setColor(Color.BLACK);
                             }
                             if (sel.x != col || sel.y != row)
                             {
-                                g2.drawString(matrix[row][col], indents[col], (row + 1) * 50);
+                                g2.drawString(entryMatrix[row][col], indents[col], (row + 1) * 50);
                             }
                         }
                     }
@@ -199,7 +223,7 @@ public final class NewMatrixWindow extends JDialog implements ActionListener
             int width = 0;
             for (int row = 0; row < rows; row++)
             {
-                int w = matrix[row][col] == null ? 40 : fm.stringWidth(matrix[row][col]);
+                int w = entryMatrix[row][col] == null ? 40 : fm.stringWidth(entryMatrix[row][col]);
                 width = w > width ? w : width;
             }
             indents[col + 1] = indents[col] + width + 10;
@@ -234,11 +258,11 @@ public final class NewMatrixWindow extends JDialog implements ActionListener
         {
             for (int col = 0; col < Math.min(cols, colsNew); col++)
             {
-                newMatrix[row][col] = matrix[row][col];
+                newMatrix[row][col] = entryMatrix[row][col];
             }
         }
         
-        matrix = newMatrix;
+        entryMatrix = newMatrix;
         
         rows += deltaRow;
         cols += deltaCol;
@@ -257,7 +281,7 @@ public final class NewMatrixWindow extends JDialog implements ActionListener
         sel = new Point(col, row);
         this.repaint();
         
-        new EditPopup(NewMatrixWindow.this, x, y, matrix[sel.y][sel.x], new ChangeListener()
+        new EditPopup(NewMatrixWindow.this, x, y, entryMatrix[sel.y][sel.x], new ChangeListener()
         {
             @Override
             public void stateChanged(ChangeEvent e)
@@ -281,12 +305,12 @@ public final class NewMatrixWindow extends JDialog implements ActionListener
                         break;
                         
                     case "":
-                        matrix[sel.y][sel.x] = null;
+                        entryMatrix[sel.y][sel.x] = null;
                         break;
                         
                     default:
-                        matrix[sel.y][sel.x] = e.getSource().toString();
-                        System.out.println(e.getSource().toString());
+                        entryMatrix[sel.y][sel.x] = e.getSource().toString();
+//                        System.out.println(e.getSource().toString());
                 }
                 NewMatrixWindow.this.repaint();
             }
@@ -320,6 +344,14 @@ public final class NewMatrixWindow extends JDialog implements ActionListener
     }
     
     
+    public static Matrix createNewMatrix(JFrame owner, Point position, Matrix matrix)
+    {
+        NewMatrixWindow mw = new NewMatrixWindow(owner, position, matrix);
+        
+        return mw.getResult();
+    }
+    
+    
     @Override
     public void actionPerformed(ActionEvent e)
     {
@@ -331,11 +363,11 @@ public final class NewMatrixWindow extends JDialog implements ActionListener
                 {
                     for (int col = 0; col < cols; col++)
                     {
-                        if (matrix[row][col] != null)
+                        if (entryMatrix[row][col] != null)
                         {
                             try
                             {
-                                values.add(new BigDecimal(matrix[row][col]));
+                                values.add(new BigDecimal(entryMatrix[row][col]));
                                 continue;
                             }
                             catch (NumberFormatException ex) { }
@@ -356,7 +388,7 @@ public final class NewMatrixWindow extends JDialog implements ActionListener
                 {
                     for (int col = 0; col < cols; col++)
                     {
-                        matrix[row][col] = null;
+                        entryMatrix[row][col] = null;
                     }
                 }
                 System.out.println("clean");

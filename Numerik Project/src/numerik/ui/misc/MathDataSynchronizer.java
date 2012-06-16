@@ -64,10 +64,13 @@ public final class MathDataSynchronizer
         matrices = docLoader.readMatrices("Data.txt");
         vectors = docLoader.readVectors("Data.txt");
         
+        matrixImages.clear();
         for (Matrix matrix : matrices)
         {
             matrixImages.add(new LatexFormula().addMatrix(matrix).toImage());
         }
+        
+        vectorImages.clear();
         for (Vector vector : vectors)
         {
             vectorImages.add(new LatexFormula().addVector(vector).toImage());
@@ -136,6 +139,32 @@ public final class MathDataSynchronizer
     public ArrayList<Image> getVectorImages()
     {
         return vectorImages;
+    }
+    
+    public Matrix getMatrix(String name)
+    {
+        for (Matrix matrix : matrices)
+        {
+            if (matrix.name.equals(name))
+            {
+                return matrix;
+            }
+        }
+        
+        return null;
+    }
+    
+    public Vector getVector(String name)
+    {
+        for (Vector vector : vectors)
+        {
+            if (vector.name.equals(name))
+            {
+                return vector;
+            }
+        }
+        
+        return null;
     }
     
     public void addChangeListeners(ChangeListener l)
