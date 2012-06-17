@@ -4,9 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 
-import numerik.io.DocumentLoader;
-import numerik.ui.misc.LatexFormula;
-import numerik.ui.misc.Recorder;
+import numerik.ui.misc.*;
 
 
 public class Matrix {
@@ -74,51 +72,9 @@ public class Matrix {
     }
 
 
-    public Matrix(String file, String name) {
-        
-//        try {
-//            BufferedReader br = new BufferedReader(new FileReader(file));
-//            
-//            String line;
-//            boolean transmit = false;
-//            ArrayList<ArrayList<BigDecimal>> entries = new ArrayList<ArrayList<BigDecimal>>();
-//            while ((line = br.readLine()) != null) {
-//                
-//                if(line.equals("Matrix#"+name) || line.equals("") ) 
-//                    transmit = false;
-//                
-//                if (transmit) 
-//                {
-//                    ArrayList<BigDecimal> entry = new ArrayList<BigDecimal>();
-//                    entries.add(entry);
-//                
-//                    for (String number : line.split(",")) {
-//                        entry.add(new BigDecimal(number));
-//                    }
-//                }
-//                
-//                if(line.equals("Matrix#"+name)) 
-//                    transmit = true;
-//            }
-//            
-//            rows = entries.size();
-//            cols = entries.get(0).size();
-//            this.name = name;
-//            
-//            values = new BigDecimal[rows][cols];
-//            
-//            for (int n = 0; n < rows; n++) {
-//                for (int m = 0; m < cols; m++) {
-//                    values[n][m] = entries.get(n).get(m);
-//                }
-//            }
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-        
-        this(new DocumentLoader().readMatrix(file, name));
+    public Matrix(String file, String name)
+    {
+        this(MathDataSynchronizer.getInstance().getMatrix(name));
     }
     
     public Matrix(ArrayList<BigDecimal> values, int cols)

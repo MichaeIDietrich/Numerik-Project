@@ -1,14 +1,10 @@
 package numerik.calc;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import numerik.calc.Matrix;
+import numerik.ui.misc.MathDataSynchronizer;
 
 public final class Vector
 {
@@ -37,43 +33,19 @@ public final class Vector
         this.length     = values.length;
     }
     
-    public Vector(String file, String name) {
-
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-
-            String line;
-            boolean transmit = false;
-            ArrayList<BigDecimal> entry = new ArrayList<BigDecimal>();
-            while ((line = br.readLine()) != null) {
- 
-                if(line.contains("Vector#"+name) || line.equals("") ) 
-                    transmit = false;
-
-                if (transmit) 
-                {
-                    for (String number : line.split(",")) {
-                        entry.add(new BigDecimal(number));
-                    }
-                }
-                
-                if(line.contains("Vector#"+name)) 
-                    transmit = true;
-            }
-            
-            length    = entry.size();
-            this.name = name;
-            
-            values = new BigDecimal[length];
-
-            for (int n = 0; n < length; n++) {
-                    values[n] = entry.get(n);
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public Vector(String file, String name)
+    {
+        this(MathDataSynchronizer.getInstance().getVector(name));
+    }
+    
+    
+    public Vector(Vector vector)
+    {
+        Vector copy = vector.clone();
+        this.name = copy.name;
+        this.values = copy.values;
+        this.length = copy.length;
+        this.transposed = copy.transposed;
     }
     
     public boolean isTransposed()

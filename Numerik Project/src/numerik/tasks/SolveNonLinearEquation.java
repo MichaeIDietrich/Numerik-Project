@@ -55,9 +55,6 @@ public class SolveNonLinearEquation implements Task
         int        i = 0;
                    x = x.setUnitVector(x);
         
-<<<<<<< HEAD
-        choosenvector = iterx.clone();         
-=======
         chosenvector = iterx.clone();
         
 //        System.out.println( 
@@ -65,7 +62,6 @@ public class SolveNonLinearEquation implements Task
 //        
         
         
->>>>>>> origin/master
         
         // Abbruchbedingung 'obereschranke' bei x.norm() > 2^(-50) > eps
         BigDecimal obereschranke = BigDecimal.ONE.divide(new BigDecimal(2).pow(50), 16, RoundingMode.HALF_UP);
@@ -145,7 +141,7 @@ public class SolveNonLinearEquation implements Task
         {
             formula.addText("Grund für Abbruch: "+error).addNewLine(3);
             formula.addTextUL("Kontraktionsintervall").addNewLine(1);
-            formula.addLatexString("|\\Phi(\\vec{x_{0}})| = ").addVector( getKontractionIntervall( choosenvector ) ).addLatexString(" \\nless 1").addNewLine(3);
+            formula.addLatexString("|\\Phi(\\vec{x_{0}})| = ").addVector( getKontractionIntervall( chosenvector ) ).addLatexString(" \\nless 1").addNewLine(3);
             formula.addFormula( recorder.get() );
         }
         
@@ -283,39 +279,7 @@ public class SolveNonLinearEquation implements Task
         }
         return dfunction;
     }
-<<<<<<< HEAD
-
-
-=======
-    //###################
     
-    
-    
-    
-    private void showManual(String error)
-    {
-        formula.clear();
-        
-        formula.addNewLine(4);
-        formula.addTextUL("Mögliche\\;Fehlerursachen").addNewLine(2);
-        if (error.isEmpty()) 
-        {
-            formula.addText("I.    Länge des Vektors stimmt nicht mit der Anzahl der Gleichungen").addNewLine(1);
-            formula.addText("\\;     überein.").addNewLine(1);
-            formula.addText("II.  Gleichung enthält Infinity oder NaN.").addNewLine(1);
-            formula.addText("III. Die größte Fehlerquelle sitzt vor dem Bildschirm.").addNewLine(3);
-        }
-        else 
-        {
-            formula.addText("Grund für Abbruch: "+error).addNewLine(3);
-            formula.addTextUL("Kontraktionsintervall").addNewLine(1);
-            formula.addLatexString("|\\Phi(\\vec{x_{0}})| = ").addVector( getKontractionIntervall( chosenvector ) ).addLatexString(" \\nless 1").addNewLine(3);
-            formula.addFormula( recorder.get() );
-        }
-        
-        taskPane.setViewPortView(new TaskScrollPane(formula)); 
-    }
->>>>>>> origin/master
     
     /**
      * Trage hier alle nicht-linearen Gleichungssysteme ein.
