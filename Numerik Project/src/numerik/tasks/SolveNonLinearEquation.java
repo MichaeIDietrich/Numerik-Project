@@ -22,7 +22,7 @@ public class SolveNonLinearEquation implements Task
 {
     Vector  dqPlus;
     Vector dqMinus;
-    Vector choosenvector;
+    Vector chosenvector;
     Vector z;
     
     TaskPane taskPane;
@@ -55,7 +55,17 @@ public class SolveNonLinearEquation implements Task
         int        i = 0;
                    x = x.setUnitVector(x);
         
+<<<<<<< HEAD
         choosenvector = iterx.clone();         
+=======
+        chosenvector = iterx.clone();
+        
+//        System.out.println( 
+//                sumVectorValues( getFunctionsValue(parameters[0].toVector().clone())).multiply( sumVectorValues(derive2( parameters[0].toVector().clone() ) )));           
+//        
+        
+        
+>>>>>>> origin/master
         
         // Abbruchbedingung 'obereschranke' bei x.norm() > 2^(-50) > eps
         BigDecimal obereschranke = BigDecimal.ONE.divide(new BigDecimal(2).pow(50), 16, RoundingMode.HALF_UP);
@@ -105,7 +115,7 @@ public class SolveNonLinearEquation implements Task
         
         formula.jakobiMatrix().addNewLine(3);
         formula.addTextUL("Kontraktionsintervall").addNewLine(1);
-        formula.addLatexString("|\\Phi(\\vec{x_{0}})| = ").addVector( getKontractionIntervall( choosenvector ) ).addLatexString(" < 1").addNewLine(1);
+        formula.addLatexString("|\\Phi(\\vec{x_{0}})| = ").addVector( getKontractionIntervall( chosenvector ) ).addLatexString(" < 1").addNewLine(1);
         formula.addNewLine(3).addTextUL("Start\\;der\\;Iteration").addNewLine(1);
         formula.addFormula( iterformula ).addNewLine(2);       
         
@@ -204,7 +214,7 @@ public class SolveNonLinearEquation implements Task
         recorder.clear();
         recorder.add( 
                 formula.addLatexString("\\frac{").addVector(func).addText(" \\cdot ").addMatrix(ddfunc).addLatexString("}" +
-                	    "{").addMatrix(dfunc).addText(" \\cdot ").addMatrix(dfunc).addLatexString("}").addNewLine(1)
+                        "{").addMatrix(dfunc).addText(" \\cdot ").addMatrix(dfunc).addLatexString("}").addNewLine(1)
         );
         
         int    length = func.getLength();
@@ -273,8 +283,39 @@ public class SolveNonLinearEquation implements Task
         }
         return dfunction;
     }
+<<<<<<< HEAD
 
 
+=======
+    //###################
+    
+    
+    
+    
+    private void showManual(String error)
+    {
+        formula.clear();
+        
+        formula.addNewLine(4);
+        formula.addTextUL("Mögliche\\;Fehlerursachen").addNewLine(2);
+        if (error.isEmpty()) 
+        {
+            formula.addText("I.    Länge des Vektors stimmt nicht mit der Anzahl der Gleichungen").addNewLine(1);
+            formula.addText("\\;     überein.").addNewLine(1);
+            formula.addText("II.  Gleichung enthält Infinity oder NaN.").addNewLine(1);
+            formula.addText("III. Die größte Fehlerquelle sitzt vor dem Bildschirm.").addNewLine(3);
+        }
+        else 
+        {
+            formula.addText("Grund für Abbruch: "+error).addNewLine(3);
+            formula.addTextUL("Kontraktionsintervall").addNewLine(1);
+            formula.addLatexString("|\\Phi(\\vec{x_{0}})| = ").addVector( getKontractionIntervall( chosenvector ) ).addLatexString(" \\nless 1").addNewLine(3);
+            formula.addFormula( recorder.get() );
+        }
+        
+        taskPane.setViewPortView(new TaskScrollPane(formula)); 
+    }
+>>>>>>> origin/master
     
     /**
      * Trage hier alle nicht-linearen Gleichungssysteme ein.

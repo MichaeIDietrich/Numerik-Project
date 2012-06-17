@@ -49,6 +49,27 @@ public final class MathLib
         return value.stripTrailingZeros();
     }
     
+    // Decimal
+    public static Decimal round(Decimal value)
+    {
+        if (active)
+        {
+            if (MathLib.getRoundingMode() == MathLib.EXACT ) 
+            {
+                value = value.round(new MathContext( precision, RoundingMode.HALF_UP ));
+            }
+            
+            if (MathLib.getRoundingMode() == MathLib.NORMAL ) 
+            {
+                value = value.setScale( precision, RoundingMode.HALF_UP );
+            }
+        }
+        
+        if(value.compareTo(Decimal.ZERO)==0) return Decimal.ZERO;
+        
+        return value.stripTrailingZeros();
+    }
+    
     
     
     // auskommentiert, was nicht gebraucht wird

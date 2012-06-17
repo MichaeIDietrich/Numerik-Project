@@ -1,10 +1,12 @@
 package numerik.ui.dialogs;
 
 import java.awt.*;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 
+import numerik.Configuration;
 import numerik.tasks.*;
 import numerik.ui.controls.TabbedTaskPane;
 
@@ -33,10 +35,10 @@ public final class OutputFrame extends JFrame
         this.setIconImages(icons);
         
         initLookAndFeel();
-                
+        
         TabbedTaskPane tabMain = new TabbedTaskPane(this);
-        tabMain.addTab("Expression", new ExpressionTask());
-        tabMain.addTab("Dezimal->Binär",    new DezimalToBinary());
+        tabMain.addTab("Expression", new ExpressionTask(), "Eingabebereich, um mathematische Ausdrücke auszuwerten");
+        tabMain.addTab("Dezimal->Binär", new DezimalToBinary());
         tabMain.addTab("LU-Zerlegung", new LUDecomposition());
         tabMain.addTab("Eingabefehler-Abschätzung", new InputErrorEstimation());
         tabMain.addTab("Jakobi-Iteration", new JacobiIteration());
@@ -45,13 +47,34 @@ public final class OutputFrame extends JFrame
         tabMain.addTab("Gauss 4P", new GaussIntegrationOrder4());
         tabMain.addTab("Runge-Kutta-4O", new RungeKuttaOrder4());
         tabMain.addTab("Vektor-Iteration", new VectorIteration());
+        tabMain.addTab("Optionen", new Options(), "Einstellungen vornehmen", "Matrizen / Vektoren hinzufügen oder löschen");
         
         this.add(tabMain);
         
         this.setSize(600, 720);
         this.setLocationRelativeTo(null);
         
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        if (Configuration.getActiveConfiguration().isMaximized())
+        {
+            this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+        }
+        
+        this.addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosed(WindowEvent e)
+            {
+                // Configuration sichern
+                Configuration.getActiveConfiguration().save();
+            }
+            
+            @Override
+            public void windowClosing(WindowEvent e)
+            {
+                OutputFrame.this.dispose();
+            }
+        });
+        
         this.setVisible(true);
     }
     

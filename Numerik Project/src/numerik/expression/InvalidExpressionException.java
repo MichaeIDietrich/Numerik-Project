@@ -7,5 +7,4 @@ public final class InvalidExpressionException extends Exception
     {
         super(message);
     }
-    
 }

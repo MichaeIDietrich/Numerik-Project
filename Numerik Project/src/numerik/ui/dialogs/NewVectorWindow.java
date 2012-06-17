@@ -32,14 +32,15 @@ public final class NewVectorWindow extends JDialog implements ActionListener
     
     private int rows = 3;
     private int cols = 1;
-    private String[][] matrix = new String[rows][cols];
-    private int indents[] = new int[rows + 1];
+    private String[][] entryMatrix = new String[rows][cols];
+    private int[] indents = new int[rows + 1];
     private Point sel = new Point(-1, -1);
     
     private Vector result;
     
     private PopupManager popupManager = PopupManager.getInstance();
     
+    JPanel pnlBackground;
     JPanel pnlButtons;
     
     private NewVectorWindow(JFrame owner, Point position)
@@ -68,7 +69,7 @@ public final class NewVectorWindow extends JDialog implements ActionListener
         btnCancel.addActionListener(this);
         pnlButtons.add(btnCancel);
         
-        JPanel pnlBackground = new JPanel()
+        pnlBackground = new JPanel()
         {
             @Override
             public void paint(Graphics g)
@@ -93,20 +94,20 @@ public final class NewVectorWindow extends JDialog implements ActionListener
                 {
                     for (int col = 0; col < cols; col++)
                     {
-                        if (matrix[row][col] == null)
+                        if (entryMatrix[row][col] == null)
                         {
                             g2.drawImage(field, (indents[col] + indents[col + 1]) / 2 - 8, (row + 1) * 50 - 17, this);
                         }
                         else
                         {
                             g2.setColor(Color.RED);
-                            if (isNumeric(matrix[row][col]))
+                            if (isNumeric(entryMatrix[row][col]))
                             {
                                 g2.setColor(Color.BLACK);
                             }
                             if (sel.x != col || sel.y != row)
                             {
-                                g2.drawString(matrix[row][col], indents[col], (row + 1) * 50);
+                                g2.drawString(entryMatrix[row][col], indents[col], (row + 1) * 50);
                             }
                         }
                     }
@@ -198,7 +199,7 @@ public final class NewVectorWindow extends JDialog implements ActionListener
             int width = 0;
             for (int row = 0; row < rows; row++)
             {
-                int w = matrix[row][col] == null ? 40 : fm.stringWidth(matrix[row][col]);
+                int w = entryMatrix[row][col] == null ? 40 : fm.stringWidth(entryMatrix[row][col]);
                 width = w > width ? w : width;
             }
             indents[col + 1] = indents[col] + width + 10;
@@ -240,11 +241,11 @@ public final class NewVectorWindow extends JDialog implements ActionListener
         {
             for (int col = 0; col < Math.min(cols, colsNew); col++)
             {
-                newMatrix[row][col] = matrix[row][col];
+                newMatrix[row][col] = entryMatrix[row][col];
             }
         }
         
-        matrix = newMatrix;
+        entryMatrix = newMatrix;
         
         rows = rowsNew;
         cols = colsNew;
@@ -263,7 +264,7 @@ public final class NewVectorWindow extends JDialog implements ActionListener
         sel = new Point(col, row);
         this.repaint();
         
-        new EditPopup(NewVectorWindow.this, x, y, matrix[sel.y][sel.x], new ChangeListener()
+        new EditPopup(NewVectorWindow.this, x, y, entryMatrix[sel.y][sel.x], new ChangeListener()
         {
             @Override
             public void stateChanged(ChangeEvent e)
@@ -280,18 +281,19 @@ public final class NewVectorWindow extends JDialog implements ActionListener
                         System.out.println("tab");
                         int x = ++sel.x % cols;
                         int y = x == 0 ? ++sel.y % rows : sel.y;
-                        showInput(MouseInfo.getPointerInfo().getLocation().x, MouseInfo.getPointerInfo().getLocation().y, y, x);
+                        showInput((indents[x] + indents[x + 1]) / 2 + pnlBackground.getLocationOnScreen().x , 
+                                (y + 1) * 50 - 9 + pnlBackground.getLocationOnScreen().y, y, x);
                         calcIndents();
                         resize();
                         break;
                         
                     case "":
-                        matrix[sel.y][sel.x] = null;
+                        entryMatrix[sel.y][sel.x] = null;
                         break;
                         
                     default:
-                        matrix[sel.y][sel.x] = e.getSource().toString();
-                        System.out.println(e.getSource().toString());
+                        entryMatrix[sel.y][sel.x] = e.getSource().toString();
+//                        System.out.println(e.getSource().toString());
                 }
                 NewVectorWindow.this.repaint();
             }
@@ -336,11 +338,11 @@ public final class NewVectorWindow extends JDialog implements ActionListener
                 {
                     for (int col = 0; col < cols; col++)
                     {
-                        if (matrix[row][col] != null)
+                        if (entryMatrix[row][col] != null)
                         {
                             try
                             {
-                                values.add(new BigDecimal(matrix[row][col]));
+                                values.add(new BigDecimal(entryMatrix[row][col]));
                                 continue;
                             }
                             catch (NumberFormatException ex) { }
@@ -363,7 +365,7 @@ public final class NewVectorWindow extends JDialog implements ActionListener
                 {
                     for (int col = 0; col < cols; col++)
                     {
-                        matrix[row][col] = null;
+                        entryMatrix[row][col] = null;
                     }
                 }
                 System.out.println("clean");

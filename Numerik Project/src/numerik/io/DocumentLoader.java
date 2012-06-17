@@ -271,10 +271,12 @@ public class DocumentLoader
                 {
                     ignore = false;
                     buffer.append(line);
+                    buffer.append("\n");
                 }
                 else if (!ignore)
                 {
                     buffer.append(line);
+                    buffer.append("\n");
                 }
             }
             br.close();
