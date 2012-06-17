@@ -72,6 +72,18 @@ public class MathDataComboBoxModel implements ComboBoxModel<String>, ChangeListe
     @Override
     public Object getSelectedItem()
     {
+        if (selectedItem != null)
+        {
+            if (type == MathDataType.MATRIX && DATA.getMatrix(selectedItem.toString()) == null)
+            {
+                selectedItem = DATA.getMatrixNames()[0];
+            }
+            if (type == MathDataType.VECTOR && DATA.getVector(selectedItem.toString()) == null)
+            {
+                selectedItem = DATA.getVectorNames()[0];
+            }
+        }
+        
         return selectedItem;
     }
     
@@ -80,8 +92,8 @@ public class MathDataComboBoxModel implements ComboBoxModel<String>, ChangeListe
     {
         selectedItem = anItem;
     }
-
-
+    
+    
     @Override
     public void stateChanged(ChangeEvent e)
     {
