@@ -45,6 +45,8 @@ public final class MathPool
         
         if (var1.getType() == ValueType.DECIMAL && var2.getType() == ValueType.DECIMAL)
         {
+            var1 = new Value(MathLib.stripTrailingZeros(var1.toDecimal()));
+            var2 = new Value(MathLib.stripTrailingZeros(var2.toDecimal()));
             
             switch (operation)
             {

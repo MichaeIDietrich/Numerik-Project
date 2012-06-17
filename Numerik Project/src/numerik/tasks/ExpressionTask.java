@@ -221,6 +221,7 @@ public class ExpressionTask implements Task, ActionListener, KeyListener, Expres
                 break;
             case STARTPARSING:
                 pnlExpressionOutput.add(new ImageComponent(new LatexFormula().addText(data).toImage(10)));
+//                pnlExpressionOutput.add(new JLabel(data));
                 break;
             case BADEXPRESSION:
                 pnlExpressionOutput.add(new ImageComponent(new LatexFormula().addText(data).toImage(12, Color.RED)));
