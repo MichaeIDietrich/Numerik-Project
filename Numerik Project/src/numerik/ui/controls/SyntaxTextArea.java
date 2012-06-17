@@ -5,12 +5,62 @@ import java.awt.event.*;
 import java.util.Collection;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.text.*;
 
 import numerik.ui.misc.ListFilter;
 
 public class SyntaxTextArea extends JTextPane
 {
+    protected final class LineNumberBorder implements Border
+    {
+        @Override
+        public Insets getBorderInsets(Component c)
+        {
+            return new Insets(1, 20, 1, 1);
+        }
+        
+        @Override
+        public boolean isBorderOpaque()
+        {
+            return false;
+        }
+        
+        @Override
+        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height)
+        {
+            int lineHeight = c.getFontMetrics(c.getFont()).getHeight();
+            
+            Graphics2D g2 = (Graphics2D) g;
+            
+            g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            
+            // Rahmen
+            g.setColor(Color.DARK_GRAY);
+            g.drawRect(0, 0, width - 1, height - 1);
+            
+            // Trennstrich
+            g.setColor(Color.LIGHT_GRAY);
+            g.drawLine(18, 1, 18, height - 2);
+            
+            // Durchnummerieren
+            g.setColor(Color.WHITE);
+            g.fillRect(1, 1, 17, height - 2);
+            
+            g.setColor(Color.DARK_GRAY);
+            int i = 0;
+            while (true)
+            {
+                int pos = ++i * lineHeight - 2;
+                if (pos > c.getHeight())
+                {
+                    break;
+                }
+                g.drawString(String.valueOf(i), 2, pos);
+            }
+        }
+    }
+    
     
     private JList<String> list;
     private ListFilter filter;
@@ -42,11 +92,19 @@ public class SyntaxTextArea extends JTextPane
                 break;
             }
         }
-
     }
     
-    public SyntaxTextArea(Collection<String> functionNames, Collection<String> variables)
+    public SyntaxTextArea(Collection<String> functionNames, Collection<String> variables, boolean showLineNumbers)
     {
+        if (showLineNumbers)
+        {
+            this.setBorder(new LineNumberBorder());
+        }
+        else
+        {
+            this.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        }
+        
         this.variables = variables;
         
         filter = new ListFilter(functionNames);

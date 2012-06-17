@@ -9,8 +9,6 @@ import java.util.Arrays;
 
 import javax.swing.*;
 
-import numerik.calc.Matrix;
-import numerik.calc.Vector;
 import numerik.expression.MathPool;
 import numerik.expression.Value;
 import numerik.tasks.*;
@@ -114,7 +112,7 @@ public final class TaskPane extends JPanel implements ActionListener
                     break;
                     
                 case EXPRESSION:
-                    expression = new SyntaxTextArea(Arrays.asList(MathPool.FUNCTIONS), null);
+                    expression = new SyntaxTextArea(Arrays.asList(MathPool.FUNCTIONS), null, false);
                     expression.setPreferredSize(new Dimension(arg.getControlWidth(), expression.getPreferredSize().height));
                     expression.setText(arg.getDefaultValue());
                     arg.setRelatedControl(expression);
@@ -234,11 +232,11 @@ public final class TaskPane extends JPanel implements ActionListener
                 switch (arg.getArgumentType())
                 {
                     case MATRIX:
-                        parameters.add(new Value(new Matrix("Data.txt", ((JComboBox<?>)arg.getRelatedControl()).getSelectedItem().toString())));
+                        parameters.add(new Value(DATA.getMatrix(((JComboBox<?>)arg.getRelatedControl()).getSelectedItem().toString())));
                         break;
                         
                     case VECTOR:
-                        parameters.add(new Value(new Vector("Data.txt", ((JComboBox<?>)arg.getRelatedControl()).getSelectedItem().toString())));
+                        parameters.add(new Value(DATA.getVector(((JComboBox<?>)arg.getRelatedControl()).getSelectedItem().toString())));
                         break;
                         
                     case DECIMAL:

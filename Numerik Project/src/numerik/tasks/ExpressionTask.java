@@ -7,7 +7,6 @@ import java.io.FileReader;
 import java.util.*;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import javax.swing.text.BadLocationException;
 
 import numerik.calc.Matrix;
@@ -78,7 +77,7 @@ public class ExpressionTask implements Task, ActionListener, KeyListener, Expres
         engine.addExpressionListener(this);
                 
         txtExpressionInput = new SyntaxTextArea(Arrays.asList(MathPool.FUNCTIONS), 
-                engine.getExpressionEngine().getVariableTable().keySet());
+                engine.getExpressionEngine().getVariableTable().keySet(), true);
         try
         {
             StringBuilder buffer = new StringBuilder();
@@ -97,7 +96,6 @@ public class ExpressionTask implements Task, ActionListener, KeyListener, Expres
             e.printStackTrace();
         }
         
-        txtExpressionInput.setBorder(new LineBorder(Color.DARK_GRAY));
         txtExpressionInput.setBackground(new Color(255, 255, 150));
         txtExpressionInput.addKeyListener(this);
         
