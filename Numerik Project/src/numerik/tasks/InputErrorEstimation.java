@@ -26,7 +26,7 @@ public class InputErrorEstimation implements Task
         taskPane.createJToolBarByArguments(
                 new Argument("Matrix A =", ArgType.MATRIX, 100),
                 new Argument("Matrix \u0394A =", ArgType.MATRIX, 100),
-                Argument.PRECISION, Argument.RUN_BUTTON,
+                    Argument.PRECISION, Argument.RUN_BUTTON,
                 new Argument("Vektor b =", ArgType.VECTOR, 100),
                 new Argument("Vektor \u0394b =", ArgType.VECTOR, 100));
                 
@@ -45,9 +45,10 @@ public class InputErrorEstimation implements Task
         Vector   db = parameters[4].toVector();
 
         BigDecimal kappa = A.norm().multiply( invA.norm() );
-        BigDecimal norm_dAdivA = dA.norm().divide(A.norm(), MathLib.getPrecision(), RoundingMode.HALF_DOWN);
-        BigDecimal norm_dbdivb = db.norm().divide(b.norm(), MathLib.getPrecision(), RoundingMode.HALF_DOWN);
-        BigDecimal result      = kappa.divide(BigDecimal.ONE.subtract(kappa.multiply(norm_dAdivA)), MathLib.getPrecision(), RoundingMode.HALF_DOWN ).multiply(norm_dbdivb.add(norm_dAdivA));     
+        BigDecimal norm_dAdivA = ( dA.norm()).divide( A.norm(), MathLib.getPrecision(), RoundingMode.HALF_DOWN);
+        BigDecimal norm_dbdivb = ( db.norm()).divide( b.norm(), MathLib.getPrecision(), RoundingMode.HALF_DOWN);
+        BigDecimal result      = kappa.divide( BigDecimal.ONE.subtract( kappa.multiply( norm_dAdivA )), MathLib.getPrecision(), RoundingMode.HALF_DOWN )
+                                      .multiply( norm_dbdivb.add(norm_dAdivA) );     
         
         formula.clear();
         

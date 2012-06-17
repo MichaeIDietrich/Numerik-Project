@@ -41,7 +41,7 @@ public final class OutputFrame extends JFrame
         tabMain.addTab("Eingabefehler-Abschätzung", new InputErrorEstimation());
         tabMain.addTab("Jakobi-Iteration", new JacobiIteration());
         tabMain.addTab("Newton Wurzel", new NewtonIteration());
-        tabMain.addTab("Non-Lin-GS", new SolveNonLinearEquation());
+        tabMain.addTab("Non-Lin-GS", new SolveNonLinearEquation2());
         tabMain.addTab("Gauss 4P", new GaussIntegrationOrder4());
         tabMain.addTab("Runge-Kutta-4O", new RungeKuttaOrder4());
         tabMain.addTab("Vektor-Iteration", new VectorIteration());

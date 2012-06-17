@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
+import numerik.calc.FunctionsDiscussion;
 import numerik.calc.MathLib;
 import numerik.calc.Matrix;
 import numerik.calc.Vector;
@@ -27,7 +28,9 @@ public class SolveNonLinearEquation implements Task
     TaskPane taskPane;
     LatexFormula     formula = new LatexFormula();
     LatexFormula iterformula = new LatexFormula();
+    FunctionsDiscussion function = new FunctionsDiscussion();
     Recorder recorder;
+    
     
     @Override
     public void init(OutputFrame frame, TaskPane taskPane)
@@ -53,14 +56,8 @@ public class SolveNonLinearEquation implements Task
                    x = x.setUnitVector(x);
         
         choosenvector = iterx.clone();         
-                   
-//        System.out.println( 
-//                sumVectorValues( getFunctionsValue(parameters[0].toVector().clone())).multiply( sumVectorValues(derive2( parameters[0].toVector().clone() ) )));           
-//        
         
-        
-        
-        // Abbruchbedingung 'obereschranke' bei x.norm() < 2^(-50) < eps
+        // Abbruchbedingung 'obereschranke' bei x.norm() > 2^(-50) > eps
         BigDecimal obereschranke = BigDecimal.ONE.divide(new BigDecimal(2).pow(50), 16, RoundingMode.HALF_UP);
 
         while (( x.norm()).compareTo( obereschranke )==1) 
@@ -76,10 +73,12 @@ public class SolveNonLinearEquation implements Task
             {
                if (e.getLocalizedMessage().equals("/ by zero") || e.getLocalizedMessage().equals("BigInteger divide by zero"))
                {
-                   showManual( "Division durch Null." ); 
+                   showManual( "Division durch Null." );
                }
                else
                {
+                   formula.clear();
+                   recorder.clear();
                    showManual( "" );
                }
                return;
@@ -108,16 +107,42 @@ public class SolveNonLinearEquation implements Task
         formula.addTextUL("Kontraktionsintervall").addNewLine(1);
         formula.addLatexString("|\\Phi(\\vec{x_{0}})| = ").addVector( getKontractionIntervall( choosenvector ) ).addLatexString(" < 1").addNewLine(1);
         formula.addNewLine(3).addTextUL("Start\\;der\\;Iteration").addNewLine(1);
-        formula.addFormula( iterformula ).addNewLine(2);
+        formula.addFormula( iterformula ).addNewLine(2);       
         
-//        FunctionsDiscussion function = new FunctionsDiscussion();
-//        formula.addMatrix( function.getJacobiMatrix( parameters[0].toVector(), 1 ) ); 
-        
+        FunctionsDiscussion function = new FunctionsDiscussion();
+        Vector test = new Vector( 1 );
+        test.set(0, new BigDecimal(1));
+        formula.addVector( function.getKontractionIntervall( test, 5 ) );
         
         taskPane.setViewPortView(new TaskScrollPane(formula));
     }
     
 
+    private void showManual(String error)
+    {
+        formula.clear();
+        
+        formula.addNewLine(4);
+        formula.addTextUL("Mögliche\\;Fehlerursachen").addNewLine(2);
+        if (error.isEmpty()) 
+        {
+            formula.addText("I.    Länge des Vektors stimmt nicht mit der Anzahl der Gleichungen").addNewLine(1);
+            formula.addText("\\;     überein.").addNewLine(1);
+            formula.addText("II.  Gleichung enthält Infinity oder NaN.").addNewLine(1);
+            formula.addText("III. Die größte Fehlerquelle sitzt vor dem Bildschirm.").addNewLine(3);
+        }
+        else 
+        {
+            formula.addText("Grund für Abbruch: "+error).addNewLine(3);
+            formula.addTextUL("Kontraktionsintervall").addNewLine(1);
+            formula.addLatexString("|\\Phi(\\vec{x_{0}})| = ").addVector( getKontractionIntervall( choosenvector ) ).addLatexString(" \\nless 1").addNewLine(3);
+            formula.addFormula( recorder.get() );
+        }
+        
+        taskPane.setViewPortView(new TaskScrollPane(formula)); 
+        return;
+    }
+    
 
     /**
      * Partielles Ableiten aller Funktionen in getFunctionsValue() und speichern
@@ -175,7 +200,7 @@ public class SolveNonLinearEquation implements Task
         Matrix  dfunc = derive(  testvector );
         Matrix ddfunc = derive2( testvector );
         
-        recorder = recorder.getInstance();
+        recorder = Recorder.getInstance();
         recorder.clear();
         recorder.add( 
                 formula.addLatexString("\\frac{").addVector(func).addText(" \\cdot ").addMatrix(ddfunc).addLatexString("}" +
@@ -205,21 +230,7 @@ public class SolveNonLinearEquation implements Task
         return kointv;
     }
     
-    
-    
-    /**
-     * Summiert alle Einträge der Spalte eines Vektors
-     * @param vector
-     * @return
-     */
-    public BigDecimal sumVectorValues(Vector vector)
-    {
-        BigDecimal sum = BigDecimal.ZERO;
-        for(int i=0; i<vector.getLength();i++) sum = sum.add(vector.get(i));
-        return sum;
-    }
-    
-    //###################
+
     public Matrix derive2( Vector vector )
     {
         int  arguments = vector.getLength();
@@ -234,9 +245,7 @@ public class SolveNonLinearEquation implements Task
          dqPlus = new Vector(arguments);
         dqMinus = new Vector(arguments);
               z = new Vector(arguments);
-        
-        
-              
+         
         for(int i=0; i < arguments; i++)
         {
             for(int row=0; row < arguments; row++) 
@@ -251,7 +260,6 @@ public class SolveNonLinearEquation implements Task
                     dqMinus.set(row, new BigDecimal(1.23456789123456789));  // Asymptote der unten eingegebenen Funktionen ist!
                           z.set(row, x[i]);
                 } 
-//                System.out.println(z);
             }
 
             // Berechne df(x,y) = ( f(x + 1/h ) - 2*f(x) + f(x - 1/h ) ) * h²/2
@@ -265,34 +273,8 @@ public class SolveNonLinearEquation implements Task
         }
         return dfunction;
     }
-    //###################
-    
-    
-    
-    
-    private void showManual(String error)
-    {
-        formula.clear();
-        
-        formula.addNewLine(4);
-        formula.addTextUL("Mögliche\\;Fehlerursachen").addNewLine(2);
-        if (error.isEmpty()) 
-        {
-            formula.addText("I.    Länge des Vektors stimmt nicht mit der Anzahl der Gleichungen").addNewLine(1);
-            formula.addText("\\;     überein.").addNewLine(1);
-            formula.addText("II.  Gleichung enthält Infinity oder NaN.").addNewLine(1);
-            formula.addText("III. Die größte Fehlerquelle sitzt vor dem Bildschirm.").addNewLine(3);
-        }
-        else 
-        {
-            formula.addText("Grund für Abbruch: "+error).addNewLine(3);
-            formula.addTextUL("Kontraktionsintervall").addNewLine(1);
-            formula.addLatexString("|\\Phi(\\vec{x_{0}})| = ").addVector( getKontractionIntervall( choosenvector ) ).addLatexString(" \\nless 1").addNewLine(3);
-            formula.addFormula( recorder.get() );
-        }
-        
-        taskPane.setViewPortView(new TaskScrollPane(formula)); 
-    }
+
+
     
     /**
      * Trage hier alle nicht-linearen Gleichungssysteme ein.
@@ -311,13 +293,13 @@ public class SolveNonLinearEquation implements Task
 //        function.set(0, BigDecimal.valueOf(   x[0]*x[0]+x[1]*x[1]+0.6*x[1]-0.16       ).negate());
 //        function.set(1, BigDecimal.valueOf(   x[0]*x[0]-x[1]*x[1]+x[0]-1.6*x[1]-0.14  ).negate());
         
-//        function.set(0, BigDecimal.valueOf(    1-x[1]+Math.sin(x[0])  ).negate());
-//        function.set(1, BigDecimal.valueOf( -1.4-x[0]+Math.cos(x[1])  ).negate());
+//        function.set(0, BigDecimal.valueOf(    3*x[0]+2*x[1]-x[2]    ).negate());
+//        function.set(1, BigDecimal.valueOf(    2*x[0]-2*x[1]+4*x[2]  ).negate());
+//        function.set(2, BigDecimal.valueOf(    -x[0]+0.5*x[1]-x[2]   ).negate());
         
 //        function.set(0, BigDecimal.valueOf(      x[0]*x[0]*x[0]+10*x[1]-x[0]*x[1]  ).negate());
 //        function.set(1, BigDecimal.valueOf( -1.4-x[0]+Math.cos(x[1])               ).negate());
         
-        System.out.println( Math.tan(x[0])-x[0] );
         function.set(0, BigDecimal.valueOf( Math.tan(x[0])-20*x[0] ).negate()); 
         
         return function;
