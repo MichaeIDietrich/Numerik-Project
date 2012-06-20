@@ -124,7 +124,7 @@ public class Options implements Task
                             else if ((matrix.name = JOptionPane.showInputDialog(frame, "Bitte geben Sie den Namen der Matrix ein.", "Matrixname", JOptionPane.QUESTION_MESSAGE)) 
                                     != null && !matrix.name.equals(""))
                             {
-                                new DocumentLoader().addMatrixToFile(matrix, "Data.txt");
+                                MathDataSynchronizer.getInstance().add(matrix);
                                 int index = listModel.getSize();
                                 listModel.add(index, matrix.name);
                                 lstObjects.setSelectedIndex(index);
@@ -143,7 +143,7 @@ public class Options implements Task
                             else if ((vector.name = JOptionPane.showInputDialog(frame, "Bitte geben Sie den Namen des Vektors ein.", "Vektorname", JOptionPane.QUESTION_MESSAGE)) 
                                     != null && !vector.name.equals(""))
                             {
-                                new DocumentLoader().addVectorToFile(vector, "Data.txt");
+                                MathDataSynchronizer.getInstance().add(vector);
                                 int index = listModel.size();
                                 listModel.add(index, vector.name);
                                 lstObjects.setSelectedIndex(index);
