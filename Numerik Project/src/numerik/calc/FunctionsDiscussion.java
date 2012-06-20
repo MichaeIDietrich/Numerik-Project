@@ -177,41 +177,50 @@ public class FunctionsDiscussion
         for(int t=0; t < vector.getLength(); t++) function.set(t, BigDecimal.ZERO);
         
         // Hier die >>Funktionen/ Gleichungssysteme<< eintragen:
-        switch (choose)
+        
+        try 
         {
-            case 1: 
+            switch (choose)
             {
-                function.set(0, BigDecimal.valueOf(   x[0]*x[0]+x[1]*x[1]+0.6*x[1]-0.16       ).negate());
-                function.set(1, BigDecimal.valueOf(   x[0]*x[0]-x[1]*x[1]+x[0]-1.6*x[1]-0.14  ).negate());
-                break;
+                case 1: 
+                {
+                    function.set(0, BigDecimal.valueOf(   x[0]*x[0]+x[1]*x[1]+0.6*x[1]-0.16       ).negate());
+                    function.set(1, BigDecimal.valueOf(   x[0]*x[0]-x[1]*x[1]+x[0]-1.6*x[1]-0.14  ).negate());
+                    break;
+                }
+                case 2: 
+                {
+                    function.set(0, BigDecimal.valueOf(      x[0]*x[0]*x[0]+10*x[1]-x[0]*x[1]  ).negate());
+                    function.set(1, BigDecimal.valueOf( -1.4-x[0]+Math.cos(x[1])               ).negate());
+                    break;
+                }
+                case 3: 
+                {
+                    function.set(0, BigDecimal.valueOf(    1-x[0]+Math.sin(x[1])  ).negate());
+                    function.set(1, BigDecimal.valueOf( -1.4-x[1]+Math.cos(x[0])  ).negate());
+                    break;
+                }
+                case 4: 
+                {
+                    function.set(0, BigDecimal.valueOf(    1-x[1]+Math.sin(x[0])+x[3]       ).negate());
+                    function.set(1, BigDecimal.valueOf( -1.4-x[0]+Math.cos(x[1])-x[2]*x[3]  ).negate());
+                    function.set(2, BigDecimal.valueOf(    1-x[1]+x[2]                      ).negate());
+                    function.set(3, BigDecimal.valueOf(     -x[0]-2.67*x[3]                 ).negate());
+                    break;
+                }
+                case 5: 
+                {
+                    function.set(0, BigDecimal.valueOf(   x[0]*x[0]-0.16    ).negate());
+                    break;
+                }
+                
+                default: break;
             }
-            case 2: 
-            {
-                function.set(0, BigDecimal.valueOf(      x[0]*x[0]*x[0]+10*x[1]-x[0]*x[1]  ).negate());
-                function.set(1, BigDecimal.valueOf( -1.4-x[0]+Math.cos(x[1])               ).negate());
-                break;
-            }
-            case 3: 
-            {
-                function.set(0, BigDecimal.valueOf(    1-x[0]+Math.sin(x[1])  ).negate());
-                function.set(1, BigDecimal.valueOf( -1.4-x[1]+Math.cos(x[0])  ).negate());
-                break;
-            }
-            case 4: 
-            {
-                function.set(0, BigDecimal.valueOf(    1-x[1]+Math.sin(x[0])+x[3]       ).negate());
-                function.set(1, BigDecimal.valueOf( -1.4-x[0]+Math.cos(x[1])-x[2]*x[3]  ).negate());
-                function.set(2, BigDecimal.valueOf(    1-x[1]+x[2]                      ).negate());
-                function.set(3, BigDecimal.valueOf(     -x[0]-2.67*x[3]                 ).negate());
-                break;
-            }
-            case 5: 
-            {
-                function.set(0, BigDecimal.valueOf(   x[0]*x[0]-0.16    ).negate());
-                break;
-            }
-            
-            default: break;
+        
+        }
+        catch (Exception e)
+        {
+            System.out.println("Länge des Startvektors ("+ vector.getLength()+") < Anzahl Gleichungen");
         }
 
         

@@ -127,7 +127,7 @@ public class SolveNonLinearEquation2 implements Task
         }
         formula.addTextUL("Start\\;der\\;Iteration").addNewLine(1);
         formula.addFormula( iterformula ).addNewLine(2);       
-        
+
         taskPane.setViewPortView(new TaskScrollPane(formula));
     }
     

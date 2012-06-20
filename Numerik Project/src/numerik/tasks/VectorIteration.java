@@ -35,6 +35,7 @@ public class VectorIteration implements Task
         // predefinition
         MathLib.enableRound( true );
         MathLib.setRoundingMode( MathLib.EXACT ); 
+        MathLib.setNorm( MathLib.ZEILENSUMMENNORM );
         
         LatexFormula formula  = new LatexFormula();
         Recorder recorder = Recorder.getInstance();
@@ -71,14 +72,14 @@ public class VectorIteration implements Task
         }
 
         formula.addText(matrixName + " = ").addMatrix(matrixInput).addText(", ").addNewLine(3);
-        
         formula.addTextUL("Wähle\\;Startvektor").addNewLine(1);
         formula.addLatexString("y_0").addText(" = ").addVector(startVectorY0).addNewLine(4);
-        
         formula.addTextUL("Prüfe\\;Konvergenzverhalten - \\;existiert\\;eine\\;Lösung?").addNewLine(1);
         formula.addText(" \\rho(" + matrixName + ") ").addLEQ().addMatrixNorm(matrixName).addText(" = "+normM);
         
+        
         MatrixIterationMethods.vectorIteration(matrixInput, startVectorY0, iterations);
+        
         
         if (normM.doubleValue() <= 1 || parameters[3].toBoolean()) 
         {
@@ -92,10 +93,10 @@ public class VectorIteration implements Task
             recorder.clear();
             recorder.add( new LatexFormula().addText("Keine Lösung! Der Lösungsvektor divergiert.") );
         }
-        
+
         formula.addNewLine(4).addTextUL("Beginne\\;mit\\;Iteration").addNewLine(2);
         formula.addLatexString("y_0 = ").addVector( startVectorY0 ).addNewLine(2).addFormula( recorder.get(true) );
-        
+
         taskPane.setViewPortView(new TaskScrollPane(formula));
     }
 }

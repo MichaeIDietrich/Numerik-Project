@@ -930,4 +930,22 @@ public class Matrix {
         buffer.append("]");
         return buffer.toString();
     }
+
+    
+    /**
+     * Spektralnorm einer Matrix
+     * Berechne zunächst: A^(-1) = Inverse und B = Trace von A 
+     * Berechne weiter:   M = A^(-1)(A - B) als (kleine) Abweichung zu A 
+     * und Norm von M als Abschätzung der Konvergenz
+     * @return
+     */
+    public BigDecimal getSpectralnorm()
+    {
+        Matrix matrixB = this.getDiagonalMatrix();
+        Matrix matrixBinversed = matrixB.getInverse();
+        
+        matrixB = this.subtract(matrixB);
+        
+        return matrixBinversed.mult(new BigDecimal(-1)).mult(matrixB).zeilensummenNorm();
+    }
 }

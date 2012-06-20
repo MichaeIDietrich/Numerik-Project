@@ -24,10 +24,13 @@ public final class LUDecomposition implements Task
     {
         this.taskPane = taskPane;
         taskPane.createJToolBarByArguments(
-                new Argument("Matrix:", ArgType.MATRIX, 100),   new Argument("Vektor:", ArgType.VECTOR, 100),
-                new Argument("Normalisieren", ArgType.BOOLEAN), new Argument("Pivot-Strategie", ArgType.BOOLEAN), 
+                new Argument("Matrix:",         ArgType.MATRIX, 100),   
+                new Argument("Vektor:",         ArgType.VECTOR, 100),
+                new Argument("Optimieren",      ArgType.BOOLEAN), 
+                new Argument("Pivot-Strategie", ArgType.BOOLEAN), 
                 new Argument("Norm:", "Zeilensummen-Norm", "Frobenius-Euklid-Norm"), 
-                new Argument("Genauigkeit", ArgType.PRECISION, "5"), Argument.RUN_BUTTON);
+                new Argument("Genauigkeit",     ArgType.PRECISION, "5"), 
+                Argument.RUN_BUTTON);
     }
     
     
@@ -97,24 +100,23 @@ public final class LUDecomposition implements Task
         formula.addText("Löse Gleichung der Form ").addLatexString(A.name+" \\cdot x = "+b.name).addNewLine(2);
         formula.addText(A.name+" = ").addMatrix(A).addText(", "+b.name+" = ").addVector(b).addNewLine(2);
         formula.addFormula( recorder.get( true ) );
-        formula.addText("x = ").addVector(x).addText(",     Exakt: "+A.name+"^{-1}").addSymbol("*").addText(b.name+" = ")
-               .addVector(invAb).addNewLine(2);
+        formula.addText("x = ").addVector(x).addText(",     Exakt: "+A.name+"^{-1}").addSymbol("*").addText(b.name+" = ");
+        formula.addVector(invAb).addNewLine(2);
         formula.addText(A.name+"^{-1} = ").addMatrix(invA).addNewLine(4);
 
         MathLib.setRoundingMode( MathLib.NORMAL );
         formula.addText(A.name).addSymbol("*").addText(A.name+"^{-1} = ").addMatrix(AinvA).addNewLine(3);
         formula.addTextUL("relativer\\;Fehler\\;als\\;obere\\;Schranke:").addNewLine(1);
-        formula.addSymbol("kappa").addText("("+A.name+") = ").addMatrixNorm(A.name).addSymbol("*").addMatrixNorm(A.name+"^{-1}")
-               .addText(" = "+kappa).addNewLine(1);
+        formula.addSymbol("kappa").addText("("+A.name+") = ").addMatrixNorm(A.name).addSymbol("*").addMatrixNorm(A.name+"^{-1}");
+        formula.addText(" = "+kappa).addNewLine(1);
         formula.addLatexString("r = "+A.name+" \\cdot ").addLatexString("x - "+b.name+" = ").addVector(r).addNewLine(1);
-        formula.addRelError("x").addText(" = ").addSymbol("kappa").addText("("+A.name+")").addSymbol("*").addVektornormXdivY("r", b.name, true)
-               .addLatexString("\\;\\;\\le\\;\\;").addText( ""+relFehler ).addNewLine(4);
+        formula.addRelError("x").addText(" = ").addSymbol("kappa").addText("("+A.name+")").addSymbol("*").addVektornormXdivY("r", b.name, true);
+        formula.addLatexString("\\;\\;\\le\\;\\;").addText( ""+relFehler ).addNewLine(4);
         
         formula.addTextUL("relativer\\;Fehler\\;als\\;exakter\\;Wert:").addNewLine(1);
-        formula.addRelError("x").addText(" = ")
-               .addVektornormXdivY("x-"+A.name+"^{-1}"+b.name, A.name+"^{-1}"+b.name, false)
-               .addText(" = "+ x.sub(invAb).norm().divide(invAb.norm(), MathLib.getPrecision(), RoundingMode.HALF_UP) ).addNewLine(2);
-        
+        formula.addRelError("x").addText(" = ");
+        formula.addVektornormXdivY("x-"+A.name+"^{-1}"+b.name, A.name+"^{-1}"+b.name, false);
+        formula.addText(" = "+ x.sub(invAb).norm().divide(invAb.norm(), MathLib.getPrecision(), RoundingMode.HALF_UP) ).addNewLine(2);
         
         taskPane.setViewPortView(new TaskScrollPane(formula));
     }
