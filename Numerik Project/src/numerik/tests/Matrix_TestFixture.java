@@ -17,30 +17,51 @@ public class Matrix_TestFixture
     private Vector V2;
     
     @Test
-    public void add__2x2_Matrizen_addieren()
+    public void add__3x3_Matrizen_addieren()
     {
         MathLib.setPrecision(6);
         
-        M1 = new Matrix(2,2);
-        M2 = new Matrix(2,2);
+        M1 = new Matrix(3,3);
+        M2 = new Matrix(3,3);
         
         M1.set(0, 0, new BigDecimal("1.53578"));
         M1.set(0, 1, new BigDecimal("2.83493"));
+        M1.set(0, 2, new BigDecimal("0"));
+        
         M1.set(1, 0, new BigDecimal("3.86645"));
         M1.set(1, 1, new BigDecimal("4.64339"));
+        M1.set(1, 2, new BigDecimal("9000000"));
+        
+        M1.set(2, 0, new BigDecimal("9400000"));
+        M1.set(2, 1, new BigDecimal("9400000"));
+        M1.set(2, 2, new BigDecimal("9400000"));
         
         M2.set(0, 0, new BigDecimal("5.24865"));
         M2.set(0, 1, new BigDecimal("6.98699"));
+        M2.set(0, 2, new BigDecimal("0.00000001"));
+        
         M2.set(1, 0, new BigDecimal("7.12556"));
         M2.set(1, 1, new BigDecimal("8.18253"));
+        M2.set(1, 2, new BigDecimal("0.00001"));
+        
+        M2.set(2, 0, new BigDecimal("4.332412341"));
+        M2.set(2, 1, new BigDecimal("5.111112"));
+        M2.set(2, 2, new BigDecimal("-9399999"));
         
         
         MAdd = M1.add(M2);
                 
         assertEquals("6.78443", MAdd.get(0,0).toPlainString());
         assertEquals("9.82192", MAdd.get(0,1).toPlainString());
+        assertEquals("0.00000001", MAdd.get(0,2).toPlainString());
+        
         assertEquals("10.992", MAdd.get(1,0).toPlainString());
         assertEquals("12.8259", MAdd.get(1,1).toPlainString());
+        assertEquals("9000000", MAdd.get(1,2).toPlainString());
+        
+        assertEquals("9400000", MAdd.get(2,0).toPlainString());
+        assertEquals("9400010", MAdd.get(2,1).toPlainString());
+        assertEquals("0", MAdd.get(2,2).toPlainString());
     }
     
     @Test
@@ -59,7 +80,7 @@ public class Matrix_TestFixture
         M1.set(1, 2, new BigDecimal("1.94389"));
         M1.set(2, 0, new BigDecimal("1.59453"));
         M1.set(2, 1, new BigDecimal("4.39971"));
-        M1.set(2, 2, new BigDecimal("2.78443"));
+        M1.set(2, 2, new BigDecimal("5.03243"));
         
         
         M2.set(0, 0, new BigDecimal("5.24865"));
@@ -69,8 +90,8 @@ public class Matrix_TestFixture
         M2.set(1, 1, new BigDecimal("8.18253"));
         M2.set(1, 2, new BigDecimal("6.64871"));
         M2.set(2, 0, new BigDecimal("5.18689"));
-        M2.set(2, 1, new BigDecimal("8.81994"));
-        M2.set(2, 2, new BigDecimal("4.98699"));
+        M2.set(2, 1, new BigDecimal("9400000"));
+        M2.set(2, 2, new BigDecimal("9400000"));
         
         MSub = M2.subtract(M1);
         assertEquals("3.71287", MSub.get(0,0).toPlainString());
@@ -80,8 +101,8 @@ public class Matrix_TestFixture
         assertEquals("3.53914", MSub.get(1,1).toPlainString());
         assertEquals("4.70482", MSub.get(1,2).toPlainString());
         assertEquals("3.59236", MSub.get(2,0).toPlainString());
-        assertEquals("4.42023", MSub.get(2,1).toPlainString());
-        assertEquals("2.20256", MSub.get(2,2).toPlainString());
+        assertEquals("9400000", MSub.get(2,1).toPlainString());
+        assertEquals("9399990", MSub.get(2,2).toPlainString());
     }
     
     @Test
@@ -108,6 +129,32 @@ public class Matrix_TestFixture
         assertEquals("33.9274", MMul.get(0,1).toPlainString());
         assertEquals("53.3804", MMul.get(1,0).toPlainString());
         assertEquals("65.0095", MMul.get(1,1).toPlainString());
+    }
+    
+    @Test
+    public void mult__2x2_Matrizen_multiplizieren_extreme_faelle()
+    {
+        MathLib.setPrecision(6);
+        
+        M1 = new Matrix(2,2);
+        M2 = new Matrix(2,2);
+
+        M1.set(0, 0, new BigDecimal("9400000"));
+        M1.set(0, 1, new BigDecimal("1"));
+        M1.set(1, 0, new BigDecimal("1"));
+        M1.set(1, 1, new BigDecimal("1"));
+        
+        M2.set(0, 0, new BigDecimal("0.0000003"));
+        M2.set(0, 1, new BigDecimal("1"));
+        M2.set(1, 0, new BigDecimal("1"));
+        M2.set(1, 1, new BigDecimal("1"));
+        
+        MMul = M1.mult(M2);
+        
+        assertEquals("3.82", MMul.get(0,0).toPlainString());
+        assertEquals("9400000", MMul.get(0,1).toPlainString());
+        assertEquals("1", MMul.get(1,0).toPlainString());
+        assertEquals("2", MMul.get(1,1).toPlainString());
     }
     
     @Test

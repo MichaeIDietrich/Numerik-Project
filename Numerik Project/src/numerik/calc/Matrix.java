@@ -200,7 +200,7 @@ public class Matrix {
         BigDecimal[][] v = new BigDecimal[rows][cols];
         for (int i = 0; i < values.length; i++) {
             for (int j = 0; j < values[i].length; j++) {
-                v[i][j] = MathLib.round(MathLib.round(values[i][j]).add(x.get(i, j)));
+                v[i][j] = MathLib.round(MathLib.round(values[i][j]).add(MathLib.round(x.get(i, j))));
             }
         }
         return new Matrix(v);
@@ -216,7 +216,7 @@ public class Matrix {
         BigDecimal[][] v = new BigDecimal[rows][cols];
         for (int i = 0; i < values.length; i++) {
             for (int j = 0; j < values[i].length; j++) {
-                v[i][j] = MathLib.round(MathLib.round(values[i][j]).multiply(x));
+                v[i][j] = MathLib.round(MathLib.round(values[i][j]).multiply(MathLib.round(x)));
             }
         }
         return new Matrix(v);
