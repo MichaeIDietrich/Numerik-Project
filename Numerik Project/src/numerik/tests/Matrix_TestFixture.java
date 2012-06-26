@@ -4,6 +4,7 @@ import numerik.calc.*;
 import java.math.BigDecimal;
 import org.junit.*;
 import static org.junit.Assert.*;
+import org.junit.rules.*;
 
 public class Matrix_TestFixture
 {
@@ -15,6 +16,9 @@ public class Matrix_TestFixture
     //private Matrix MDiv;
     private Vector V1;
     private Vector V2;
+    
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
     
     @Test
     public void add__3x3_Matrizen_addieren()
@@ -178,6 +182,93 @@ public class Matrix_TestFixture
         MMul = M1.mult(M2);
         
         assertEquals("0.306329",  MMul.get(0, 0).toPlainString());
+    }
+    
+    @Test
+    public void mult__Multipliziere_eine_3x3_Matrix_mit_einem_Skalaren()
+    {
+        M1 = new Matrix(3, 3);
+        
+        M1.set(0, 0, new BigDecimal("1000"));
+        M1.set(0, 1, new BigDecimal("10E+10"));
+        M1.set(0, 2, new BigDecimal("2E-10"));
+        
+        M1.set(1, 0, new BigDecimal("30000"));
+        M1.set(1, 1, new BigDecimal("0.333333"));
+        M1.set(1, 2, new BigDecimal("5"));
+        
+        M1.set(2, 0, new BigDecimal("20000"));
+        M1.set(2, 1, new BigDecimal("-5"));
+        M1.set(2, 2, new BigDecimal("-0.50000005"));
+        
+        M2 = M1.mult(new BigDecimal("99996"));
+        
+        assertEquals("100000000", M2.get(0, 0).toPlainString());
+        assertEquals("10000000000000000", M2.get(0, 1).toPlainString());
+        assertEquals("0.00002", M2.get(0, 2).toPlainString());
+        
+        assertEquals("3000000000", M2.get(1, 0).toPlainString());
+        assertEquals("33330", M2.get(1, 1).toPlainString());
+        assertEquals("500000", M2.get(1, 2).toPlainString());
+        
+        assertEquals("2000000000", M2.get(2, 0).toPlainString());
+        assertEquals("-500000", M2.get(2, 1).toPlainString());
+        assertEquals("-50000", M2.get(2, 2).toPlainString());
+    }
+    
+    @Test
+    public void divide__Dividiere_eine_3x3_Matrix_mit_einem_Skalaren()
+    {
+        M1 = new Matrix(3, 3);
+        
+        M1.set(0, 0, new BigDecimal("1000"));
+        M1.set(0, 1, new BigDecimal("10E+10"));
+        M1.set(0, 2, new BigDecimal("2E-10"));
+        
+        M1.set(1, 0, new BigDecimal("30000"));
+        M1.set(1, 1, new BigDecimal("0.333333"));
+        M1.set(1, 2, new BigDecimal("5"));
+        
+        M1.set(2, 0, new BigDecimal("20000"));
+        M1.set(2, 1, new BigDecimal("-5"));
+        M1.set(2, 2, new BigDecimal("-0.50000005"));
+        
+        M2 = M1.divide(new BigDecimal("0.0000099996"));
+        
+        assertEquals("100000000", M2.get(0, 0).toPlainString());
+        assertEquals("10000000000000000", M2.get(0, 1).toPlainString());
+        assertEquals("0.00002", M2.get(0, 2).toPlainString());
+        
+        assertEquals("3000000000", M2.get(1, 0).toPlainString());
+        assertEquals("33330", M2.get(1, 1).toPlainString());
+        assertEquals("500000", M2.get(1, 2).toPlainString());
+        
+        assertEquals("2000000000", M2.get(2, 0).toPlainString());
+        assertEquals("-500000", M2.get(2, 1).toPlainString());
+        assertEquals("-50000", M2.get(2, 2).toPlainString());
+    }
+    
+    @Test
+    public void divide__Dividiere_eine_3x3_Matrix_mit_einem_Skalaren_Der_Zero_Ist()
+    {
+        thrown.expect(ArithmeticException.class);
+        thrown.expectMessage("Bei der Skalardivision kann nicht durch 0 geteilt werden.");
+        
+        M1 = new Matrix(3, 3);
+        
+        M1.set(0, 0, new BigDecimal("1000"));
+        M1.set(0, 1, new BigDecimal("10E+10"));
+        M1.set(0, 2, new BigDecimal("2E-10"));
+        
+        M1.set(1, 0, new BigDecimal("30000"));
+        M1.set(1, 1, new BigDecimal("0.333333"));
+        M1.set(1, 2, new BigDecimal("5"));
+        
+        M1.set(2, 0, new BigDecimal("20000"));
+        M1.set(2, 1, new BigDecimal("-5"));
+        M1.set(2, 2, new BigDecimal("-0.50000005"));
+        
+        M2 = M1.divide(new BigDecimal("0.000000"));
     }
     
     @Test
