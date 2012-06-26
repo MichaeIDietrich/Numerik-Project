@@ -298,7 +298,7 @@ public class Matrix {
         
         for(int row=0; row<rows; row++) {
             for(int col=0; col<cols; col++) {
-                copy.values[row][col] = values[row][col];
+                copy.values[row][col] = new BigDecimal("0").add(values[row][col]);
             }
         }
         return copy;

@@ -1,9 +1,12 @@
 package numerik.tests;
 
 import numerik.calc.*;
+
 import java.math.BigDecimal;
 import org.junit.*;
+
 import static org.junit.Assert.*;
+
 import org.junit.rules.*;
 
 public class Matrix_TestFixture
@@ -542,6 +545,68 @@ public class Matrix_TestFixture
         M1.set(2, 2, new BigDecimal("-0.50000005"));
         
         M2 = M1.divide(new BigDecimal("0.000000"));
+    }
+    
+    // Beim vorherigen Klonen wurden die BigDecimals nicht geklont !!! gefährlich, deshalb wird ein neues BigDecimal mit dem Initialwert 0 erstellt und der Wert diesem hinzugefügt
+    @Test
+    public void clone__Teste_Cloning_Einer_Matrix()
+    {
+        M1 = new Matrix(3, 3);
+        
+        BigDecimal localBigDecimal1 = new BigDecimal("2");
+        BigDecimal localBigDecimal2 = new BigDecimal("3");
+        BigDecimal localBigDecimal3 = new BigDecimal("4");
+        
+        BigDecimal localBigDecimal4 = new BigDecimal("5");
+        BigDecimal localBigDecimal5 = new BigDecimal("6");
+        BigDecimal localBigDecimal6 = new BigDecimal("7");
+        
+        BigDecimal localBigDecimal7 = new BigDecimal("1000E+10");
+        BigDecimal localBigDecimal8 = new BigDecimal("0.000001");
+        BigDecimal localBigDecimal9 = new BigDecimal("-3000E+10");
+        
+        M1.set(0, 0, localBigDecimal1);
+        M1.set(0, 1, localBigDecimal2);
+        M1.set(0, 2, localBigDecimal3);
+        
+        M1.set(1, 0, localBigDecimal4);
+        M1.set(1, 1, localBigDecimal5);
+        M1.set(1, 2, localBigDecimal6);
+        
+        M1.set(2, 0, localBigDecimal7);
+        M1.set(2, 1, localBigDecimal8);
+        M1.set(2, 2, localBigDecimal9);
+        
+        M2 = M1.clone();
+        
+        assertEquals(3, M2.getCols());
+        assertEquals(3, M2.getRows());
+        
+        assertNotSame(M1, M2);
+        
+        assertEquals("2", M1.get(0, 0).toPlainString());
+        assertEquals("3", M1.get(0, 1).toPlainString());
+        assertEquals("4", M1.get(0, 2).toPlainString());
+        
+        assertEquals("5", M1.get(1, 0).toPlainString());
+        assertEquals("6", M1.get(1, 1).toPlainString());
+        assertEquals("7", M1.get(1, 2).toPlainString());
+        
+        assertEquals("10000000000000", M1.get(2, 0).toPlainString());
+        assertEquals("0.000001", M1.get(2, 1).toPlainString());
+        assertEquals("-30000000000000", M1.get(2, 2).toPlainString());
+        
+        assertNotSame(localBigDecimal1, M2.get(0, 0));
+        assertNotSame(localBigDecimal2, M2.get(0, 1));
+        assertNotSame(localBigDecimal3, M2.get(0, 2));
+        
+        assertNotSame(localBigDecimal4, M2.get(1, 0));
+        assertNotSame(localBigDecimal5, M2.get(1, 1));
+        assertNotSame(localBigDecimal6, M2.get(1, 2));
+        
+        assertNotSame(localBigDecimal7, M2.get(2, 0));
+        assertNotSame(localBigDecimal8, M2.get(2, 1));
+        assertNotSame(localBigDecimal9, M2.get(2, 2));
     }
     
     @Test

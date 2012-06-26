@@ -184,14 +184,14 @@ public final class Vector
     @Override
     public Vector clone()
     {
-        
         Vector copy = new Vector(length);
         copy.name = name;
         
         for (int i = 0; i < length; i++)
         {
-            copy.set(i, get(i));
+            copy.set(i, new BigDecimal("0").add(get(i)));
         }
+        
         return copy;
     }
     

@@ -92,7 +92,7 @@ public class Vector_TestFixture
     }
     
     @Test
-    public void divide_Dividiere_eine_3x3_Matrix_mit_einem_Skalaren()
+    public void divide__Dividiere_eine_3x3_Matrix_mit_einem_Skalaren()
     {
         vectorInput = new Vector(3);
         
@@ -108,7 +108,7 @@ public class Vector_TestFixture
     }
     
     @Test
-    public void divide_Dividiere_eine_3x3_Matrix_mit_einem_Skalaren_Zero()
+    public void divide__Dividiere_eine_3x3_Matrix_mit_einem_Skalaren_Zero()
     {
         thrown.expect(ArithmeticException.class);
         thrown.expectMessage("Bei der Skalardivision kann nicht durch 0 geteilt werden.");
@@ -120,6 +120,34 @@ public class Vector_TestFixture
         vectorInput.set(2, new BigDecimal("-9399999"));
         
         vectorOutput = vectorInput.divide(new BigDecimal("0.00000000"));
+    }
+    
+    // Beim vorherigen Klonen wurden die BigDecimals nicht geklont !!! gefährlich, deshalb wird ein neues BigDecimal mit dem Initialwert 0 erstellt und der Wert diesem hinzugefügt
+    @Test
+    public void clone__Teste_Cloning_Eines_Vektors()
+    {
+        vectorInput = new Vector(3);
+        
+        BigDecimal localBigDecimal1 = new BigDecimal("2");
+        BigDecimal localBigDecimal2 = new BigDecimal("3");
+        BigDecimal localBigDecimal3 = new BigDecimal("4");
+        
+        vectorInput.set(0, localBigDecimal1);
+        vectorInput.set(1, localBigDecimal2);
+        vectorInput.set(2, localBigDecimal3);
+        
+        vectorOutput = vectorInput.clone();
+        
+        assertEquals(3, vectorOutput.getLength());
+        assertNotSame(vectorInput, vectorOutput);
+        
+        assertEquals("2", vectorInput.get(0).toPlainString());
+        assertEquals("3", vectorInput.get(1).toPlainString());
+        assertEquals("4", vectorInput.get(2).toPlainString());
+        
+        assertNotSame(localBigDecimal1, vectorOutput.get(0));
+        assertNotSame(localBigDecimal2, vectorOutput.get(1));
+        assertNotSame(localBigDecimal3, vectorOutput.get(2));
     }
     
     /* Setzen von allgemeinen Werten, die bei jedem Test verwendet werden */
