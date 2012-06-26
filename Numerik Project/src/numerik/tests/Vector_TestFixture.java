@@ -195,6 +195,46 @@ public class Vector_TestFixture
         assertNotSame(localBigDecimal3, vectorOutput.get(2));
     }
     
+    @Test
+    public void toMatrix__Teste_Das_Umwandeln_Eines_Vektors_Untransponiert_In_Eine_Matrix()
+    {
+        Vector v1 = new Vector(new BigDecimal[]
+            {
+                new BigDecimal("1000"),
+                new BigDecimal("10E+9"),
+                new BigDecimal("500000")
+            }, false);
+        
+        matrixOutput = v1.toMatrix();
+        
+        assertEquals(1, matrixOutput.getCols());
+        assertEquals(3, matrixOutput.getRows());
+        
+        assertEquals("1000", matrixOutput.get(0, 0).toPlainString());
+        assertEquals("10000000000", matrixOutput.get(1, 0).toPlainString());
+        assertEquals("500000", matrixOutput.get(2, 0).toPlainString());
+    }
+    
+    @Test
+    public void toMatrix__Teste_Das_Umwandeln_Eines_Vektors_Transponiert_In_Eine_Matrix()
+    {
+        Vector v1 = new Vector(new BigDecimal[]
+            {
+                new BigDecimal("1000"),
+                new BigDecimal("10E+9"),
+                new BigDecimal("500000")
+            }, true);
+        
+        matrixOutput = v1.toMatrix();
+        
+        assertEquals(1, matrixOutput.getRows());
+        assertEquals(3, matrixOutput.getCols());
+        
+        assertEquals("1000", matrixOutput.get(0, 0).toPlainString());
+        assertEquals("10000000000", matrixOutput.get(0, 1).toPlainString());
+        assertEquals("500000", matrixOutput.get(0, 2).toPlainString());
+    }
+    
     /* Setzen von allgemeinen Werten, die bei jedem Test verwendet werden */
     @Before
     public void setUp()
