@@ -9,8 +9,7 @@ import java.util.Arrays;
 
 import javax.swing.*;
 
-import numerik.expression.MathPool;
-import numerik.expression.Value;
+import numerik.expression.*;
 import numerik.tasks.*;
 import numerik.tasks.Argument.ArgType;
 import numerik.ui.dialogs.*;
@@ -94,6 +93,15 @@ public final class TaskPane extends JPanel implements ActionListener
                     break;
                     
                 case DECIMAL:
+                    text = new JTextField(arg.getDefaultValue());
+                    text.setPreferredSize(new Dimension(arg.getControlWidth(), text.getPreferredSize().height));
+                    text.setHorizontalAlignment(JTextField.RIGHT);
+                    arg.setRelatedControl(text);
+                    pnlGroup.add(text);
+                    toolBar.add(pnlGroup);
+                    break;
+                    
+                case DECIMAL_EX:
                     text = new JTextField(arg.getDefaultValue());
                     text.setPreferredSize(new Dimension(arg.getControlWidth(), text.getPreferredSize().height));
                     text.setHorizontalAlignment(JTextField.RIGHT);
@@ -232,36 +240,40 @@ public final class TaskPane extends JPanel implements ActionListener
                 switch (arg.getArgumentType())
                 {
                     case MATRIX:
-                        parameters.add(new Value(DATA.getMatrix(((JComboBox<?>)arg.getRelatedControl()).getSelectedItem().toString())));
+                        parameters.add(new Value(DATA.getMatrix(((JComboBox<?>) arg.getRelatedControl()).getSelectedItem().toString())));
                         break;
                         
                     case VECTOR:
-                        parameters.add(new Value(DATA.getVector(((JComboBox<?>)arg.getRelatedControl()).getSelectedItem().toString())));
+                        parameters.add(new Value(DATA.getVector(((JComboBox<?>) arg.getRelatedControl()).getSelectedItem().toString())));
                         break;
                         
                     case DECIMAL:
-                        parameters.add(new Value(new BigDecimal(((JTextField)arg.getRelatedControl()).getText())));
+                        parameters.add(new Value(new BigDecimal(((JTextField) arg.getRelatedControl()).getText())));
+                        break;
+                        
+                    case DECIMAL_EX:
+                        parameters.add(new ExpressionEngine().solve(((JTextField) arg.getRelatedControl()).getText()));
                         break;
                         
                     case INTEGER:
-                        parameters.add(new Value(new BigDecimal(Integer.parseInt(((JTextField)arg.getRelatedControl()).getText()))));
+                        parameters.add(new Value(new BigDecimal(Integer.parseInt(((JTextField) arg.getRelatedControl()).getText()))));
                         break;
                         
                     case EXPRESSION:
-                        parameters.add(new Value(((SyntaxTextArea)arg.getRelatedControl()).getText()));
+                        parameters.add(new Value(((SyntaxTextArea) arg.getRelatedControl()).getText()));
                         break;
                         
                     case BOOLEAN:
-                        parameters.add(new Value(((JCheckBox)arg.getRelatedControl()).isSelected()));
+                        parameters.add(new Value(((JCheckBox) arg.getRelatedControl()).isSelected()));
                         break;
                         
                     case CHOICE:
-                        parameters.add(new Value(((JComboBox<?>)arg.getRelatedControl()).getSelectedItem().toString()));
+                        parameters.add(new Value(((JComboBox<?>) arg.getRelatedControl()).getSelectedItem().toString()));
                         break;
                         
                     case PRECISION:
                     case DOUBLEPRECISION:
-                        parameters.add(new Value(new BigDecimal((Integer)((JSpinner)arg.getRelatedControl()).getValue())));
+                        parameters.add(new Value(new BigDecimal((Integer)((JSpinner) arg.getRelatedControl()).getValue())));
                 }
             }
             catch (NullPointerException ex)
@@ -271,6 +283,10 @@ public final class TaskPane extends JPanel implements ActionListener
             catch (NumberFormatException ex)
             {
                 throw new IllegalArgumentException(arg.getName() + " entspricht nicht der gewünschten Eingabe.");
+            }
+            catch (InvalidExpressionException ex)
+            {
+                throw new IllegalArgumentException("Überprüfen Sie die Eingabe von " + arg.getName());
             }
         }
         

@@ -4,7 +4,8 @@ import javax.swing.JComponent;
 
 public class Argument
 {
-    public enum ArgType { MATRIX, VECTOR, DECIMAL, INTEGER, EXPRESSION, BOOLEAN, CHOICE, PRECISION, DOUBLEPRECISION, RUN_BUTTON, STOP_BUTTON }
+    public enum ArgType { MATRIX, VECTOR, DECIMAL, DECIMAL_EX, INTEGER, EXPRESSION, BOOLEAN, CHOICE, 
+        PRECISION, DOUBLEPRECISION, RUN_BUTTON, STOP_BUTTON }
     
     public final static Argument RUN_BUTTON = new Argument(null, ArgType.RUN_BUTTON); 
     public final static Argument STOP_BUTTON = new Argument(null, ArgType.STOP_BUTTON); 
