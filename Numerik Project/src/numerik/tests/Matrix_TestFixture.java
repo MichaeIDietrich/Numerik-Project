@@ -972,6 +972,109 @@ public class Matrix_TestFixture
     }
     
     @Test
+    public void solveX__Die_Inputmatrix_ist_nicht_quadratisch()
+    {
+        thrown.expect(ArithmeticException.class);
+        thrown.expectMessage("Die Inputmatrix für die Methode solveX ist nicht quadratisch!");
+        
+        M1 = new Matrix(2, 3);
+        
+        M1.set(0, 0, new BigDecimal("2"));
+        M1.set(0, 1, new BigDecimal("-1"));
+        M1.set(0, 2, new BigDecimal("2"));
+        
+        M1.set(1, 0, new BigDecimal("0"));
+        M1.set(1, 1, new BigDecimal("1.5"));
+        M1.set(1, 2, new BigDecimal("-1"));
+        
+        V1 = new Vector(2);
+        
+        V1.set(0, new BigDecimal("6"));
+        V1.set(1, new BigDecimal("0"));
+        
+        M1.solveX(V1);
+    }
+    
+    @Test
+    public void solveX__Der_InputVektor_ist_null()
+    {
+        thrown.expect(ArithmeticException.class);
+        thrown.expectMessage("Der Inputvektor für die Methode solveX ist Null!");
+        
+        M1 = new Matrix(2, 3);
+        
+        M1.set(0, 0, new BigDecimal("2"));
+        M1.set(0, 1, new BigDecimal("-1"));
+        M1.set(0, 2, new BigDecimal("2"));
+        
+        M1.set(1, 0, new BigDecimal("0"));
+        M1.set(1, 1, new BigDecimal("1.5"));
+        M1.set(1, 2, new BigDecimal("-1"));
+        
+        V1 = null;
+        
+        M1.solveX(V1);
+    }
+    
+    @Test
+    public void solveX__Der_InputVektor_und_die_InputMatrix_haben_nicht_die_gleiche_Laenge()
+    {
+        thrown.expect(ArithmeticException.class);
+        thrown.expectMessage("Die Inputmatrix und der Inputvektor sind nicht gleichlang für die Methode solveX!");
+        
+        M1 = new Matrix(3, 3);
+        
+        M1.set(0, 0, new BigDecimal("2"));
+        M1.set(0, 1, new BigDecimal("-1"));
+        M1.set(0, 2, new BigDecimal("2"));
+        
+        M1.set(1, 0, new BigDecimal("0"));
+        M1.set(1, 1, new BigDecimal("1.5"));
+        M1.set(1, 2, new BigDecimal("-1"));
+        
+        M1.set(2, 0, new BigDecimal("0"));
+        M1.set(2, 1, new BigDecimal("0"));
+        M1.set(2, 2, new BigDecimal("2.3333333333"));
+        
+        V1 = new Vector(2);
+        
+        V1.set(0, new BigDecimal("6"));
+        V1.set(1, new BigDecimal("0"));
+        
+        M1.solveX(V1);
+    }
+    
+    @Test
+    public void solveX__Teste_solver_auf_richtiges_ergebnis()
+    {
+        M1 = new Matrix(3, 3);
+        
+        M1.set(0, 0, new BigDecimal("2"));
+        M1.set(0, 1, new BigDecimal("-1"));
+        M1.set(0, 2, new BigDecimal("2"));
+        
+        M1.set(1, 0, new BigDecimal("-1"));
+        M1.set(1, 1, new BigDecimal("2"));
+        M1.set(1, 2, new BigDecimal("-2"));
+        
+        M1.set(2, 0, new BigDecimal("2"));
+        M1.set(2, 1, new BigDecimal("-2"));
+        M1.set(2, 2, new BigDecimal("5"));
+        
+        V1 = new Vector(3);
+        
+        V1.set(0, new BigDecimal("6"));
+        V1.set(1, new BigDecimal("-3"));
+        V1.set(2, new BigDecimal("13"));
+        
+        V2 = M1.solveX(V1);
+        
+        assertEquals("1", V2.get(0).toPlainString());
+        assertEquals("2", V2.get(1).toPlainString());
+        assertEquals("3", V2.get(2).toPlainString());
+    }
+    
+    @Test
     public void getDiagonalMatrix__diagonalMatrix_Of_A_3x3_Matrix()
     {
         Matrix diagonalMatrix;

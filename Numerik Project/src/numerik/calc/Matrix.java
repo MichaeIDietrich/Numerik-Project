@@ -370,8 +370,23 @@ public class Matrix {
     }
     
 
-    public Vector solveX(Vector b) 
+    public Vector solveX(Vector b) throws ArithmeticException 
     {
+        if (b == null)
+        {
+            throw new ArithmeticException("Der Inputvektor für die Methode solveX ist Null!");
+        }
+        
+        if (!this.isQuadratic())
+        {
+            throw new ArithmeticException("Die Inputmatrix für die Methode solveX ist nicht quadratisch!");
+        }
+        
+        if (this.getRows() != b.getLength())
+        {
+            throw new ArithmeticException("Die Inputmatrix und der Inputvektor sind nicht gleichlang für die Methode solveX!");
+        }
+        
         boolean recorderState = recorder.isActive();
         
         Vector clone_b = b.clone();
@@ -393,8 +408,6 @@ public class Matrix {
     {
         return doLUDecomposition(0, null).item2; // 0 liefert L zurück
     } 
-    
-    
     
     public Matrix getU()
     {
