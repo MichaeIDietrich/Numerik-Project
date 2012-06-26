@@ -918,6 +918,60 @@ public class Matrix_TestFixture
     }
     
     @Test
+    public void getInverse__Die_InputMatrix_ist_nicht_quadratisch()
+    {
+        thrown.expect(ArithmeticException.class);
+        thrown.expectMessage("Die Matrix muss quadratisch sein, um deren Inverse bilden zu können!");
+        
+        M1 = new Matrix(2, 3);
+        
+        M1.set(0, 0, new BigDecimal("2"));
+        M1.set(0, 1, new BigDecimal("-1"));
+        M1.set(0, 2, new BigDecimal("2"));
+        
+        M1.set(1, 0, new BigDecimal("0"));
+        M1.set(1, 1, new BigDecimal("1.5"));
+        M1.set(1, 2, new BigDecimal("-1"));
+        
+        M1.getInverse();
+    }
+    
+    @Test
+    public void getInverse__Teste_Ob_Richtige_Inverse_Der_Matrix_Berechnet_Wird()
+    {
+        M1 = new Matrix(3, 3);
+        
+        M1.set(0, 0, new BigDecimal("5.23"));
+        M1.set(0, 1, new BigDecimal("4"));
+        M1.set(0, 2, new BigDecimal("9"));
+        
+        M1.set(1, 0, new BigDecimal("-777"));
+        M1.set(1, 1, new BigDecimal("0.4"));
+        M1.set(1, 2, new BigDecimal("0.0036"));
+        
+        M1.set(2, 0, new BigDecimal("3"));
+        M1.set(2, 1, new BigDecimal("0"));
+        M1.set(2, 2, new BigDecimal("2345.7"));
+        
+        M2 = M1.getInverse();
+        
+        assertEquals(3, M2.getCols());
+        assertEquals(3, M2.getRows());
+        
+        assertTrue(M2.get(0, 0).toPlainString().startsWith("0.000128613"));
+        assertTrue(M2.get(0, 1).toPlainString().startsWith("-0.00128613"));
+        assertTrue(M2.get(0, 2).toPlainString().startsWith("-0.000000491492"));
+        
+        assertTrue(M2.get(1, 0).toPlainString().startsWith("0.249832"));
+        assertTrue(M2.get(1, 1).toPlainString().startsWith("0.00167792"));
+        assertTrue(M2.get(1, 2).toPlainString().startsWith("-0.0009585607"));
+        
+        assertTrue(M2.get(2, 0).toPlainString().startsWith("-0.0000001644887"));
+        assertTrue(M2.get(2, 1).toPlainString().startsWith("0.000001644887"));
+        assertTrue(M2.get(2, 2).toPlainString().startsWith("0.0004263126"));
+    }
+    
+    @Test
     public void getDiagonalMatrix__diagonalMatrix_Of_A_3x3_Matrix()
     {
         Matrix diagonalMatrix;

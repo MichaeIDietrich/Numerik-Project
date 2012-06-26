@@ -316,7 +316,7 @@ public class Matrix {
     {
         if(!isQuadratic()) 
         {
-            throw new ArithmeticException("Die Matrix muss quadratisch sein");
+            throw new ArithmeticException("Die Matrix muss quadratisch sein, um deren Inverse bilden zu können!");
         }
         
         Matrix inverse = new Matrix( rows, rows ).identity();
