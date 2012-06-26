@@ -635,11 +635,34 @@ public class Matrix {
      * @param vector Vektor, für die die Pivotstrategie angewendet werden soll
      * @param row Anfangsreihe, bei welcher angefangen wird, die Zeilen zu vertauschen
      */
-    public int pivotColumnStrategy( Matrix matrix, Vector b, int row )
+    public int pivotColumnStrategy( Matrix matrix, Vector b, int row ) throws ArithmeticException
     {
+        if (matrix == null)
+        {
+            throw new ArithmeticException("Die Matrix als Input für die pivotColumnStrategy-Methode ist Null!");
+        }
+        
+        if (!matrix.isQuadratic())
+        {
+            throw new ArithmeticException("Die Matrix als Input für die pivotColumnStrategy-Methode ist nicht quadratisch!");
+        }
+        
+        if (b != null)
+        {
+            if (this.getRows() != b.getLength())
+            {
+                throw new ArithmeticException("Die Inputmatrix und der Inputvektor sind nicht gleichlang für die Methode pivotColumnStrategy!");
+            }
+        }
+
+        if (row < 0 || row > (matrix.getRows() - 1))
+        {
+            throw new ArithmeticException("Der row-Input bei der Methode pivotColumnStrategy liegt ausserhalb des gültigen Bereiches!");
+        }
+        
         BigDecimal maximum = BigDecimal.ZERO;
         BigDecimal    temp = BigDecimal.ZERO;
-        int    rowposition = 0;
+        int    rowposition = matrix.rows == (row + 1) ? row : 0;
         boolean    rowswap = false;
         
         for(int t=0; t<matrix.getRows()-row; t++)

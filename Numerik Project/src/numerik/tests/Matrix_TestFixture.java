@@ -972,6 +972,230 @@ public class Matrix_TestFixture
     }
     
     @Test
+    public void pivotColumnStrategy__Die_Input_Row_ist_groesser_als_der_gültige_Bereich()
+    {
+        thrown.expect(ArithmeticException.class);
+        thrown.expectMessage("Der row-Input bei der Methode pivotColumnStrategy liegt ausserhalb des gültigen Bereiches!");
+        
+        M1 = new Matrix(3, 3);
+        
+        M1.set(0, 0, new BigDecimal("5.23"));
+        M1.set(0, 1, new BigDecimal("4"));
+        M1.set(0, 2, new BigDecimal("9"));
+        
+        M1.set(1, 0, new BigDecimal("-777"));
+        M1.set(1, 1, new BigDecimal("0.4"));
+        M1.set(1, 2, new BigDecimal("0.0036"));
+        
+        M1.set(2, 0, new BigDecimal("3"));
+        M1.set(2, 1, new BigDecimal("0"));
+        M1.set(2, 2, new BigDecimal("2345.7"));
+        
+        M1.pivotColumnStrategy(M1, null, 3);
+    }
+    
+    @Test
+    public void pivotColumnStrategy__Die_Input_Row_ist_kleiner_als_der_gültige_Bereich()
+    {
+        thrown.expect(ArithmeticException.class);
+        thrown.expectMessage("Der row-Input bei der Methode pivotColumnStrategy liegt ausserhalb des gültigen Bereiches!");
+        
+        M1 = new Matrix(3, 3);
+        
+        M1.set(0, 0, new BigDecimal("5.23"));
+        M1.set(0, 1, new BigDecimal("4"));
+        M1.set(0, 2, new BigDecimal("9"));
+        
+        M1.set(1, 0, new BigDecimal("-777"));
+        M1.set(1, 1, new BigDecimal("0.4"));
+        M1.set(1, 2, new BigDecimal("0.0036"));
+        
+        M1.set(2, 0, new BigDecimal("3"));
+        M1.set(2, 1, new BigDecimal("0"));
+        M1.set(2, 2, new BigDecimal("2345.7"));
+        
+        M1.pivotColumnStrategy(M1, null, -1);
+    }
+    
+    @Test
+    public void pivotColumnStrategy__Die_Inputmatrix_ist_Null()
+    {
+        thrown.expect(ArithmeticException.class);
+        thrown.expectMessage("Die Matrix als Input für die pivotColumnStrategy-Methode ist Null!");
+        
+        M1 = new Matrix(3, 3);
+        
+        M1.pivotColumnStrategy(null, null, 100000);
+    }
+    
+    @Test
+    public void pivotColumnStrategy__Die_Inputmatrix_und_der_Inputvektor_haben_nicht_die_gleiche_Laenge()
+    {
+        thrown.expect(ArithmeticException.class);
+        thrown.expectMessage("Die Matrix als Input für die pivotColumnStrategy-Methode ist nicht quadratisch!");
+        
+        M1 = new Matrix(2, 3);
+        
+        M1.set(0, 0, new BigDecimal("2"));
+        M1.set(0, 1, new BigDecimal("-1"));
+        M1.set(0, 2, new BigDecimal("2"));
+        
+        M1.set(1, 0, new BigDecimal("0"));
+        M1.set(1, 1, new BigDecimal("1.5"));
+        M1.set(1, 2, new BigDecimal("-1"));
+        
+        V1 = new Vector(2);
+        
+        V1.set(0, new BigDecimal("6"));
+        V1.set(1, new BigDecimal("0"));
+        
+        M1.pivotColumnStrategy(M1, V1, 3000);
+    }
+    
+    @Test
+    public void pivotColumnStrategy__Die_Inputmatrix_ist_nicht_quadratisch()
+    {
+        thrown.expect(ArithmeticException.class);
+        thrown.expectMessage("Die Matrix als Input für die pivotColumnStrategy-Methode ist nicht quadratisch!");
+        
+        M1 = new Matrix(3, 2);
+        
+        M1.set(0, 0, new BigDecimal("5.23"));
+        M1.set(0, 1, new BigDecimal("4"));
+        
+        M1.set(1, 0, new BigDecimal("-777"));
+        M1.set(1, 1, new BigDecimal("0.4"));
+        
+        M1.set(2, 0, new BigDecimal("3"));
+        M1.set(2, 1, new BigDecimal("0"));
+        
+        M1.pivotColumnStrategy(M1, null, 100000);
+    }
+    
+    @Test
+    public void pivotColumnStrategy__Teste_Pivotstrategie_Ohne_Benutzung_Eines_Vektors()
+    {
+        M1 = new Matrix(3, 3);
+        
+        M1.set(0, 0, new BigDecimal("5.23"));
+        M1.set(0, 1, new BigDecimal("4"));
+        M1.set(0, 2, new BigDecimal("9"));
+        
+        M1.set(1, 0, new BigDecimal("-777"));
+        M1.set(1, 1, new BigDecimal("2331"));
+        M1.set(1, 2, new BigDecimal("0.0036"));
+        
+        M1.set(2, 0, new BigDecimal("3"));
+        M1.set(2, 1, new BigDecimal("-2345.7"));
+        M1.set(2, 2, new BigDecimal("0"));
+        
+        int rowValueToSwap = M1.pivotColumnStrategy(M1, null, 1);
+        
+        assertEquals(3, M1.getCols());
+        assertEquals(3, M1.getRows());
+        
+        assertEquals(2, rowValueToSwap);
+        
+        assertEquals("5.23", M1.get(0, 0).toPlainString());
+        assertEquals("4", M1.get(0, 1).toPlainString());
+        assertEquals("9", M1.get(0, 2).toPlainString());
+        
+        assertEquals("3", M1.get(1, 0).toPlainString());
+        assertEquals("-2345.7", M1.get(1, 1).toPlainString());
+        assertEquals("0", M1.get(1, 2).toPlainString());
+        
+        assertEquals("-777", M1.get(2, 0).toPlainString());
+        assertEquals("2331", M1.get(2, 1).toPlainString());
+        assertEquals("0.0036", M1.get(2, 2).toPlainString());
+    }
+    
+    @Test
+    public void pivotColumnStrategy__Teste_Pivotstrategie_Ohne_Benutzung_Eines_Vektors_Letzte_Reihe_Zur_Tauschung()
+    {
+        M1 = new Matrix(3, 3);
+        
+        M1.set(0, 0, new BigDecimal("5.23"));
+        M1.set(0, 1, new BigDecimal("4"));
+        M1.set(0, 2, new BigDecimal("9"));
+        
+        M1.set(1, 0, new BigDecimal("-777"));
+        M1.set(1, 1, new BigDecimal("2331"));
+        M1.set(1, 2, new BigDecimal("0.0036"));
+        
+        M1.set(2, 0, new BigDecimal("3"));
+        M1.set(2, 1, new BigDecimal("-2345.7"));
+        M1.set(2, 2, new BigDecimal("0"));
+        
+        int rowValueToSwap = M1.pivotColumnStrategy(M1, null, 2);
+        
+        assertEquals(3, M1.getCols());
+        assertEquals(3, M1.getRows());
+        
+        assertEquals(2, rowValueToSwap);
+        
+        assertEquals("5.23", M1.get(0, 0).toPlainString());
+        assertEquals("4", M1.get(0, 1).toPlainString());
+        assertEquals("9", M1.get(0, 2).toPlainString());
+        
+        assertEquals("-777", M1.get(1, 0).toPlainString());
+        assertEquals("2331", M1.get(1, 1).toPlainString());
+        assertEquals("0.0036", M1.get(1, 2).toPlainString());
+        
+        assertEquals("3", M1.get(2, 0).toPlainString());
+        assertEquals("-2345.7", M1.get(2, 1).toPlainString());
+        assertEquals("0", M1.get(2, 2).toPlainString());
+    }
+    
+    @Test
+    public void pivotColumnStrategy__Teste_Pivotstrategie_Mit_Benutzung_Eines_Vektors()
+    {
+        M1 = new Matrix(3, 3);
+        
+        M1.set(0, 0, new BigDecimal("5.23"));
+        M1.set(0, 1, new BigDecimal("4"));
+        M1.set(0, 2, new BigDecimal("9"));
+        
+        M1.set(1, 0, new BigDecimal("-777"));
+        M1.set(1, 1, new BigDecimal("25234"));
+        M1.set(1, 2, new BigDecimal("0.0036"));
+        
+        M1.set(2, 0, new BigDecimal("-92134234"));
+        M1.set(2, 1, new BigDecimal("-2345.7"));
+        M1.set(2, 2, new BigDecimal("0"));
+        
+        V1 = new Vector(3);
+        
+        V1.set(0, new BigDecimal("6"));
+        V1.set(1, new BigDecimal("0"));
+        V1.set(2, new BigDecimal("-30"));
+        
+        int rowValueToSwap = M1.pivotColumnStrategy(M1, V1, 0);
+        
+        assertEquals(3, M1.getCols());
+        assertEquals(3, M1.getRows());
+        
+        assertEquals(3, V1.getLength());
+        
+        assertEquals(2, rowValueToSwap);
+        
+        assertEquals("-92134234", M1.get(0, 0).toPlainString());
+        assertEquals("-2345.7", M1.get(0, 1).toPlainString());
+        assertEquals("0", M1.get(0, 2).toPlainString());
+        
+        assertEquals("5.23", M1.get(2, 0).toPlainString());
+        assertEquals("4", M1.get(2, 1).toPlainString());
+        assertEquals("9", M1.get(2, 2).toPlainString());
+        
+        assertEquals("-777", M1.get(1, 0).toPlainString());
+        assertEquals("25234", M1.get(1, 1).toPlainString());
+        assertEquals("0.0036", M1.get(1, 2).toPlainString());
+        
+        assertEquals("-30", V1.get(0).toPlainString());
+        assertEquals("0", V1.get(1).toPlainString());
+        assertEquals("6", V1.get(2).toPlainString());
+    }
+    
+    @Test
     public void solveX__Die_Inputmatrix_ist_nicht_quadratisch()
     {
         thrown.expect(ArithmeticException.class);
@@ -1486,8 +1710,8 @@ public class Matrix_TestFixture
     }
     
     /*
-     * Zur�cksetzen von Werten, um Ausgangszustand eines Tests zu erreichen -->
-     * wichtig f�r weitere Tests
+     * Zurücksetzen von Werten, um Ausgangszustand eines Tests zu erreichen -->
+     * wichtig für weitere Tests
      */
     @After
     public void tearDown()
@@ -1502,6 +1726,5 @@ public class Matrix_TestFixture
         
         MathLib.enableRound(false);
         MathLib.setPivotStrategy(false);
-    }
-    
+    }   
 }
