@@ -610,6 +610,97 @@ public class Matrix_TestFixture
     }
     
     @Test
+    public void getTransposed__Testen_des_Transponierens_einer_2x3_Matrix()
+    {
+        M1 = new Matrix(2, 3);
+        
+        M1.set(0, 0, new BigDecimal("1000"));
+        M1.set(0, 1, new BigDecimal("10E+10"));
+        M1.set(0, 2, new BigDecimal("2E-10"));
+        
+        M1.set(1, 0, new BigDecimal("30000"));
+        M1.set(1, 1, new BigDecimal("0.333333"));
+        M1.set(1, 2, new BigDecimal("5"));
+        
+        M2 = M1.getTransposed();
+        
+        assertEquals(3, M2.getRows());
+        assertEquals(2, M2.getCols());
+        
+        assertEquals("1000", M2.get(0, 0).toPlainString());
+        assertEquals("100000000000", M2.get(1, 0).toPlainString());
+        assertEquals("0.0000000002", M2.get(2, 0).toPlainString());
+        
+        assertEquals("30000", M2.get(0, 1).toPlainString());
+        assertEquals("0.333333", M2.get(1, 1).toPlainString());
+        assertEquals("5", M2.get(2, 1).toPlainString());
+    }
+    
+    @Test
+    public void getTransposed__Testen_des_Transponierens_einer_3x2_Matrix()
+    {
+        M1 = new Matrix(3, 2);
+        
+        M1.set(0, 0, new BigDecimal("1000"));
+        M1.set(0, 1, new BigDecimal("10E+10"));
+        
+        M1.set(1, 0, new BigDecimal("30000"));
+        M1.set(1, 1, new BigDecimal("0.333333"));
+        
+        M1.set(2, 0, new BigDecimal("20000"));
+        M1.set(2, 1, new BigDecimal("-5"));
+        
+        M2 = M1.getTransposed();
+        
+        assertEquals(2, M2.getRows());
+        assertEquals(3, M2.getCols());
+        
+        assertEquals("1000", M2.get(0, 0).toPlainString());
+        assertEquals("100000000000", M2.get(1, 0).toPlainString());
+        
+        assertEquals("30000", M2.get(0, 1).toPlainString());
+        assertEquals("0.333333", M2.get(1, 1).toPlainString());
+        
+        assertEquals("20000", M2.get(0, 2).toPlainString());
+        assertEquals("-5", M2.get(1, 2).toPlainString());
+    }
+    
+    @Test
+    public void getTransposed__Testen_des_Transponierens_einer_3x3_Matrix()
+    {
+        M1 = new Matrix(3, 3);
+        
+        M1.set(0, 0, new BigDecimal("1000"));
+        M1.set(0, 1, new BigDecimal("10E+10"));
+        M1.set(0, 2, new BigDecimal("2E-10"));
+        
+        M1.set(1, 0, new BigDecimal("30000"));
+        M1.set(1, 1, new BigDecimal("0.333333"));
+        M1.set(1, 2, new BigDecimal("5"));
+        
+        M1.set(2, 0, new BigDecimal("20000"));
+        M1.set(2, 1, new BigDecimal("-5"));
+        M1.set(2, 2, new BigDecimal("-0.50000005"));
+        
+        M2 = M1.getTransposed();
+        
+        assertEquals(3, M2.getCols());
+        assertEquals(3, M2.getRows());
+        
+        assertEquals("1000", M2.get(0, 0).toPlainString());
+        assertEquals("100000000000", M2.get(1, 0).toPlainString());
+        assertEquals("0.0000000002", M2.get(2, 0).toPlainString());
+        
+        assertEquals("30000", M2.get(0, 1).toPlainString());
+        assertEquals("0.333333", M2.get(1, 1).toPlainString());
+        assertEquals("5", M2.get(2, 1).toPlainString());
+        
+        assertEquals("20000", M2.get(0, 2).toPlainString());
+        assertEquals("-5", M2.get(1, 2).toPlainString());
+        assertEquals("-0.50000005", M2.get(2, 2).toPlainString());
+    }
+    
+    @Test
     public void getDiagonalMatrix__diagonalMatrix_Of_A_3x3_Matrix()
     {
         Matrix diagonalMatrix;

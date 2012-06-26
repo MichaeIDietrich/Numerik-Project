@@ -166,6 +166,9 @@ public class Vector_TestFixture
     public void tearDown()
     {
         vectorInput = null;
+        vectorInput2 = null;
+        vectorOutput = null;
+        
         matrixInput = null;
         
         matrixOutput = null;
