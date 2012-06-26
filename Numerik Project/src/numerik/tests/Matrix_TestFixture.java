@@ -1,6 +1,7 @@
 package numerik.tests;
 
 import numerik.calc.*;
+import numerik.calc.Matrix.SubstitutionDirection;
 
 import java.math.BigDecimal;
 import org.junit.*;
@@ -762,6 +763,161 @@ public class Matrix_TestFixture
     }
     
     @Test
+    public void substitution__Testen_Der_Vorwaertssubstitution()
+    {
+        M1 = new Matrix(3, 3);
+        
+        M1.set(0, 0, new BigDecimal("1"));
+        M1.set(0, 1, new BigDecimal("0"));
+        M1.set(0, 2, new BigDecimal("0"));
+        
+        M1.set(1, 0, new BigDecimal("-0.5"));
+        M1.set(1, 1, new BigDecimal("1"));
+        M1.set(1, 2, new BigDecimal("0"));
+        
+        M1.set(2, 0, new BigDecimal("1"));
+        M1.set(2, 1, new BigDecimal("-0.666666666"));
+        M1.set(2, 2, new BigDecimal("1"));
+        
+        V1 = new Vector(3);
+        
+        V1.set(0, new BigDecimal("6"));
+        V1.set(1, new BigDecimal("-3"));
+        V1.set(2, new BigDecimal("13"));
+        
+        V2 = M1.substitution(M1, V1, SubstitutionDirection.FORWARD);
+        
+        assertEquals("6", MathLib.stripTrailingZeros(V2.get(0)).toPlainString());
+        assertEquals("0", MathLib.stripTrailingZeros(V2.get(1)).toPlainString());
+        assertEquals("7", MathLib.stripTrailingZeros(V2.get(2)).toPlainString());
+    }
+    
+    @Test
+    public void substitution__Testen_Der_Rückwaertssubstitution()
+    {
+        M1 = new Matrix(3, 3);
+        
+        M1.set(0, 0, new BigDecimal("2"));
+        M1.set(0, 1, new BigDecimal("-1"));
+        M1.set(0, 2, new BigDecimal("2"));
+        
+        M1.set(1, 0, new BigDecimal("0"));
+        M1.set(1, 1, new BigDecimal("1.5"));
+        M1.set(1, 2, new BigDecimal("-1"));
+        
+        M1.set(2, 0, new BigDecimal("0"));
+        M1.set(2, 1, new BigDecimal("0"));
+        M1.set(2, 2, new BigDecimal("2.3333333333"));
+        
+        V1 = new Vector(3);
+        
+        V1.set(0, new BigDecimal("6"));
+        V1.set(1, new BigDecimal("0"));
+        V1.set(2, new BigDecimal("7"));
+        
+        V2 = M1.substitution(M1, V1, SubstitutionDirection.BACKWARD);
+        
+        assertEquals("1", MathLib.stripTrailingZeros(V2.get(0)).toPlainString());
+        assertEquals("2", MathLib.stripTrailingZeros(V2.get(1)).toPlainString());
+        assertEquals("3", MathLib.stripTrailingZeros(V2.get(2)).toPlainString());
+    }
+    
+    @Test
+    public void substitution__Der_Matrix_Input_ist_Null()
+    {
+        thrown.expect(ArithmeticException.class);
+        thrown.expectMessage("Die Matrix als Input für die substitution-Methode ist Null!");
+        
+        M1 = new Matrix(3, 3);
+        
+        V1 = new Vector(3);
+        
+        V1.set(0, new BigDecimal("6"));
+        V1.set(1, new BigDecimal("0"));
+        V1.set(2, new BigDecimal("7"));
+        
+        V2 = M1.substitution(null, V1, SubstitutionDirection.BACKWARD);
+    }
+    
+    @Test
+    public void substitution__Der_Vektor_Input_ist_Null()
+    {
+        thrown.expect(ArithmeticException.class);
+        thrown.expectMessage("Der Vektor als Input für die substitution-Methode ist Null!");
+        
+        M1 = new Matrix(3, 3);
+        
+        M1.set(0, 0, new BigDecimal("2"));
+        M1.set(0, 1, new BigDecimal("-1"));
+        M1.set(0, 2, new BigDecimal("2"));
+        
+        M1.set(1, 0, new BigDecimal("0"));
+        M1.set(1, 1, new BigDecimal("1.5"));
+        M1.set(1, 2, new BigDecimal("-1"));
+        
+        M1.set(2, 0, new BigDecimal("0"));
+        M1.set(2, 1, new BigDecimal("0"));
+        M1.set(2, 2, new BigDecimal("2.3333333333"));
+        
+        V1 = null;
+        
+        V2 = M1.substitution(M1, V1, SubstitutionDirection.BACKWARD);
+    }
+    
+    @Test
+    public void substitution__Der_Matrix_Input_ist_nicht_Quadratisch()
+    {
+        thrown.expect(ArithmeticException.class);
+        thrown.expectMessage("Die Matrix als Input für die substitution-Methode ist nicht quadratisch!");
+        
+        M1 = new Matrix(2, 3);
+        
+        M1.set(0, 0, new BigDecimal("2"));
+        M1.set(0, 1, new BigDecimal("-1"));
+        M1.set(0, 2, new BigDecimal("2"));
+        
+        M1.set(1, 0, new BigDecimal("0"));
+        M1.set(1, 1, new BigDecimal("1.5"));
+        M1.set(1, 2, new BigDecimal("-1"));
+        
+        V1 = new Vector(3);
+        
+        V1.set(0, new BigDecimal("6"));
+        V1.set(1, new BigDecimal("0"));
+        V1.set(2, new BigDecimal("7"));
+        
+        V2 = M1.substitution(M1, V1, SubstitutionDirection.BACKWARD);
+    }
+    
+    @Test
+    public void substitution__Der_Matrix_Input_und_der_Vektor_Input_sind_unterschiedlich_lang()
+    {
+        thrown.expect(ArithmeticException.class);
+        thrown.expectMessage("Die Matrix und der Vektor für die substitution-Methode sind unterschiedlich lang!");
+        
+        M1 = new Matrix(3, 3);
+        
+        M1.set(0, 0, new BigDecimal("2"));
+        M1.set(0, 1, new BigDecimal("-1"));
+        M1.set(0, 2, new BigDecimal("2"));
+        
+        M1.set(1, 0, new BigDecimal("0"));
+        M1.set(1, 1, new BigDecimal("1.5"));
+        M1.set(1, 2, new BigDecimal("-1"));
+        
+        M1.set(2, 0, new BigDecimal("0"));
+        M1.set(2, 1, new BigDecimal("0"));
+        M1.set(2, 2, new BigDecimal("2.3333333333"));
+        
+        V1 = new Vector(2);
+        
+        V1.set(0, new BigDecimal("6"));
+        V1.set(1, new BigDecimal("0"));
+        
+        V2 = M1.substitution(M1, V1, SubstitutionDirection.BACKWARD);
+    }
+    
+    @Test
     public void getDiagonalMatrix__diagonalMatrix_Of_A_3x3_Matrix()
     {
         Matrix diagonalMatrix;
@@ -1044,6 +1200,64 @@ public class Matrix_TestFixture
         assertEquals("1", V1.get(0).toPlainString());
         assertEquals("2", V1.get(1).toPlainString());
         assertEquals("3", V1.get(2).toPlainString());
+    }
+    
+    @Test
+    public void doLUDecomposition__Die_InputMatrix_ist_nicht_quadratisch()
+    {
+        thrown.expect(ArithmeticException.class);
+        thrown.expectMessage("Die Inputmatrix für die LU-Zerlegung ist nicht quadratisch!");
+        
+        MathLib.setPivotStrategy(true);
+        MathLib.setPrecision(5);
+        
+        M1 = new Matrix(2, 3);
+        
+        M1.set(0, 0, new BigDecimal("0.8"));
+        M1.set(0, 1, new BigDecimal("2512.0"));
+        M1.set(0, 2, new BigDecimal("-2516.0"));
+        
+        M1.set(1, 0, new BigDecimal("-1.3"));
+        M1.set(1, 1, new BigDecimal("8.8"));
+        M1.set(1, 2, new BigDecimal("-7.6"));
+        
+        V1 = new Vector(2);
+        
+        V1.set(0, new BigDecimal("6.5"));
+        V1.set(1, new BigDecimal("-5.3"));
+        
+        V2 = M1.getlperm(V1);
+    }
+    
+    @Test
+    public void doLUDecomposition__Die_InputMatrix_und_der_InputVektor_sind_nicht_gleichlang()
+    {
+        thrown.expect(ArithmeticException.class);
+        thrown.expectMessage("Die Inputmatrix und der Inputvektor sind nicht gleichlang für die LU-Zerlegung!");
+        
+        MathLib.setPivotStrategy(true);
+        MathLib.setPrecision(5);
+        
+        M1 = new Matrix(3, 3);
+        
+        M1.set(0, 0, new BigDecimal("2.1"));
+        M1.set(0, 1, new BigDecimal("2512.0"));
+        M1.set(0, 2, new BigDecimal("-2516.0"));
+        
+        M1.set(1, 0, new BigDecimal("-1.3"));
+        M1.set(1, 1, new BigDecimal("8.8"));
+        M1.set(1, 2, new BigDecimal("-7.6"));
+        
+        M1.set(2, 0, new BigDecimal("0.9"));
+        M1.set(2, 1, new BigDecimal("-6.2"));
+        M1.set(2, 2, new BigDecimal("4.6"));
+        
+        V1 = new Vector(2);
+        
+        V1.set(0, new BigDecimal("6.5"));
+        V1.set(1, new BigDecimal("-5.3"));
+        
+        V2 = M1.getlperm(V1);
     }
     
   //toString-Test

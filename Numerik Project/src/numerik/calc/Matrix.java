@@ -426,7 +426,20 @@ public class Matrix {
      * @param which_matrix Gibt an, ob L (=0), U (=1), oder lperm(=2) zurückgegeben wird
      * @param b Ist ein Vektor, der die Ergebnisse von den Gleichungssystemen darstellt
      */
-    private Tuple<Vector, Matrix> doLUDecomposition(int which_matrix, Vector b) {
+    private Tuple<Vector, Matrix> doLUDecomposition(int which_matrix, Vector b) throws ArithmeticException 
+    {
+        if (!this.isQuadratic())
+        {
+            throw new ArithmeticException("Die Inputmatrix für die LU-Zerlegung ist nicht quadratisch!");
+        }
+        
+        if (b != null)
+        {
+            if (this.getRows() != b.getLength())
+            {
+                throw new ArithmeticException("Die Inputmatrix und der Inputvektor sind nicht gleichlang für die LU-Zerlegung!");
+            }
+        }
         
         BigDecimal temp = BigDecimal.ZERO;
         Matrix        U = clone();
@@ -521,8 +534,28 @@ public class Matrix {
      * @param b Vektor, den man Substituieren will
      * @param str gibt an, wie man Substituieren will "forward" oder "backward"
      */
-    public Vector substitution( Matrix matrix, Vector b, SubstitutionDirection direction )
+    public Vector substitution( Matrix matrix, Vector b, SubstitutionDirection direction ) throws ArithmeticException
     {
+        if (matrix == null)
+        {
+            throw new ArithmeticException("Die Matrix als Input für die substitution-Methode ist Null!");
+        }
+        
+        if (b == null)
+        {
+            throw new ArithmeticException("Der Vektor als Input für die substitution-Methode ist Null!");
+        }
+        
+        if (!matrix.isQuadratic())
+        {
+            throw new ArithmeticException("Die Matrix als Input für die substitution-Methode ist nicht quadratisch!");
+        }
+        
+        if (matrix.getRows() != b.getLength())
+        {
+            throw new ArithmeticException("Die Matrix und der Vektor für die substitution-Methode sind unterschiedlich lang!");
+        }
+        
         BigDecimal term0 = BigDecimal.ZERO;
         BigDecimal term1 = BigDecimal.ZERO;
         BigDecimal term2 = BigDecimal.ZERO;

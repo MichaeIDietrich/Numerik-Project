@@ -8,8 +8,7 @@ import numerik.calc.Matrix;
 import numerik.ui.misc.MathDataSynchronizer;
 
 public final class Vector
-{
-    
+{   
     private boolean transposed;
     public   String name;
     private     int length;
@@ -139,31 +138,6 @@ public final class Vector
     {
         return add(vector.mult(new BigDecimal("-1")));
     }
-
-//    Muss noch �berarbeitet werden --> z.B. wegen dem transponierend
-//    public Matrix mult(Matrix matrix)
-//    {
-//        if (length != matrix.getCols())
-//        {
-//            throw new ArithmeticException("Bei der Multiplikations von einem Vektor mit einer Matrix, muss der Vektor die selbe L�nge haben, wie die Matrix an Spalten besitzt.");
-//        }
-//        
-//        BigDecimal[][] v = new BigDecimal[1][matrix.getCols()];
-//        
-//        for (int j = 0; j < matrix.getCols(); j++)
-//        {   
-//            BigDecimal sum = BigDecimal.ZERO;
-//            
-//            for (int j2 = 0; j2 < matrix.getCols(); j2++)
-//            {
-//                sum = MathLib.round( sum.add( MathLib.round( values[j].multiply( matrix.get(j2, j) ))));
-//            }
-//            
-//            v[0][j] = sum;
-//        }
-//        
-//        return new Matrix(v);
-//    }
     
     public Vector getTransposed()
     {
@@ -250,18 +224,6 @@ public final class Vector
         for(int i=0; i < length; i++) x[i] = get(i).doubleValue();
         
         return x;
-    }
-    
-    
-    public Vector getEquationsValue() {
-        
-        Vector   f = new Vector( getLength() );
-        Double[] x = toDoubleArray();                  // x[0] = x_1 ; x[1] = x_2 ; usw.
-        
-        f.set(0, BigDecimal.valueOf(     x[0]*x[0] +x[1]*x[1]       +0.6*x[1] -0.16     ).negate());
-        f.set(1, BigDecimal.valueOf(     x[0]*x[0] -x[1]*x[1] +x[0] -1.6*x[1] -0.14     ).negate());
-        
-        return f;
     }
     
     public Vector setUnitVector(Vector vector) {
