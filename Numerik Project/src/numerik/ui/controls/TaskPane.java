@@ -56,7 +56,8 @@ public final class TaskPane extends JPanel implements ActionListener
         toolBar.setFloatable(false);
         
         // Task ausführen, wenn Enter gedrückt wird
-        frame.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "RUN");
+        frame.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "RUN");
         frame.getRootPane().getActionMap().put("RUN", new AbstractAction()
         {
             @Override
@@ -88,6 +89,10 @@ public final class TaskPane extends JPanel implements ActionListener
             {
                 case MATRIX:
                     combo = new MathDataComboBox(MathDataType.MATRIX, frame);
+                    if (!arg.getDefaultValue().isEmpty())
+                    {
+                        combo.setSelectedItem(arg.getDefaultValue());
+                    }
                     new ToolTippedComboBox(combo, DATA.getMatrixImages(), new Color(255, 255, 150));
                     DATA.addChangeListeners((MathDataComboBoxModel) combo.getModel());
                     combo.setPreferredSize(new Dimension(arg.getControlWidth(), combo.getPreferredSize().height));
@@ -98,6 +103,10 @@ public final class TaskPane extends JPanel implements ActionListener
                     
                 case VECTOR:
                     combo = new MathDataComboBox(MathDataType.VECTOR, frame);
+                    if (!arg.getDefaultValue().isEmpty())
+                    {
+                        combo.setSelectedItem(arg.getDefaultValue());
+                    }
                     new ToolTippedComboBox(combo, DATA.getVectorImages(), new Color(255, 255, 150));
                     DATA.addChangeListeners((MathDataComboBoxModel) combo.getModel());
                     combo.setPreferredSize(new Dimension(arg.getControlWidth(), combo.getPreferredSize().height));
@@ -118,7 +127,8 @@ public final class TaskPane extends JPanel implements ActionListener
                     break;
                     
                 case EXPRESSION:
-                    expression = new SyntaxTextArea(Arrays.asList(MathPool.FUNCTIONS), null, false);
+                    expression = new SyntaxTextArea(Arrays.asList(MathPool.FUNCTIONS), 
+                            Arrays.asList(new String[] { "x", "y", "z" }), false);
                     expression.setPreferredSize(new Dimension(arg.getControlWidth(), expression.getPreferredSize().height));
                     expression.setText(arg.getDefaultValue());
                     arg.setRelatedControl(expression);
@@ -184,6 +194,8 @@ public final class TaskPane extends JPanel implements ActionListener
     
     public void runTask()
     {
+        killTask();
+        
         taskThread = new Thread()
         {
             @Override
@@ -204,8 +216,17 @@ public final class TaskPane extends JPanel implements ActionListener
             }
         };
         
-        taskThread.start(); //asynchron
-//        taskThread.run(); //synchron
+        taskThread.start();
+    }
+    
+    
+    @SuppressWarnings("deprecation")
+    private void killTask()
+    {
+        if (taskThread != null && taskThread.isAlive())
+        {
+            taskThread.stop(); // nicht unbedingt schön, aber was solls
+        }
     }
     
     
@@ -292,22 +313,17 @@ public final class TaskPane extends JPanel implements ActionListener
     }
     
     
-    @SuppressWarnings("deprecation")
     @Override
     public void actionPerformed(ActionEvent e)
     {
         switch (e.getActionCommand())
         {
             case "RUN":
-                System.out.println("run");
                 runTask();
                 break;
                 
             case "STOP":
-                if (taskThread != null && taskThread.isAlive())
-                {
-                    taskThread.stop(); // nicht unbedingt schön, aber was solls
-                }
+                killTask();
         }
     }
     
