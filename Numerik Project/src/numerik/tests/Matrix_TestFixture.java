@@ -4,7 +4,6 @@ import numerik.calc.*;
 import java.math.BigDecimal;
 import org.junit.*;
 import static org.junit.Assert.*;
-import org.junit.rules.*;
 
 public class Matrix_TestFixture
 {
@@ -17,8 +16,7 @@ public class Matrix_TestFixture
     private Vector V1;
     private Vector V2;
     
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
+    private String S1;
     
     @Test
     public void add__3x3_Matrizen_addieren()
@@ -184,93 +182,6 @@ public class Matrix_TestFixture
         MMul = M1.mult(M2);
         
         assertEquals("0.306329",  MMul.get(0, 0).toPlainString());
-    }
-    
-    @Test
-    public void mult__Multipliziere_eine_3x3_Matrix_mit_einem_Skalaren()
-    {
-        M1 = new Matrix(3, 3);
-        
-        M1.set(0, 0, new BigDecimal("1000"));
-        M1.set(0, 1, new BigDecimal("10E+10"));
-        M1.set(0, 2, new BigDecimal("2E-10"));
-        
-        M1.set(1, 0, new BigDecimal("30000"));
-        M1.set(1, 1, new BigDecimal("0.333333"));
-        M1.set(1, 2, new BigDecimal("5"));
-        
-        M1.set(2, 0, new BigDecimal("20000"));
-        M1.set(2, 1, new BigDecimal("-5"));
-        M1.set(2, 2, new BigDecimal("-0.50000005"));
-        
-        M2 = M1.mult(new BigDecimal("99996"));
-        
-        assertEquals("100000000", M2.get(0, 0).toPlainString());
-        assertEquals("10000000000000000", M2.get(0, 1).toPlainString());
-        assertEquals("0.00002", M2.get(0, 2).toPlainString());
-        
-        assertEquals("3000000000", M2.get(1, 0).toPlainString());
-        assertEquals("33330", M2.get(1, 1).toPlainString());
-        assertEquals("500000", M2.get(1, 2).toPlainString());
-        
-        assertEquals("2000000000", M2.get(2, 0).toPlainString());
-        assertEquals("-500000", M2.get(2, 1).toPlainString());
-        assertEquals("-50000", M2.get(2, 2).toPlainString());
-    }
-    
-    @Test
-    public void divide__Dividiere_eine_3x3_Matrix_mit_einem_Skalaren()
-    {
-        M1 = new Matrix(3, 3);
-        
-        M1.set(0, 0, new BigDecimal("1000"));
-        M1.set(0, 1, new BigDecimal("10E+10"));
-        M1.set(0, 2, new BigDecimal("2E-10"));
-        
-        M1.set(1, 0, new BigDecimal("30000"));
-        M1.set(1, 1, new BigDecimal("0.333333"));
-        M1.set(1, 2, new BigDecimal("5"));
-        
-        M1.set(2, 0, new BigDecimal("20000"));
-        M1.set(2, 1, new BigDecimal("-5"));
-        M1.set(2, 2, new BigDecimal("-0.50000005"));
-        
-        M2 = M1.divide(new BigDecimal("0.0000099996"));
-        
-        assertEquals("100000000", M2.get(0, 0).toPlainString());
-        assertEquals("10000000000000000", M2.get(0, 1).toPlainString());
-        assertEquals("0.00002", M2.get(0, 2).toPlainString());
-        
-        assertEquals("3000000000", M2.get(1, 0).toPlainString());
-        assertEquals("33330", M2.get(1, 1).toPlainString());
-        assertEquals("500000", M2.get(1, 2).toPlainString());
-        
-        assertEquals("2000000000", M2.get(2, 0).toPlainString());
-        assertEquals("-500000", M2.get(2, 1).toPlainString());
-        assertEquals("-50000", M2.get(2, 2).toPlainString());
-    }
-    
-    @Test
-    public void divide__Dividiere_eine_3x3_Matrix_mit_einem_Skalaren_Der_Zero_Ist()
-    {
-        thrown.expect(ArithmeticException.class);
-        thrown.expectMessage("Bei der Skalardivision kann nicht durch 0 geteilt werden.");
-        
-        M1 = new Matrix(3, 3);
-        
-        M1.set(0, 0, new BigDecimal("1000"));
-        M1.set(0, 1, new BigDecimal("10E+10"));
-        M1.set(0, 2, new BigDecimal("2E-10"));
-        
-        M1.set(1, 0, new BigDecimal("30000"));
-        M1.set(1, 1, new BigDecimal("0.333333"));
-        M1.set(1, 2, new BigDecimal("5"));
-        
-        M1.set(2, 0, new BigDecimal("20000"));
-        M1.set(2, 1, new BigDecimal("-5"));
-        M1.set(2, 2, new BigDecimal("-0.50000005"));
-        
-        M2 = M1.divide(new BigDecimal("0.000000"));
     }
     
     @Test
@@ -560,20 +471,18 @@ public class Matrix_TestFixture
     
   //toString-Test
     @Test
-    public void toString_3x5_Matrize_Ausgabe_mit_toString()
+    public void toString_3x5_Matrix_Ausgabe_mit_toString()
     {
         MathLib.setPrecision(6);
         
         M1 = new Matrix(3,5);
-        M2 = new Matrix(3,3);
-        
+       
         M1.set(0, 0, new BigDecimal("1.53578"));
         M1.set(0, 1, new BigDecimal("2.83493"));
         M1.set(0, 2, new BigDecimal("0"));
         M1.set(0, 3, new BigDecimal("0"));
         M1.set(0, 4, new BigDecimal("0"));
-        
-        
+                
         M1.set(1, 0, new BigDecimal("3.86645"));
         M1.set(1, 1, new BigDecimal("4.64339"));
         M1.set(1, 2, new BigDecimal("9000000"));
@@ -586,24 +495,38 @@ public class Matrix_TestFixture
         M1.set(2, 3, new BigDecimal("5"));
         M1.set(2, 4, new BigDecimal("5"));
         
+        S1=new String("[[1.53578,2.83493,0,0,0],[3.86645,4.64339,9000000,9,9],[9400000,9400000,9400000,5,5]]");
+        assertEquals(S1,M1.toString());
+    }
+    
+    @Test
+    public void get_und_set__tests_fuer_String()
+    {
+        M1 = new Matrix(3,5);
         
+        M1.set(0, 0, new BigDecimal("2.16578958"));
+        M1.set(0, 1, new BigDecimal("2512.0"));
+        M1.set(0, 2, new BigDecimal("-2516.0"));
         
-//        M2.set(0, 0, new BigDecimal("5.24865"));
-//        M2.set(0, 1, new BigDecimal("6.98699"));
-//        M2.set(0, 2, new BigDecimal("0.00000001"));
-//        
-//        M2.set(1, 0, new BigDecimal("7.12556"));
-//        M2.set(1, 1, new BigDecimal("8.18253"));
-//        M2.set(1, 2, new BigDecimal("0.00001"));
-//        
-//        M2.set(2, 0, new BigDecimal("4.332412341"));
-//        M2.set(2, 1, new BigDecimal("5.111112"));
-//        M2.set(2, 2, new BigDecimal("-9399999"));
-//        
-//        
-        assertEquals("[[1.53578,2.83493,0,0,0],[3.86645,4.64339,9000000,9,9],[9400000,9400000,9400000,5,5]]",M1.toString());
-        //System.out.println(M1.toString());
-        //System.out.println(M2.toString());
+        M1.set(1, 0, new BigDecimal("-1.3"));
+        M1.set(1, 1, new BigDecimal("8.8"));
+        M1.set(1, 2, new BigDecimal("-7.6"));
+        
+        M1.set(2, 0, new BigDecimal("0.9"));
+        M1.set(2, 1, new BigDecimal("-6.2"));
+        M1.set(2, 2, new BigDecimal("4.6")); 
+        
+        assertEquals("2.16578958",  M1.get(0,0).toPlainString());
+        assertEquals("2512.0",      M1.get(0,1).toPlainString());
+        assertEquals("-2516.0",     M1.get(0,2).toPlainString());
+        
+        assertEquals("-1.3",        M1.get(1,0).toPlainString());
+        assertEquals("8.8",         M1.get(1,1).toPlainString());
+        assertEquals("-7.6",        M1.get(1,2).toPlainString());
+        
+        assertEquals("0.9",         M1.get(2,0).toPlainString());
+        assertEquals("-6.2",        M1.get(2,1).toPlainString());
+        assertEquals("4.6",         M1.get(2,2).toPlainString());
     }
     
     /* Setzen von allgemeinen Werten, die bei jedem Test verwendet werden */
