@@ -84,8 +84,9 @@ public final class Vector
         BigDecimal[] v = new BigDecimal[length];
         for (int i = 0; i < values.length; i++)
         {
-            v[i] = MathLib.round(MathLib.round(values[i]).multiply(value));
+            v[i] = MathLib.round(MathLib.round(values[i]).multiply(MathLib.round(value)));
         }
+        
         return new Vector(v);
     }
     
@@ -107,7 +108,7 @@ public final class Vector
     
     public Vector divide(BigDecimal value)
     {
-        if (value == BigDecimal.ZERO)
+        if (BigDecimalExtension.equals(BigDecimal.ZERO, value))
         {
             throw new ArithmeticException("Bei der Skalardivision kann nicht durch 0 geteilt werden.");
         }
