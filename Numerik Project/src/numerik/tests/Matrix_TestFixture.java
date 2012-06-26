@@ -68,7 +68,88 @@ public class Matrix_TestFixture
         assertEquals("0", MAdd.get(2,2).toPlainString());
     }
     
+    @Test
+    public void add__3x3_Matrizen_addieren_mit_einer_3x4_Matrix()
+    {
+        thrown.expect(ArithmeticException.class);
+        thrown.expectMessage("Beide Matrizen müssen der Form mxn entsprechen!");
+        
+        MathLib.setPrecision(6);
+        
+        M1 = new Matrix(3,3);
+        M2 = new Matrix(3,4);
+        
+        M1.set(0, 0, new BigDecimal("1.53578"));
+        M1.set(0, 1, new BigDecimal("2.83493"));
+        M1.set(0, 2, new BigDecimal("0"));
+        
+        M1.set(1, 0, new BigDecimal("3.86645"));
+        M1.set(1, 1, new BigDecimal("4.64339"));
+        M1.set(1, 2, new BigDecimal("9000000"));
+        
+        M1.set(2, 0, new BigDecimal("9400000"));
+        M1.set(2, 1, new BigDecimal("9400000"));
+        M1.set(2, 2, new BigDecimal("9400000"));
+        
+        M2.set(0, 0, new BigDecimal("5.24865"));
+        M2.set(0, 1, new BigDecimal("6.98699"));
+        M2.set(0, 2, new BigDecimal("0.00000001"));
+        M2.set(0, 3, new BigDecimal("0.00000001"));
+        
+        M2.set(1, 0, new BigDecimal("7.12556"));
+        M2.set(1, 1, new BigDecimal("8.18253"));
+        M2.set(1, 2, new BigDecimal("0.00001"));
+        M2.set(1, 3, new BigDecimal("0.00001"));
+        
+        M2.set(2, 0, new BigDecimal("4.332412341"));
+        M2.set(2, 1, new BigDecimal("5.111112"));
+        M2.set(2, 2, new BigDecimal("-9399999"));
+        M2.set(2, 3, new BigDecimal("-9399999"));
+        
+        MAdd = M1.add(M2);
+    }
     
+    @Test
+    public void add__3x3_Matrizen_addieren_mit_einer_4x3_Matrix()
+    {
+        thrown.expect(ArithmeticException.class);
+        thrown.expectMessage("Beide Matrizen müssen der Form mxn entsprechen!");
+        
+        MathLib.setPrecision(6);
+        
+        M1 = new Matrix(3,3);
+        M2 = new Matrix(4,3);
+        
+        M1.set(0, 0, new BigDecimal("1.53578"));
+        M1.set(0, 1, new BigDecimal("2.83493"));
+        M1.set(0, 2, new BigDecimal("0"));
+        
+        M1.set(1, 0, new BigDecimal("3.86645"));
+        M1.set(1, 1, new BigDecimal("4.64339"));
+        M1.set(1, 2, new BigDecimal("9000000"));
+        
+        M1.set(2, 0, new BigDecimal("9400000"));
+        M1.set(2, 1, new BigDecimal("9400000"));
+        M1.set(2, 2, new BigDecimal("9400000"));
+        
+        M2.set(0, 0, new BigDecimal("5.24865"));
+        M2.set(0, 1, new BigDecimal("6.98699"));
+        M2.set(0, 2, new BigDecimal("0.00000001"));   
+        
+        M2.set(1, 0, new BigDecimal("7.12556"));
+        M2.set(1, 1, new BigDecimal("8.18253"));
+        M2.set(1, 2, new BigDecimal("0.00001")); 
+        
+        M2.set(2, 0, new BigDecimal("4.332412341"));
+        M2.set(2, 1, new BigDecimal("5.111112"));
+        M2.set(2, 2, new BigDecimal("-9399999"));
+        
+        M2.set(3, 0, new BigDecimal("4.332412341"));
+        M2.set(3, 1, new BigDecimal("5.111112"));
+        M2.set(3, 2, new BigDecimal("-9399999"));
+        
+        MAdd = M1.add(M2);
+    }
     
     @Test
     public void subtr_3x3_Matrizen_mit_Praezision_6()
@@ -164,6 +245,135 @@ public class Matrix_TestFixture
     }
     
     @Test
+    public void mult__3x2_Matrizen_multiplizieren_mit_2x3_Matrix()
+    {
+        MathLib.setPrecision(8);
+        
+        M1 = new Matrix(3,2);
+        M2 = new Matrix(2,3);
+
+        M1.set(0, 0, new BigDecimal("1"));
+        M1.set(0, 1, new BigDecimal("1"));
+        M1.set(1, 0, new BigDecimal("1"));
+        M1.set(1, 1, new BigDecimal("1"));
+        M1.set(2, 0, new BigDecimal("1"));
+        M1.set(2, 1, new BigDecimal("1"));
+        
+        M2.set(0, 0, new BigDecimal("1"));
+        M2.set(0, 1, new BigDecimal("1"));
+        M2.set(0, 2, new BigDecimal("1"));
+        M2.set(1, 0, new BigDecimal("1"));
+        M2.set(1, 1, new BigDecimal("1"));
+        M2.set(1, 2, new BigDecimal("1"));
+        
+        MMul = M1.mult(M2);
+        
+        assertEquals(3, MMul.getRows());
+        assertEquals(3, MMul.getCols());
+        
+        assertEquals("2", MMul.get(0,0).toPlainString());
+        assertEquals("2", MMul.get(0,1).toPlainString());
+        assertEquals("2", MMul.get(0,1).toPlainString());
+        
+        assertEquals("2", MMul.get(1,0).toPlainString());
+        assertEquals("2", MMul.get(1,1).toPlainString());
+        assertEquals("2", MMul.get(1,2).toPlainString());
+        
+        assertEquals("2", MMul.get(2,0).toPlainString());
+        assertEquals("2", MMul.get(2,1).toPlainString());
+        assertEquals("2", MMul.get(2,2).toPlainString());
+    }
+    
+    @Test
+    public void mult__2x3_Matrizen_multiplizieren_mit_3x2_Matrix()
+    {
+        MathLib.setPrecision(8);
+        
+        M1 = new Matrix(2,3);
+        M2 = new Matrix(3,2);
+
+        M2.set(0, 0, new BigDecimal("1"));
+        M2.set(0, 1, new BigDecimal("1"));
+        M2.set(1, 0, new BigDecimal("1"));
+        M2.set(1, 1, new BigDecimal("1"));
+        M2.set(2, 0, new BigDecimal("1"));
+        M2.set(2, 1, new BigDecimal("1"));
+        
+        M1.set(0, 0, new BigDecimal("1"));
+        M1.set(0, 1, new BigDecimal("1"));
+        M1.set(0, 2, new BigDecimal("1"));
+        M1.set(1, 0, new BigDecimal("1"));
+        M1.set(1, 1, new BigDecimal("1"));
+        M1.set(1, 2, new BigDecimal("1"));
+        
+        MMul = M1.mult(M2);
+        
+        assertEquals(2, MMul.getRows());
+        assertEquals(2, MMul.getCols());
+        
+        assertEquals("3", MMul.get(0,0).toPlainString());
+        assertEquals("3", MMul.get(0,1).toPlainString());
+        assertEquals("3", MMul.get(1,0).toPlainString());
+        assertEquals("3", MMul.get(1,1).toPlainString());
+    }
+    
+    @Test
+    public void mult__2x3_Matrizen_multiplizieren_mit_2x3_Matrix()
+    {
+        thrown.expect(ArithmeticException.class);
+        thrown.expectMessage("Matrizen sind nicht verkettet, Spaltenanzahl der 1. Matrix muss gleich der Zeilenanzahl der 2 Matrix sein.");
+        
+        MathLib.setPrecision(8);
+        
+        M1 = new Matrix(2,3);
+        M2 = new Matrix(2,3);
+
+        M1.set(0, 0, new BigDecimal("1"));
+        M1.set(0, 1, new BigDecimal("1"));
+        M1.set(0, 2, new BigDecimal("1"));
+        M1.set(1, 0, new BigDecimal("1"));
+        M1.set(1, 1, new BigDecimal("1"));
+        M1.set(1, 2, new BigDecimal("1"));
+        
+        M2.set(0, 0, new BigDecimal("1"));
+        M2.set(0, 1, new BigDecimal("1"));
+        M2.set(0, 2, new BigDecimal("1"));
+        M2.set(1, 0, new BigDecimal("1"));
+        M2.set(1, 1, new BigDecimal("1"));
+        M2.set(1, 2, new BigDecimal("1"));
+        
+        MMul = M1.mult(M2);
+    }
+    
+    @Test
+    public void mult__3x2_Matrizen_multiplizieren_mit_3x2_Matrix()
+    {
+        thrown.expect(ArithmeticException.class);
+        thrown.expectMessage("Matrizen sind nicht verkettet, Spaltenanzahl der 1. Matrix muss gleich der Zeilenanzahl der 2 Matrix sein.");
+        
+        MathLib.setPrecision(8);
+        
+        M1 = new Matrix(3,2);
+        M2 = new Matrix(3,2);
+
+        M1.set(0, 0, new BigDecimal("1"));
+        M1.set(0, 1, new BigDecimal("1"));
+        M1.set(1, 0, new BigDecimal("1"));
+        M1.set(1, 1, new BigDecimal("1"));
+        M1.set(2, 0, new BigDecimal("1"));
+        M1.set(2, 1, new BigDecimal("1"));
+        
+        M2.set(0, 0, new BigDecimal("1"));
+        M2.set(0, 1, new BigDecimal("1"));
+        M2.set(1, 0, new BigDecimal("1"));
+        M2.set(1, 1, new BigDecimal("1"));
+        M2.set(2, 0, new BigDecimal("1"));
+        M2.set(2, 1, new BigDecimal("1"));
+        
+        MMul = M1.mult(M2);
+    }
+    
+    @Test
     public void mult__Multiplizere_eine_1x4_Matrix_mit_einer_4x1_Matrix_mit_Prezision_6()
     {
         MathLib.setPrecision(6);
@@ -216,6 +426,66 @@ public class Matrix_TestFixture
         assertEquals("2000000000", M2.get(2, 0).toPlainString());
         assertEquals("-500000", M2.get(2, 1).toPlainString());
         assertEquals("-50000", M2.get(2, 2).toPlainString());
+    }
+    
+    @Test
+    public void mult__Multipliziere_eine_3x3_Matrix_mit_einem_3D_Vektor()
+    {
+        M1 = new Matrix(3, 3);
+        
+        M1.set(0, 0, new BigDecimal("2000005"));
+        M1.set(0, 1, new BigDecimal("2000004"));
+        M1.set(0, 2, new BigDecimal("0"));
+        
+        M1.set(1, 0, new BigDecimal("2"));
+        M1.set(1, 1, new BigDecimal("2"));
+        M1.set(1, 2, new BigDecimal("2"));
+        
+        M1.set(2, 0, new BigDecimal("2"));
+        M1.set(2, 1, new BigDecimal("2"));
+        M1.set(2, 2, new BigDecimal("2"));
+        
+        V1 = new Vector(3);
+        
+        V1.set(0, new BigDecimal("1000001"));
+        V1.set(1, new BigDecimal("1000005"));
+        V1.set(2, new BigDecimal("0.00000100000002"));
+        
+        V1 = M1.mult(V1);
+        
+        assertEquals("4000000000000", V1.get(0).toPlainString());
+        assertEquals("4000000", V1.get(1).toPlainString());
+        assertEquals("4000000", V1.get(2).toPlainString());
+    }
+    
+    @Test
+    public void mult__Multipliziere_eine_3x3_Matrix_mit_einem_4D_Vektor()
+    {
+        thrown.expect(ArithmeticException.class);
+        thrown.expectMessage("Matrizen sind nicht verkettet, Spaltenanzahl der Matrix muss gleich der Länge des Vektors sein.");
+        
+        M1 = new Matrix(3, 3);
+        
+        M1.set(0, 0, new BigDecimal("2000005"));
+        M1.set(0, 1, new BigDecimal("2000004"));
+        M1.set(0, 2, new BigDecimal("0"));
+        
+        M1.set(1, 0, new BigDecimal("2"));
+        M1.set(1, 1, new BigDecimal("2"));
+        M1.set(1, 2, new BigDecimal("2"));
+        
+        M1.set(2, 0, new BigDecimal("2"));
+        M1.set(2, 1, new BigDecimal("2"));
+        M1.set(2, 2, new BigDecimal("2"));
+        
+        V1 = new Vector(4);
+        
+        V1.set(0, new BigDecimal("1000001"));
+        V1.set(1, new BigDecimal("1000005"));
+        V1.set(2, new BigDecimal("0.00000100000002"));
+        V1.set(3, new BigDecimal("0.00000100000002"));
+        
+        V1 = M1.mult(V1);
     }
     
     @Test
