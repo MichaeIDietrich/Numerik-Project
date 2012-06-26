@@ -38,7 +38,7 @@ public final class OutputFrame extends JFrame
         
         TabbedTaskPane tabMain = new TabbedTaskPane(this);
         tabMain.addTab("Expression", new ExpressionTask(), "Eingabebereich, um mathematische Ausdrücke auszuwerten");
-        tabMain.addTab("Dezimal->Binär", new DezimalToBinary());
+        tabMain.addTab("Dezimal->Binär", new DecimalToBinary());
         tabMain.addTab("LU-Zerlegung", new LUDecomposition());
         tabMain.addTab("Eingabefehler-Abschätzung", new InputErrorEstimation());
         tabMain.addTab("Jakobi-Iteration", new JacobiIteration());

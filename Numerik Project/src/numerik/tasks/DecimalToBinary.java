@@ -11,7 +11,7 @@ import numerik.ui.controls.TaskScrollPane;
 import numerik.ui.dialogs.OutputFrame;
 import numerik.ui.misc.LatexFormula;
 
-public class DezimalToBinary implements Task
+public class DecimalToBinary implements Task
 {
     
     TaskPane taskPane;
@@ -22,7 +22,7 @@ public class DezimalToBinary implements Task
     {
         
         this.taskPane = taskPane;
-        taskPane.createJToolBarByArguments(new Argument("Dezimalzahl:", ArgType.DECIMAL_EX, "0.00567", 100), 
+        taskPane.createJToolBarByArguments(new Argument("Dezimalzahl:", ArgType.DECIMAL_EX, "1/3434", 100), 
                                            new Argument("Runde:", "Binär", "Dezimal"),
                                            new Argument("Mantissenlänge:", ArgType.PRECISION, "16"), 
                                                Argument.RUN_BUTTON);
@@ -102,7 +102,7 @@ public class DezimalToBinary implements Task
         // gerundet oder ungerundet?
         if (round) 
         {
-            binary = roundBinary(firstbin+seconbin, values[2].toDecimal().intValue(), firstbin.length());
+            binary = roundBinary( firstbin+seconbin, values[2].toDecimal().intValue(), firstbin.length());
         }
           else
         {
@@ -142,21 +142,29 @@ public class DezimalToBinary implements Task
     public String roundBinary(String binary, int mantisse, int dotpos) {
 
         char[]  binchar = binary.toCharArray();
+        System.out.print(binchar);
+        System.out.println(" | [0,1,2]= "+binchar[0]+binchar[1]+binchar[2]);
         int      length = binary.length()-1;
         int relposition = 0;
         int absposition = 0;
         boolean gocount = false;
         
+        if (mantisse > length) mantisse = length;
+        
         binary = "";
         
         // Zähle Mantisse ab erster gefundener Eins
+        // absposition: erste gefundene Eins
+        // relposition: zähle ab erster gefundener Eins (von links) 
         for (int i=0; i<=length; i++) 
         {
-            if (binchar[i] == '1' && !gocount ) { gocount = true; absposition=i; }
+            absposition=i;
+            
+            if (binchar[i] == '1' && !gocount ) { gocount = true; }
             
             if (gocount) relposition++;
             
-            if (relposition+absposition > 16 || relposition == mantisse)
+            if ( relposition > mantisse || i >= length )
             {
                 relposition = i;
                 break;
@@ -166,17 +174,21 @@ public class DezimalToBinary implements Task
         // Erstelle String nach Mantissengenauigkeit (ungerundet)
         for(int i = 0; i <= relposition; i++)
         {
+            System.out.println(binary);
             binary = binary + binchar[i];
         }
         
-        // lösche alle Folgestellen > position
+        System.out.println(absposition+" | "+ relposition +" | "+ length +" | "+ mantisse);
+        
+        // lösche alle Folgestellen > relposition
         for(int i = relposition+1; i <= length+1; i++)
         {
+            System.out.println(binary);
             binary = binary + "0";
         }
         
         // Wenn Folgestelle nach Mantissenlänge gleich 0 ist, dann runde nicht und gib String zurück
-        if (relposition+1 > 16 || binchar[relposition+1] == '0')
+        if ( mantisse >= length || relposition >= length || binchar[relposition+1] == '0')
         {
             binary = binary.substring(0, dotpos) +"."+ binary.substring(dotpos, length+1);
             return binary;
