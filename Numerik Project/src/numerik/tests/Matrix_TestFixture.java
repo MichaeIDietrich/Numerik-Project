@@ -474,8 +474,8 @@ public class Matrix_TestFixture
     }
     
     /*
-     * Zur�cksetzen von Werten, um Ausgangszustand eines Tests zu erreichen -->
-     * wichtig f�r weitere Tests
+     * Zurücksetzen von Werten, um Ausgangszustand eines Tests zu erreichen -->
+     * wichtig für weitere Tests
      */
     @After
     public void tearDown()
