@@ -224,7 +224,7 @@ public class Matrix {
     
     public Matrix divide(BigDecimal x) throws ArithmeticException
     {  
-        if (x == BigDecimal.ZERO)
+        if (BigDecimalExtension.equals(BigDecimal.ZERO, x))
         {
             throw new ArithmeticException("Bei der Skalardivision kann nicht durch 0 geteilt werden.");
         }
@@ -249,7 +249,7 @@ public class Matrix {
         {
                 for(int j=0; j<vector.getLength(); j++)
                 {
-                    sum = sum.add( MathLib.round( values[zeile][j].multiply( vector.get(j) )));
+                    sum = MathLib.round(sum.add( MathLib.round( values[zeile][j].multiply( MathLib.round(vector.get(j)) ))));
                 }
                 newVector.set(zeile, sum);
                 sum = BigDecimal.ZERO;
