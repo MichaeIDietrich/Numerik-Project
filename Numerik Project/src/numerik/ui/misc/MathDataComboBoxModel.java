@@ -61,6 +61,7 @@ public class MathDataComboBoxModel implements ComboBoxModel<String>, ChangeListe
             return DATA.getMatrixNames().length + 1;
         }
         return DATA.getVectorNames().length + 1;
+        // + 1 wegen, dem letzten Item ('...')
     }
     
     @Override
@@ -72,6 +73,14 @@ public class MathDataComboBoxModel implements ComboBoxModel<String>, ChangeListe
     @Override
     public Object getSelectedItem()
     {
+        // neue Matrix/Vektor anlegen sonst nicht möglich, da '...' keine gültige Matrix/Vektor ist
+        // und es dann als ungültige Auswahl interpretiert wird und dann wieder auf das erste Item
+        // in der Liste springst
+        if ("...".equals(selectedItem))
+        {
+            return "...";
+        }
+        
         if (selectedItem != null)
         {
             if (type == MathDataType.MATRIX && DATA.getMatrix(selectedItem.toString()) == null)

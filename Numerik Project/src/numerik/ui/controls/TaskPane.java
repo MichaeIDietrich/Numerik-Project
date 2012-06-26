@@ -61,6 +61,18 @@ public final class TaskPane extends JPanel implements ActionListener
         JButton button;
         JPanel pnlGroup = null;
         
+        KeyAdapter adapter = new KeyAdapter()
+        {
+            @Override
+            public void keyReleased(KeyEvent e)
+            {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER)
+                {
+                    runTask();
+                }
+            }
+        };
+        
         args = arguments;
         for (Argument arg : arguments)
         {
@@ -96,6 +108,7 @@ public final class TaskPane extends JPanel implements ActionListener
                     text = new JTextField(arg.getDefaultValue());
                     text.setPreferredSize(new Dimension(arg.getControlWidth(), text.getPreferredSize().height));
                     text.setHorizontalAlignment(JTextField.RIGHT);
+                    text.addKeyListener(adapter);
                     arg.setRelatedControl(text);
                     pnlGroup.add(text);
                     toolBar.add(pnlGroup);
@@ -105,6 +118,7 @@ public final class TaskPane extends JPanel implements ActionListener
                     text = new JTextField(arg.getDefaultValue());
                     text.setPreferredSize(new Dimension(arg.getControlWidth(), text.getPreferredSize().height));
                     text.setHorizontalAlignment(JTextField.RIGHT);
+                    text.addKeyListener(adapter);
                     arg.setRelatedControl(text);
                     pnlGroup.add(text);
                     toolBar.add(pnlGroup);
@@ -114,6 +128,7 @@ public final class TaskPane extends JPanel implements ActionListener
                     text = new JTextField(arg.getDefaultValue());
                     text.setPreferredSize(new Dimension(arg.getControlWidth(), text.getPreferredSize().height));
                     text.setHorizontalAlignment(JTextField.RIGHT);
+                    text.addKeyListener(adapter);
                     arg.setRelatedControl(text);
                     pnlGroup.add(text);
                     toolBar.add(pnlGroup);

@@ -1,7 +1,6 @@
 package numerik.expression;
 
 import java.math.*;
-import java.util.HashMap;
 
 import numerik.calc.MathLib;
 import numerik.expression.ExpressionEngine.Token;
@@ -16,19 +15,16 @@ public final class MathPool
         "sqrt", "sin", "cos", "tan", "asin", "acos", "atan", "deg", "rad" };
     
     
-    private static final BigDecimal PI = new BigDecimal("3.14159265358979");
-    
-    private HashMap<String, Value> variables;
+    private VariablesPool variables;
     
     
     public MathPool()
     {
-        variables = new HashMap<String, Value>();
-        variables.put("PI", new Value(PI));
+        variables = new VariablesPool();
     }
     
     
-    public HashMap<String, Value> getVariableTable()
+    public VariablesPool getVariableTable()
     {
         return variables;
     }
@@ -436,7 +432,7 @@ public final class MathPool
                     
                     if (args[0].getType() == ValueType.DECIMAL)
                     {
-                        return new Value(args[0].toDecimal().multiply(new BigDecimal(180)).divide(PI, MathLib.getPrecision(), RoundingMode.HALF_UP));
+                        return new Value(args[0].toDecimal().multiply(new BigDecimal(180)).divide(VariablesPool.PI, MathLib.getPrecision(), RoundingMode.HALF_UP));
                     }
                 }
                 
@@ -450,7 +446,7 @@ public final class MathPool
                     
                     if (args[0].getType() == ValueType.DECIMAL)
                     {
-                        return new Value(args[0].toDecimal().multiply(PI).divide(new BigDecimal(180), MathLib.getPrecision(), RoundingMode.HALF_UP));
+                        return new Value(args[0].toDecimal().multiply(VariablesPool.PI).divide(new BigDecimal(180), MathLib.getPrecision(), RoundingMode.HALF_UP));
                     }
                 }
                 
@@ -459,7 +455,7 @@ public final class MathPool
         
         
         //schauen, ob es sich um eine Matrix oder einen Vektor handelt und die Parameter als Indizes interpretieren 
-        if (variables.containsKey(funcName))
+        if (variables.contains(funcName))
         {
             if (variables.get(funcName).getType() == ValueType.MATRIX && args.length == 2)
             {
@@ -492,7 +488,7 @@ public final class MathPool
     {
         if (var.getType() == ValueType.VARIABLE)
         {
-            if (!variables.containsKey(var.toVariable().toString())) 
+            if (!variables.contains(var.toVariable().toString())) 
             {
                 return new Value("undefiniert");
             }
