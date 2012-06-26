@@ -142,24 +142,19 @@ public class DecimalToBinary implements Task
     public String roundBinary(String binary, int mantisse, int dotpos) {
 
         char[]  binchar = binary.toCharArray();
-        System.out.print(binchar);
-        System.out.println(" | [0,1,2]= "+binchar[0]+binchar[1]+binchar[2]);
-        int      length = binary.length()-1;
+        int      length = binary.length()-1;       
         int relposition = 0;
-        int absposition = 0;
         boolean gocount = false;
-        
-        if (mantisse > length) mantisse = length;
         
         binary = "";
         
+        if (mantisse > length) mantisse = length;
+        
+        
         // Zähle Mantisse ab erster gefundener Eins
-        // absposition: erste gefundene Eins
         // relposition: zähle ab erster gefundener Eins (von links) 
         for (int i=0; i<=length; i++) 
         {
-            absposition=i;
-            
             if (binchar[i] == '1' && !gocount ) { gocount = true; }
             
             if (gocount) relposition++;
@@ -171,21 +166,20 @@ public class DecimalToBinary implements Task
             }
         }
         
+        
         // Erstelle String nach Mantissengenauigkeit (ungerundet)
         for(int i = 0; i <= relposition; i++)
         {
-            System.out.println(binary);
             binary = binary + binchar[i];
         }
         
-        System.out.println(absposition+" | "+ relposition +" | "+ length +" | "+ mantisse);
         
         // lösche alle Folgestellen > relposition
         for(int i = relposition+1; i <= length+1; i++)
         {
-            System.out.println(binary);
             binary = binary + "0";
         }
+        
         
         // Wenn Folgestelle nach Mantissenlänge gleich 0 ist, dann runde nicht und gib String zurück
         if ( mantisse >= length || relposition >= length || binchar[relposition+1] == '0')
@@ -194,9 +188,9 @@ public class DecimalToBinary implements Task
             return binary;
         }
         
-        boolean oflag = true;
         
-        System.out.println("OK."+relposition);
+        boolean oflag = true;
+
         
         // Runde binary
         for(int i = relposition; i >= 0; i--)
@@ -205,16 +199,20 @@ public class DecimalToBinary implements Task
             if (binchar[i]=='1')   binchar[i]='0';
         }
         
-        // Reorganisiere String "binary"
+        
         binary = "";
+        
+        // Reorganisiere String "binary"
         for(int i=0; i<=length; i++)
         {
             if (i>relposition) binchar[i]='0';
             binary = binary + binchar[i];
         }
-                
+           
+        
         // Überlauf? Addiere zu neuem MSB=1 "binary".
         if (oflag == true) { binary = "1"+binary; dotpos++; }
+        
         
         // Füge das Trennzeichen ein
         binary = binary.substring(0, dotpos) +"."+ binary.substring(dotpos, length+1);
@@ -226,7 +224,6 @@ public class DecimalToBinary implements Task
     
     public BigDecimal getDecimal(String binary)
     {
-        
         String[] tempbin = binary.split("\\.");
         char[]  bincharL = tempbin[0].toCharArray();
         char[]  bincharR = tempbin[1].toCharArray();
