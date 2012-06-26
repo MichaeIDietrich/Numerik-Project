@@ -64,6 +64,8 @@ public class Matrix_TestFixture
         assertEquals("0", MAdd.get(2,2).toPlainString());
     }
     
+    
+    
     @Test
     public void subtr_3x3_Matrizen_mit_Praezision_6()
     {
@@ -463,6 +465,54 @@ public class Matrix_TestFixture
         assertEquals("1", V1.get(0).toPlainString());
         assertEquals("2", V1.get(1).toPlainString());
         assertEquals("3", V1.get(2).toPlainString());
+    }
+    
+  //toString-Test
+    @Test
+    public void toString_3x5_Matrize_Ausgabe_mit_toString()
+    {
+        MathLib.setPrecision(6);
+        
+        M1 = new Matrix(3,5);
+        M2 = new Matrix(3,3);
+        
+        M1.set(0, 0, new BigDecimal("1.53578"));
+        M1.set(0, 1, new BigDecimal("2.83493"));
+        M1.set(0, 2, new BigDecimal("0"));
+        M1.set(0, 3, new BigDecimal("0"));
+        M1.set(0, 4, new BigDecimal("0"));
+        
+        
+        M1.set(1, 0, new BigDecimal("3.86645"));
+        M1.set(1, 1, new BigDecimal("4.64339"));
+        M1.set(1, 2, new BigDecimal("9000000"));
+        M1.set(1, 3, new BigDecimal("9"));
+        M1.set(1, 4, new BigDecimal("9"));
+        
+        M1.set(2, 0, new BigDecimal("9400000"));
+        M1.set(2, 1, new BigDecimal("9400000"));
+        M1.set(2, 2, new BigDecimal("9400000"));
+        M1.set(2, 3, new BigDecimal("5"));
+        M1.set(2, 4, new BigDecimal("5"));
+        
+        
+        
+//        M2.set(0, 0, new BigDecimal("5.24865"));
+//        M2.set(0, 1, new BigDecimal("6.98699"));
+//        M2.set(0, 2, new BigDecimal("0.00000001"));
+//        
+//        M2.set(1, 0, new BigDecimal("7.12556"));
+//        M2.set(1, 1, new BigDecimal("8.18253"));
+//        M2.set(1, 2, new BigDecimal("0.00001"));
+//        
+//        M2.set(2, 0, new BigDecimal("4.332412341"));
+//        M2.set(2, 1, new BigDecimal("5.111112"));
+//        M2.set(2, 2, new BigDecimal("-9399999"));
+//        
+//        
+        assertEquals("[[1.53578,2.83493,0,0,0],[3.86645,4.64339,9000000,9,9],[9400000,9400000,9400000,5,5]]",M1.toString());
+        //System.out.println(M1.toString());
+        //System.out.println(M2.toString());
     }
     
     /* Setzen von allgemeinen Werten, die bei jedem Test verwendet werden */
