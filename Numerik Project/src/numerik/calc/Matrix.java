@@ -224,7 +224,7 @@ public class Matrix {
     
     public Matrix divide(BigDecimal x) throws ArithmeticException
     {  
-        if (x == BigDecimal.ZERO)
+        if (BigDecimalExtension.equals(BigDecimal.ZERO, x))
         {
             throw new ArithmeticException("Bei der Skalardivision kann nicht durch 0 geteilt werden.");
         }
