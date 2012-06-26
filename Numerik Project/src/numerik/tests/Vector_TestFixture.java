@@ -122,6 +122,51 @@ public class Vector_TestFixture
         vectorOutput = vectorInput.divide(new BigDecimal("0.00000000"));
     }
     
+    @Test
+    public void norm__Teste_Zeilensummennorm_eines_Vektors()
+    {
+        MathLib.setPrecision(30);
+        MathLib.setNorm(0);
+        
+        Vector v1 = new Vector(3);
+        
+        v1.set(0, new BigDecimal("1000"));
+        v1.set(1, new BigDecimal("10E+9"));
+        v1.set(2, new BigDecimal("500000"));
+        
+        BigDecimal normValue = v1.norm();
+        
+        assertTrue(normValue.toPlainString().startsWith("10000000000"));
+    }
+    
+    @Test
+    public void norm__Teste_Euklidische_Norm_eines_Vektors()
+    {
+        MathLib.setPrecision(30);
+        MathLib.setNorm(1);
+        
+        Vector v1 = new Vector(3);
+        
+        v1.set(0, new BigDecimal("1000"));
+        v1.set(1, new BigDecimal("10E+9"));
+        v1.set(2, new BigDecimal("500000"));
+        
+        BigDecimal normValue = v1.norm();
+        
+        assertTrue(normValue.toPlainString().startsWith("10000000012.5"));
+    }
+    
+    @Test
+    public void norm__Teste_Norm_Die_Noch_Nicht_Existiert()
+    {
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage("MathLib.getNorm() liefert den Wert -1, für welche es keine Normimplementierung für Vektoren gibt.");
+        
+        MathLib.setNorm(-1);
+        
+        new Vector(3).norm();
+    }
+    
     // Beim vorherigen Klonen wurden die BigDecimals nicht geklont !!! gefährlich, deshalb wird ein neues BigDecimal mit dem Initialwert 0 erstellt und der Wert diesem hinzugefügt
     @Test
     public void clone__Teste_Cloning_Eines_Vektors()

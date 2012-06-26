@@ -1,6 +1,7 @@
 package numerik.calc;
 
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.util.Arrays;
 
 import numerik.calc.Matrix;
@@ -195,11 +196,12 @@ public final class Vector
         return copy;
     }
     
-    public BigDecimal norm() {
+    public BigDecimal norm() throws RuntimeException 
+    {
         if( MathLib.getNorm()==0 ) return zsnorm();
         if( MathLib.getNorm()==1 ) return eunorm();
         
-        return null;
+        throw new RuntimeException(MessageFormat.format("'MathLib.getNorm()' liefert den Wert {0}, für welche es keine Normimplementierung für Vektoren gibt.", MathLib.getNorm()));
     }
     
     private BigDecimal zsnorm() {

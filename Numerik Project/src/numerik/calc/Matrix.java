@@ -2,6 +2,7 @@ package numerik.calc;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.MessageFormat;
 import java.util.*;
 
 import numerik.ui.misc.*;
@@ -823,7 +824,7 @@ public class Matrix {
         if( MathLib.getNorm()==0 ) return zeilensummenNorm();
         if( MathLib.getNorm()==1 ) return frobeniusNorm();
         
-        throw new RuntimeException("'MathLib.getNorm()' liefert keinen gültigen Wert");
+        throw new RuntimeException(MessageFormat.format("MathLib.getNorm() liefert den Wert {0}, für welche es keine Normimplementierung für Matrizen gibt.", MathLib.getNorm()));
     }
     
     

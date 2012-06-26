@@ -547,6 +547,67 @@ public class Matrix_TestFixture
         M2 = M1.divide(new BigDecimal("0.000000"));
     }
     
+    @Test
+    public void norm__Testen_Der_Zeilensummennorm_Einer_Matrix()
+    {
+        MathLib.setPrecision(30);
+        MathLib.setNorm(0);
+        
+        M1 = new Matrix(3, 3);
+        
+        M1.set(0, 0, new BigDecimal("1000"));
+        M1.set(0, 1, new BigDecimal("10E+10"));
+        M1.set(0, 2, new BigDecimal("2E-10"));
+        
+        M1.set(1, 0, new BigDecimal("30000"));
+        M1.set(1, 1, new BigDecimal("0.333333"));
+        M1.set(1, 2, new BigDecimal("5"));
+        
+        M1.set(2, 0, new BigDecimal("20000"));
+        M1.set(2, 1, new BigDecimal("-5"));
+        M1.set(2, 2, new BigDecimal("-0.50000005"));
+        
+        BigDecimal normValue = M1.norm();
+        
+        assertEquals("100000001000.0000000002", normValue.toPlainString());
+    }
+    
+    @Test
+    public void norm__Testen_Der_Frobeniusnorm_Einer_Matrix()
+    {
+        MathLib.setPrecision(30);
+        MathLib.setNorm(1);
+        
+        M1 = new Matrix(3, 3);
+        
+        M1.set(0, 0, new BigDecimal("1000"));
+        M1.set(0, 1, new BigDecimal("10E+9"));
+        M1.set(0, 2, new BigDecimal("500000"));
+        
+        M1.set(1, 0, new BigDecimal("30000"));
+        M1.set(1, 1, new BigDecimal("0.333333"));
+        M1.set(1, 2, new BigDecimal("5"));
+        
+        M1.set(2, 0, new BigDecimal("20000"));
+        M1.set(2, 1, new BigDecimal("-5"));
+        M1.set(2, 2, new BigDecimal("-0.50000005"));
+        
+        BigDecimal normValue = M1.norm();
+        
+        assertTrue(normValue.toPlainString().startsWith("10000000012.5"));
+    }
+    
+    @Test
+    public void norm__Teste_Norm_Die_Noch_Nicht_Existiert()
+    {
+        thrown.expect(RuntimeException.class);
+        thrown.expectMessage("MathLib.getNorm() liefert den Wert -1, für welche es keine Normimplementierung für Matrizen gibt.");
+        
+        MathLib.setNorm(-1);
+        
+        new Matrix(3, 3).norm();
+    }
+    
     // Beim vorherigen Klonen wurden die BigDecimals nicht geklont !!! gefährlich, deshalb wird ein neues BigDecimal mit dem Initialwert 0 erstellt und der Wert diesem hinzugefügt
     @Test
     public void clone__Teste_Cloning_Einer_Matrix()
