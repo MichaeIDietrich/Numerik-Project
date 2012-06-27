@@ -30,6 +30,7 @@ public final class LUDecomposition implements Task
                 new Argument("Pivot-Strategie", ArgType.BOOLEAN),
                 new Argument("Norm:", "Zeilensummen-Norm", "Frobenius-Euklid-Norm"),
                 new Argument("Genauigkeit",     ArgType.PRECISION, "16"),
+                new Argument("Hilfe", ArgType.BOOLEAN),
                 Argument.RUN_BUTTON);
     }
     
@@ -55,6 +56,7 @@ public final class LUDecomposition implements Task
         Vector b = parameters[1].toVector();
         Matrix trueA = A.clone();
         Vector trueb = b.clone();
+        boolean hilfe = parameters[6].toBoolean();
         
         A.mult(b);     // Prüfe: Matrix und Vektor verkettet? -> sonst Fehler.
         

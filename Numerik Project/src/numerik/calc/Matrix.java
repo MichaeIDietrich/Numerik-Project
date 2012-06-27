@@ -457,6 +457,7 @@ public class Matrix {
         BigDecimal temp = BigDecimal.ZERO;
         Matrix        U = clone();
         Matrix        L = identity();
+        formula.clear();
         
         //Reihenfolge der Vertauschung bei der Pivotstrategie(Permutationen)
         Vector    lperm = new Vector(rows);

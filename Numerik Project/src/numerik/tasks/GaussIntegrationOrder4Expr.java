@@ -35,7 +35,7 @@ public final class GaussIntegrationOrder4Expr implements Task
         this.taskPane = taskPane;
         
         taskPane.createJToolBarByArguments(
-                new Argument("Funktion:", ArgType.EXPRESSION, "((1-6⋅pow(E,-x))-1.6⋅pow(E,-2)))/pow((x-2)⋅(x-2),1.0/3.0)", 450),
+                new Argument("Funktion:", ArgType.EXPRESSION, "((1-6⋅pow(E,-x))-(1-6⋅pow(E,-2)))/pow((x-2)⋅(x-2),1.0/3.0)", 450),
                 new Argument("Obere Grenze:",   ArgType.DECIMAL, "10"), 
                 new Argument("Untere Grenze:",  ArgType.DECIMAL, "6"), 
                 new Argument("Mantissenlänge:", ArgType.DOUBLEPRECISION, "5"), Argument.RUN_BUTTON);

@@ -57,12 +57,6 @@ public class SolveNonLinearEquation implements Task
         
         chosenvector = iterx.clone();
         
-//        System.out.println( 
-//                sumVectorValues( getFunctionsValue(parameters[0].toVector().clone())).multiply( sumVectorValues(derive2( parameters[0].toVector().clone() ) )));           
-//        
-        
-        
-        
         // Abbruchbedingung 'obereschranke' bei x.norm() > 2^(-50) > eps
         BigDecimal obereschranke = BigDecimal.ONE.divide(new BigDecimal(2).pow(50), 16, RoundingMode.HALF_UP);
 

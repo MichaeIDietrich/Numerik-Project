@@ -26,6 +26,7 @@ public class VectorIteration implements Task
                                            new Argument("Startvektor:", ArgType.VECTOR, 100),
                                            new Argument("n = ", ArgType.PRECISION, "20"),
                                            new Argument("Mant = ", ArgType.PRECISION,  "7"),
+                                           new Argument("Hilfe", ArgType.BOOLEAN), 
                                                Argument.RUN_BUTTON);
     }
     
@@ -46,6 +47,7 @@ public class VectorIteration implements Task
         int       iterations = parameters[5].toDecimal().intValue();
         Vector startVectorY0 = parameters[4].toVector();
         Matrix A = parameters[0].toMatrix();
+        Boolean hilfe = parameters[0].toBoolean();
         
         String matrixName = A.name;
         Matrix matrixInput = A;
