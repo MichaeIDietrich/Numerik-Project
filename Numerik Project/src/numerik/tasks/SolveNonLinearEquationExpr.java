@@ -64,7 +64,6 @@ public final class SolveNonLinearEquationExpr implements Task
         
         Vector iterx = parameters[4].toVector();
         int maxiters = parameters[3].toDecimal().intValue();
-        System.out.println(maxiters);
         // setze Vector mit Funktionen
         functions = new ArrayList<>();
         

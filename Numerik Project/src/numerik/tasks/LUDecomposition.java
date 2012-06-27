@@ -17,18 +17,19 @@ import numerik.ui.misc.Recorder;
 public final class LUDecomposition implements Task
 {
     private TaskPane taskPane;
-
+    
+    
     @Override
     public void init(OutputFrame frame, TaskPane taskPane)
     {
         this.taskPane = taskPane;
         taskPane.createJToolBarByArguments(
-                new Argument("Matrix:",         ArgType.MATRIX, 100),   
+                new Argument("Matrix:",         ArgType.MATRIX, 100),
                 new Argument("Vektor:",         ArgType.VECTOR, 100),
-                new Argument("Optimieren",      ArgType.BOOLEAN), 
-                new Argument("Pivot-Strategie", ArgType.BOOLEAN), 
-                new Argument("Norm:", "Zeilensummen-Norm", "Frobenius-Euklid-Norm"), 
-                new Argument("Genauigkeit",     ArgType.PRECISION, "5"),
+                new Argument("Optimieren",      ArgType.BOOLEAN),
+                new Argument("Pivot-Strategie", ArgType.BOOLEAN),
+                new Argument("Norm:", "Zeilensummen-Norm", "Frobenius-Euklid-Norm"),
+                new Argument("Genauigkeit",     ArgType.PRECISION, "16"),
                 new Argument("Hilfe", ArgType.BOOLEAN),
                 Argument.RUN_BUTTON);
     }
@@ -40,26 +41,25 @@ public final class LUDecomposition implements Task
         Recorder recorder = Recorder.getInstance();
         recorder.setActive(true);
         recorder.clear();
-        
         String name;
         
         // ####### Alle Berechnungen werden mit niedriger Präzision ausgeführt #########
-
+        
         MathLib.setPrecision( parameters[5].toDecimal().intValue() );     // Mantissenlänge
-
+        
         MathLib.setPivotStrategy( parameters[3].toBoolean() );
         MathLib.setRoundingMode( MathLib.EXACT );                         // EXACT = Mantissen genau, NORMAL = Nachkomma genau
         MathLib.setNorm( parameters[4].toText().equals("Zeilensummen-Norm") ? MathLib.ZEILENSUMMENNORM : MathLib.FROBENIUSEUKLIDNORM );  // ZEILENSUMMENNORM oder FROBENIUSEUKILDNORM
         MathLib.setInversePrecision( 20 );
-
+        
         Matrix A = parameters[0].toMatrix();
         Vector b = parameters[1].toVector();
         Matrix trueA = A.clone();
         Vector trueb = b.clone();
-        Boolean hilfe = parameters[6].toBoolean();
+        boolean hilfe = parameters[6].toBoolean();
         
         A.mult(b);     // Prüfe: Matrix und Vektor verkettet? -> sonst Fehler.
-
+        
         if (parameters[2].toBoolean())
         {
             MathLib.enableRound( false );
@@ -100,17 +100,6 @@ public final class LUDecomposition implements Task
         
         formula.addNewLine(2);
         formula.addText("Löse Gleichung der Form ").addLatexString(A.name+" \\cdot x = "+b.name).addNewLine(2);
-        
-        if (hilfe)
-        {
-          formula.addText("  - zerlege dazu $"+A.name+"\\cdot{x} = "+b.name+"$  in  $(L \\cdot U)\\cdot{x} = "+b.name+"$ ").addNewLine(1); 
-          formula.addText("  - substituiere nach Auflösen der Klammern $U\\cdot{x}$ mit $y$.").addNewLine(1);
-          formula.addText("  - löse zuerst    'vorwärts': (1) $L\\cdot{y}="+b.name+"$").addNewLine(1);
-          formula.addText("  - und danach 'rückwärts': (2) $U\\cdot{x}=y$.").addNewLine(1);
-          formula.addNewLine(2);
-        }
-        
-        formula.addTextUL("gegeben").addNewLine(1);
         formula.addText(A.name+" = ").addMatrix(A).addText(", "+b.name+" = ").addVector(b).addNewLine(2);
         formula.addFormula( recorder.get( true ) );
         formula.addText("x = ").addVector(x).addText(",     Exakt: "+A.name+"^{-1}").addSymbol("*").addText(b.name+" = ");
