@@ -36,7 +36,7 @@ public final class OutputFrame extends JFrame
         
         initLookAndFeel();
         
-        TabbedTaskPane tabMain = new TabbedTaskPane(this);
+        final TabbedTaskPane tabMain = new TabbedTaskPane(this);
         tabMain.addTab("Expression", new ExpressionTask(), "Eingabebereich, um mathematische Ausdrücke auszuwerten");
         tabMain.addTab("Dezimal->Binär", new DezimalToBinary());
         tabMain.addTab("LU-Zerlegung", new LUDecomposition());
@@ -44,9 +44,11 @@ public final class OutputFrame extends JFrame
         tabMain.addTab("Jakobi-Iteration", new JacobiIteration());
         tabMain.addTab("Newton Wurzel", new NewtonIteration());
         tabMain.addTab("Non-Lin-GS", new SolveNonLinearEquation2());
+        tabMain.addTab("Non-Lin-GS (Expr)", new SolveNonLinearEquation3());
         tabMain.addTab("Gauss 4P", new GaussIntegrationOrder4());
         tabMain.addTab("Runge-Kutta-4O", new RungeKuttaOrder4());
         tabMain.addTab("Vektor-Iteration", new VectorIteration());
+        tabMain.addTab("Spielwiese", new CustomTask(), "Hier kann mein seine eigenen Berechnungen etc. einfügen", "VIEL SPAẞ");
         tabMain.addTab("Optionen", new Options(), "Einstellungen vornehmen", "Matrizen / Vektoren hinzufügen oder löschen");
         
         this.add(tabMain);
@@ -74,6 +76,29 @@ public final class OutputFrame extends JFrame
                 OutputFrame.this.dispose();
             }
         });
+        
+        // Möglichkeit in den Tasks zu zoomen mit STRG + Mausrad
+        Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener()
+        {
+            @Override
+            public void eventDispatched(AWTEvent event)
+            {
+                if (event instanceof MouseWheelEvent)
+                {
+                    MouseWheelEvent mwEvent = (MouseWheelEvent) event;
+                    
+                    if (mwEvent.isControlDown() && mwEvent.getWheelRotation() != 0)
+                    {
+                        int fontSize = Configuration.getActiveConfiguration().getFontSize();
+                        if (fontSize < 100 && mwEvent.getWheelRotation() == -1 || fontSize > 1 && mwEvent.getWheelRotation() == 1)
+                        {
+                            Configuration.getActiveConfiguration().setFontSize(fontSize - mwEvent.getWheelRotation());
+                            tabMain.runActiveTask();
+                        }
+                    }
+                }
+            }
+        }, AWTEvent.MOUSE_WHEEL_EVENT_MASK);
         
         this.setVisible(true);
     }

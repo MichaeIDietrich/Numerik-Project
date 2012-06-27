@@ -102,7 +102,7 @@ public class SyntaxTextArea extends JTextPane
         }
         else
         {
-            this.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+            this.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         }
         
         this.variables = variables;
@@ -126,6 +126,7 @@ public class SyntaxTextArea extends JTextPane
         
         KNOWNVAR = doc.addStyle("KNOWNVAR", null);
         StyleConstants.setForeground(KNOWNVAR, new Color(63, 63, 192));
+        StyleConstants.setBold(KNOWNVAR, true);
         
         UNKNOWNVAR = doc.addStyle("UNKNOWNVAR", null);
         StyleConstants.setForeground(UNKNOWNVAR, new Color(90, 90, 90));
@@ -136,6 +137,12 @@ public class SyntaxTextArea extends JTextPane
         
         KEYWORD = doc.addStyle("KEYWORD", null);
         StyleConstants.setBold(KEYWORD, true);
+        
+        // Zeilenumbruch deaktivieren
+        if (!showLineNumbers)
+        {
+            this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "NULL");
+        }
         
         list.addMouseListener(new MouseAdapter()
         {
@@ -173,6 +180,15 @@ public class SyntaxTextArea extends JTextPane
         
         this.addKeyListener(new KeyAdapter()
         {
+            @Override
+            public void keyTyped(KeyEvent e)
+            {
+                if (e.getKeyChar() == '*')
+                {
+                    e.setKeyChar('⋅');
+                }
+            }
+
             @Override
             public void keyReleased(KeyEvent e)
             {

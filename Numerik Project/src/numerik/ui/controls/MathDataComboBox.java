@@ -23,6 +23,7 @@ public final class MathDataComboBox extends JComboBox<String>
             @Override
             public void itemStateChanged(ItemEvent e)
             {
+                System.out.println(e.getItem().toString());
                 if (e.getItem().toString().equals("...") && e.getStateChange() == ItemEvent.SELECTED)
                 {
                     if (type == MathDataType.MATRIX)
