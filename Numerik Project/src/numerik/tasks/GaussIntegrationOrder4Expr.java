@@ -17,14 +17,14 @@ public final class GaussIntegrationOrder4Expr implements Task
     private LatexFormula iterformula = new LatexFormula();
     
     private BigDecimal[] stuetzstelle = { new BigDecimal("-0.8611363115940526"),
-                                  new BigDecimal("-0.33998104358485626"), 
-                                  new BigDecimal("0.3399810435848563"), 
-                                  new BigDecimal("0.8611363115940526") 
+                                          new BigDecimal("-0.33998104358485626"), 
+                                          new BigDecimal("0.3399810435848563"), 
+                                          new BigDecimal("0.8611363115940526") 
     };
     private BigDecimal[] gewicht      = { new BigDecimal("0.3478548451374538"),
-                                  new BigDecimal("0.6521451548625461"), 
-                                  new BigDecimal("0.6521451548625461"), 
-                                  new BigDecimal("0.3478548451374538") 
+                                          new BigDecimal("0.6521451548625461"), 
+                                          new BigDecimal("0.6521451548625461"), 
+                                          new BigDecimal("0.3478548451374538") 
     };
     
     private String function;
