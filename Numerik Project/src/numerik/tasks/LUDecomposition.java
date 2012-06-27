@@ -29,7 +29,7 @@ public final class LUDecomposition implements Task
                 new Argument("Optimieren",      ArgType.BOOLEAN),
                 new Argument("Pivot-Strategie", ArgType.BOOLEAN),
                 new Argument("Norm:", "Zeilensummen-Norm", "Frobenius-Euklid-Norm"),
-                new Argument("Genauigkeit",     ArgType.PRECISION, "16"),
+                new Argument("Mantissenlänge",  ArgType.PRECISION, "5"),
                 new Argument("Hilfe", ArgType.BOOLEAN),
                 Argument.RUN_BUTTON);
     }
@@ -106,6 +106,7 @@ public final class LUDecomposition implements Task
         formula.addVector(invAb).addNewLine(2);
         formula.addText(A.name+"^{-1} = ").addMatrix(invA).addNewLine(4);
 
+        MathLib.setPrecision( (parameters[5].toDecimal().intValue()<16) ? 16 : parameters[5].toDecimal().intValue() );
         MathLib.setRoundingMode( MathLib.NORMAL );
         formula.addText(A.name).addSymbol("*").addText(A.name+"^{-1} = ").addMatrix(AinvA).addNewLine(3);
         formula.addTextUL("relativer\\;Fehler\\;als\\;obere\\;Schranke:").addNewLine(1);
