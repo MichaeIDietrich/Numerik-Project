@@ -26,7 +26,6 @@ public class CustomTask implements Task
         LatexFormula formula = new LatexFormula();
         
         formula.addText("Hier kann man selbst Code hinzufügen :)").addNewLine(4);
-        formula.addText(""+MathLib.sqrt(new BigDecimal("-16") ));
         // hier dein Zeugs machen
         
         

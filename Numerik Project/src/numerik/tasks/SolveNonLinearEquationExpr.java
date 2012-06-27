@@ -69,31 +69,29 @@ public final class SolveNonLinearEquationExpr implements Task
         System.out.println(maxiters);
         // setze Vector mit Funktionen
         functions = new ArrayList<>();
-        for (int i = 0; i < 3; i++)
-        {
-            if (parameters[i].toText().isEmpty()) break;
-            
-            functions.add(parameters[i].toText());
-        }
-        
-        if (iterx.getLength() != functions.size())
-        {
-            taskPane.setViewPortView(new TaskScrollPane(new LatexFormula().addText("Anzahl der Funktionen ist ungleich Länge des Vektors!")));
-            return;
-        }
         
         Vector     x = new Vector( iterx.getLength() );
         Matrix    jm = new Matrix( iterx.getLength(), iterx.getLength() );
         int        i = 0;
                    x = x.setUnitVector(x);
-        
+               
         chosenvector = iterx.clone();
         
-//        System.out.println( 
-//                sumVectorValues( getFunctionsValue(parameters[0].toVector().clone())).multiply( sumVectorValues(derive2( parameters[0].toVector().clone() ) )));           
-//        
+
+        for (int t = 0; t < 3; t++)
+        {
+            if (parameters[t].toText().isEmpty()) break;
+            
+            functions.add(parameters[t].toText());
+        }
         
         
+        if (iterx.getLength() != functions.size())
+        {
+            showManual("Anzahl der Funktionen ungleich der Länge des Vektors!");
+            return;
+        }
+
         
         // Abbruchbedingung 'obereschranke' bei x.norm() > 2^(-50) > eps
         BigDecimal obereschranke = BigDecimal.ONE.divide(new BigDecimal(2).pow(50), 16, RoundingMode.HALF_UP);
@@ -151,12 +149,7 @@ public final class SolveNonLinearEquationExpr implements Task
         }
         formula.addNewLine(3).addTextUL("Start\\;der\\;Iteration").addNewLine(1);
         formula.addFormula( iterformula ).addNewLine(2);       
-        
-        FunctionsDiscussion function = new FunctionsDiscussion();
-        Vector test = new Vector( 1 );
-        test.set(0, new BigDecimal(1));
-        formula.addVector( function.getKontractionIntervall( test, 5 ) );
-        
+               
         taskPane.setViewPortView(new TaskScrollPane(formula));
     }
     
@@ -166,24 +159,38 @@ public final class SolveNonLinearEquationExpr implements Task
         formula.clear();
         
         formula.addNewLine(4);
-        formula.addTextUL("Mögliche\\;Fehlerursachen").addNewLine(2);
+        formula.addTextUL("Fehlerursache").addNewLine(2);
+        
         if (error.isEmpty()) 
         {
             formula.addText("I.    Länge des Vektors stimmt nicht mit der Anzahl der Gleichungen").addNewLine(1);
             formula.addText("\\;     überein.").addNewLine(1);
             formula.addText("II.  Gleichung enthält Infinity oder NaN.").addNewLine(1);
-            formula.addText("III. Die größte Fehlerquelle sitzt vor dem Bildschirm.").addNewLine(3);
         }
         else 
         {
-            formula.addText("Grund für Abbruch: "+error).addNewLine(3);
+            formula.addText(""+error).addNewLine(6);
+            
             if (chosenvector.getLength()<2) 
             {
+                BigDecimal value = chosenvector.get(0);
+                
                 formula.addTextUL("Kontraktionsintervall").addNewLine(1);
-                formula.addLatexString("|\\Phi(\\vec{x_{0}})| = ").addVector( getKontractionIntervall( chosenvector ));
-                formula.addLatexString(" < 1").addNewLine(3);
+                formula.addLatexString("|\\Phi(\\vec{x_{0}})| = "+value);
+                
+                if (value.compareTo(BigDecimal.ONE) == -1 ) 
+                {
+                    formula.addLatexString("\\leq 1").addNewLine(2); 
+                }
+                else  
+                {
+                    formula.addLatexString("\\nleq 1").addNewLine(2);
+                    formula.addColorBoxBegin("red").addText("Achtung! Kontraktionsintervall \\nleq 1 \\rightarrow keine Aussage")
+                           .addColorBoxEnd();
+                    recorder.clear();
+                    recorder.add( new LatexFormula().addText("Keine Lösung! Der Lösungsvektor divergiert.") );
+                }
             }
-            formula.addFormula( recorder.get() );
         }
         
         taskPane.setViewPortView(new TaskScrollPane(formula)); 
