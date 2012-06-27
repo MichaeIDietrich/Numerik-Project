@@ -228,7 +228,7 @@ public class ExpressionTask implements Task, ActionListener, KeyListener, Expres
                 pnlExpressionOutput.add(new HorizontalLine());
                 break;
             case PARSEDEXPRESSION:
-                System.out.println("data: " + data);
+//                System.out.println("data: " + data);
                 if (!data.equals(""))
                     pnlExpressionOutput.add(new ImageComponent(new LatexFormula(data).toImage(10)));
                 break;
