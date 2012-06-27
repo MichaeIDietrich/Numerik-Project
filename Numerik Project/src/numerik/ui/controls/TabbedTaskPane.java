@@ -51,9 +51,14 @@ public final class TabbedTaskPane extends JTabbedPane implements ChangeListener
     @Override
     public void stateChanged(ChangeEvent e)
     {
+        runActiveTask();
+    }
+    
+    public void runActiveTask()
+    {
         if (this.getSelectedComponent() instanceof TaskPane)
         {
-            TaskPane taskPane = (TaskPane)this.getSelectedComponent();
+            TaskPane taskPane = (TaskPane) this.getSelectedComponent();
             taskPane.showTask();
         }
     }
