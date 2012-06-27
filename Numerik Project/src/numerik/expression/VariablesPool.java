@@ -7,6 +7,7 @@ import java.util.Set;
 public final class VariablesPool
 {
     public static final BigDecimal PI = new BigDecimal("3.14159265358979");
+    public static final BigDecimal E = new BigDecimal("2.7182818284590452353602874713");
     
     
     private boolean readOnly;
@@ -30,7 +31,7 @@ public final class VariablesPool
     
     public void set(String name, Value value)
     {
-        if (!readOnly && !name.equals("PI"))
+        if (!readOnly && !name.equals("PI") && !name.equals("E"))
         {
             pool.put(name, value);
         }
@@ -55,6 +56,7 @@ public final class VariablesPool
     {
         pool = new HashMap<>();
         pool.put("PI", new Value(PI));
+        pool.put("E", new Value(E));
     }
     
     

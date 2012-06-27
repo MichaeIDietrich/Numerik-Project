@@ -11,8 +11,8 @@ import numerik.ui.misc.Recorder;
 public final class MathPool
 {
     
-    public static final String[] FUNCTIONS = { "getPrecision", "setPrecision", "del", "delete", "det", "determinant", "L", "U", "solve", "get", "ln", 
-        "sqrt", "sin", "cos", "tan", "asin", "acos", "atan", "deg", "rad" };
+    public static final String[] FUNCTIONS = { "getPrecision", "setPrecision", "del", "delete", "det", "determinant", "L", "U", "solve", "get", "abs", "ln", 
+        "sqrt", "root", "pow", "sin", "cos", "tan", "asin", "acos", "atan", "deg", "rad" };
     
     
     private VariablesPool variables;
@@ -316,6 +316,19 @@ public final class MathPool
                 
                 throw new InvalidExpressionException("Bitte Eingabe überprüfen, get() nimmt als Parameter eine Matrix und zwei Indizes oder einen Vektor und ein Index.");
                 
+            case "abs":
+                if (args.length == 1)
+                {
+                    args[0] = resolveVariable(args[0]);
+                    
+                    if (args[0].getType() == ValueType.DECIMAL)
+                    {
+                        return new Value(args[0].toDecimal().abs());
+                    }
+                }
+                
+                throw new InvalidExpressionException("Bitte Eingabe überprüfen, abs() nimmt als Parameter eine Dezimalzahl.");
+                
                 
               //*********************************************************//
              // mathematische Standardfunktionen mit double-Genauigkeit //
@@ -345,6 +358,34 @@ public final class MathPool
                 }
                 
                 throw new InvalidExpressionException("Bitte Eingabe überprüfen, sqrt() nimmt als Parameter eine Dezimalzahl.");
+                
+            case "root":
+                if (args.length == 2)
+                {
+                    args[0] = resolveVariable(args[0]);
+                    args[1] = resolveVariable(args[1]);
+                    
+                    if (args[0].getType() == ValueType.DECIMAL && args[1].getType() == ValueType.DECIMAL)
+                    {
+                        return new Value(MathLib.root_n_Of(args[0].toDecimal(), args[1].toDecimal().intValue()));
+                    }
+                }
+                
+                throw new InvalidExpressionException("Bitte Eingabe überprüfen, sqrt() nimmt als Parameter eine Dezimalzahl.");
+                
+            case "pow":
+                if (args.length == 2)
+                {
+                    args[0] = resolveVariable(args[0]);
+                    args[1] = resolveVariable(args[1]);
+                    
+                    if (args[0].getType() == ValueType.DECIMAL && args[1].getType() == ValueType.DECIMAL)
+                    {
+                        return new Value(MathLib.pow(args[0].toDecimal(), args[1].toDecimal()));
+                    }
+                }
+                
+                throw new InvalidExpressionException("Bitte Eingabe überprüfen, sin() nimmt als Parameter eine Dezimalzahl.");
                 
             case "sin":
                 if (args.length == 1)

@@ -150,7 +150,7 @@ public final class TaskPane extends JPanel implements ActionListener
                     break;
                     
                 case PRECISION:
-                    model = new SpinnerNumberModel(Integer.parseInt(arg.getDefaultValue()), 1, 100, 1);
+                    model = new SpinnerNumberModel(Integer.parseInt(arg.getDefaultValue()), 1, 1000, 1);
                     spinner = new JSpinner(model);
                     spinner.setPreferredSize(new Dimension(arg.getControlWidth(), spinner.getPreferredSize().height));
                     arg.setRelatedControl(spinner);

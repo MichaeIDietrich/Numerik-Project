@@ -87,7 +87,7 @@ public class SyntaxTextArea extends JTextPane
         {
             if (font.equals("Consolas") || font.equals("Courier New") || font.equals("Monospaced"))
             {
-                System.out.println("Font: " + font);
+                System.out.println("Font: '" + font + "' festgelegt");
                 TEXTFONT = new Font(font, Font.PLAIN, 12);
                 break;
             }

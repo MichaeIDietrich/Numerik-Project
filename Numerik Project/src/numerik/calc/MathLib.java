@@ -162,6 +162,12 @@ public final class MathLib
     }
     
     
+    public static BigDecimal pow(BigDecimal base, BigDecimal exponent)
+    {
+        return round(BigDecimal.valueOf(Math.pow(base.doubleValue(), exponent.doubleValue())));
+    }
+    
+    
     public static BigDecimal log(BigDecimal value, BigDecimal base)
     {
         return round(ln(value).divide(ln(base), precision, RoundingMode.HALF_UP));
@@ -212,16 +218,18 @@ public final class MathLib
     
     public static BigDecimal root_n_Of(BigDecimal root, int k) {
         
+        if (root.signum()==-1 && (k % 2)==0) throw new ArithmeticException(k+"te Wurzel aus "+root+" nicht berechnebar.");
+        
         BigDecimal a = root.add(BigDecimal.valueOf(1));
         BigDecimal x = root.divide( BigDecimal.valueOf(2) );
-        BigDecimal comparand  = BigDecimal.ONE.divide( BigDecimal.TEN.pow( getPrecision() ));
+        BigDecimal comparand  = BigDecimal.ONE.divide( BigDecimal.TEN.pow( MathLib.getPrecision() ));
         
         // a, x siehe Wikipedia Wurzelberechnung nach Heron
         if(root.compareTo( BigDecimal.ZERO ) != 0) {
             while( (a.subtract(x)).abs().compareTo( comparand )==1 ) {
                 a = x;
                 x = BigDecimal.valueOf( k-1 ).multiply( x.pow( k )).add( root )
-                              .divide( BigDecimal.valueOf( k ).multiply( x.pow( k-1 ) ), 2*getPrecision() , RoundingMode.HALF_UP );
+                              .divide( BigDecimal.valueOf( k ).multiply( x.pow( k-1 ) ), MathLib.getPrecision() , RoundingMode.HALF_UP );
             }
         } else {
             return root;
