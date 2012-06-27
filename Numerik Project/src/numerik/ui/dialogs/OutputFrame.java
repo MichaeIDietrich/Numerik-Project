@@ -44,8 +44,9 @@ public final class OutputFrame extends JFrame
         tabMain.addTab("Jakobi-Iteration", new JacobiIteration());
         tabMain.addTab("Newton Wurzel", new NewtonIteration());
         tabMain.addTab("Non-Lin-GS", new SolveNonLinearEquation2());
-        tabMain.addTab("Non-Lin-GS (Expr)", new SolveNonLinearEquation3());
+        tabMain.addTab("Non-Lin-GS (Expr)", new SolveNonLinearEquationExpr());
         tabMain.addTab("Gauss 4P", new GaussIntegrationOrder4());
+        tabMain.addTab("Gauss 4P (Expr)", new GaussIntegrationOrder4Expr());
         tabMain.addTab("Runge-Kutta-4O", new RungeKuttaOrder4());
         tabMain.addTab("Vektor-Iteration", new VectorIteration());
         tabMain.addTab("Spielwiese", new CustomTask(), "Hier kann mein seine eigenen Berechnungen etc. einfügen", "VIEL SPAẞ");

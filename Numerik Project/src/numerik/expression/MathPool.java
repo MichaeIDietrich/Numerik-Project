@@ -12,7 +12,7 @@ public final class MathPool
 {
     
     public static final String[] FUNCTIONS = { "getPrecision", "setPrecision", "del", "delete", "det", "determinant", "L", "U", "solve", "get", "abs", "ln", 
-        "sqrt", "sin", "cos", "tan", "asin", "acos", "atan", "deg", "rad" };
+        "sqrt", "root", "pow", "sin", "cos", "tan", "asin", "acos", "atan", "deg", "rad" };
     
     
     private VariablesPool variables;
@@ -358,6 +358,34 @@ public final class MathPool
                 }
                 
                 throw new InvalidExpressionException("Bitte Eingabe überprüfen, sqrt() nimmt als Parameter eine Dezimalzahl.");
+                
+            case "root":
+                if (args.length == 2)
+                {
+                    args[0] = resolveVariable(args[0]);
+                    args[1] = resolveVariable(args[1]);
+                    
+                    if (args[0].getType() == ValueType.DECIMAL && args[1].getType() == ValueType.DECIMAL)
+                    {
+                        return new Value(MathLib.root_n_Of(args[0].toDecimal(), args[1].toDecimal().intValue()));
+                    }
+                }
+                
+                throw new InvalidExpressionException("Bitte Eingabe überprüfen, sqrt() nimmt als Parameter eine Dezimalzahl.");
+                
+            case "pow":
+                if (args.length == 2)
+                {
+                    args[0] = resolveVariable(args[0]);
+                    args[1] = resolveVariable(args[1]);
+                    
+                    if (args[0].getType() == ValueType.DECIMAL && args[1].getType() == ValueType.DECIMAL)
+                    {
+                        return new Value(MathLib.pow(args[0].toDecimal(), args[1].toDecimal()));
+                    }
+                }
+                
+                throw new InvalidExpressionException("Bitte Eingabe überprüfen, sin() nimmt als Parameter eine Dezimalzahl.");
                 
             case "sin":
                 if (args.length == 1)

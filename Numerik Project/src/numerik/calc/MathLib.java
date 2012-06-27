@@ -162,6 +162,12 @@ public final class MathLib
     }
     
     
+    public static BigDecimal pow(BigDecimal base, BigDecimal exponent)
+    {
+        return round(BigDecimal.valueOf(Math.pow(base.doubleValue(), exponent.doubleValue())));
+    }
+    
+    
     public static BigDecimal log(BigDecimal value, BigDecimal base)
     {
         return round(ln(value).divide(ln(base), precision, RoundingMode.HALF_UP));

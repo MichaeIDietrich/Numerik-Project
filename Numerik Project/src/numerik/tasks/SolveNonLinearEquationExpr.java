@@ -19,7 +19,7 @@ import numerik.ui.misc.LatexFormula;
 import numerik.ui.misc.Recorder;
 
 
-public final class SolveNonLinearEquation3 implements Task
+public final class SolveNonLinearEquationExpr implements Task
 {
     private static final String[] VAR_NAMES = { "x", "y", "z" };
     
@@ -71,7 +71,13 @@ public final class SolveNonLinearEquation3 implements Task
             
             functions.add(parameters[i].toText());
         }
-                
+        
+        if (iterx.getLength() != functions.size())
+        {
+            taskPane.setViewPortView(new TaskScrollPane(new LatexFormula().addText("Anzahl der Funktionen ist ungleich Länge des Vektors!")));
+            return;
+        }
+        
         Vector     x = new Vector( iterx.getLength() );
         Matrix    jm = new Matrix( iterx.getLength(), iterx.getLength() );
         int        i = 0;
@@ -330,7 +336,7 @@ public final class SolveNonLinearEquation3 implements Task
         {
             try
             {
-                function.set(i, engine.solve(functions.get(i)).toDecimal());
+                function.set(i, engine.solve(functions.get(i)).toDecimal().negate());
             }
             catch (InvalidExpressionException ex)
             {
