@@ -171,10 +171,10 @@ public class ExpressionTask implements Task, ActionListener, KeyListener, Expres
     @Override
     public void keyTyped(KeyEvent e)
     {
-        if (e.getKeyChar() == '*')
-        {
-            e.setKeyChar('⋅');
-        }
+//        if (e.getKeyChar() == '*')
+//        {
+//            e.setKeyChar('⋅');
+//        }
     }
     
     

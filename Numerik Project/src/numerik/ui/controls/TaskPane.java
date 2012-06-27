@@ -21,6 +21,9 @@ public final class TaskPane extends JPanel implements ActionListener
 {
     private static final MathDataSynchronizer DATA = MathDataSynchronizer.getInstance();
     
+    private static final Icon RUN_ICON = new ImageIcon("icons/button_go_small.png");
+    private static final Icon STOP_ICON = new ImageIcon("icons/stop-button.png");
+    
     
     private JToolBar toolBar;
     private OutputFrame frame;
@@ -52,6 +55,18 @@ public final class TaskPane extends JPanel implements ActionListener
         toolBar.setLayout(new WrappingToolbarLayout(WrappingToolbarLayout.LEFT));
         toolBar.setFloatable(false);
         
+        // Task ausführen, wenn Enter gedrückt wird
+        frame.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "RUN");
+        frame.getRootPane().getActionMap().put("RUN", new AbstractAction()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                runTask();
+            }
+        });
+        
         JComboBox<String> combo;
         JTextField text;
         SyntaxTextArea expression;
@@ -60,18 +75,6 @@ public final class TaskPane extends JPanel implements ActionListener
         SpinnerModel model;
         JButton button;
         JPanel pnlGroup = null;
-        
-        KeyAdapter adapter = new KeyAdapter()
-        {
-            @Override
-            public void keyReleased(KeyEvent e)
-            {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER)
-                {
-                    runTask();
-                }
-            }
-        };
         
         args = arguments;
         for (Argument arg : arguments)
@@ -86,6 +89,10 @@ public final class TaskPane extends JPanel implements ActionListener
             {
                 case MATRIX:
                     combo = new MathDataComboBox(MathDataType.MATRIX, frame);
+                    if (!arg.getDefaultValue().isEmpty())
+                    {
+                        combo.setSelectedItem(arg.getDefaultValue());
+                    }
                     new ToolTippedComboBox(combo, DATA.getMatrixImages(), new Color(255, 255, 150));
                     DATA.addChangeListeners((MathDataComboBoxModel) combo.getModel());
                     combo.setPreferredSize(new Dimension(arg.getControlWidth(), combo.getPreferredSize().height));
@@ -96,6 +103,10 @@ public final class TaskPane extends JPanel implements ActionListener
                     
                 case VECTOR:
                     combo = new MathDataComboBox(MathDataType.VECTOR, frame);
+                    if (!arg.getDefaultValue().isEmpty())
+                    {
+                        combo.setSelectedItem(arg.getDefaultValue());
+                    }
                     new ToolTippedComboBox(combo, DATA.getVectorImages(), new Color(255, 255, 150));
                     DATA.addChangeListeners((MathDataComboBoxModel) combo.getModel());
                     combo.setPreferredSize(new Dimension(arg.getControlWidth(), combo.getPreferredSize().height));
@@ -105,37 +116,19 @@ public final class TaskPane extends JPanel implements ActionListener
                     break;
                     
                 case DECIMAL:
-                    text = new JTextField(arg.getDefaultValue());
-                    text.setPreferredSize(new Dimension(arg.getControlWidth(), text.getPreferredSize().height));
-                    text.setHorizontalAlignment(JTextField.RIGHT);
-                    text.addKeyListener(adapter);
-                    arg.setRelatedControl(text);
-                    pnlGroup.add(text);
-                    toolBar.add(pnlGroup);
-                    break;
-                    
                 case DECIMAL_EX:
-                    text = new JTextField(arg.getDefaultValue());
-                    text.setPreferredSize(new Dimension(arg.getControlWidth(), text.getPreferredSize().height));
-                    text.setHorizontalAlignment(JTextField.RIGHT);
-                    text.addKeyListener(adapter);
-                    arg.setRelatedControl(text);
-                    pnlGroup.add(text);
-                    toolBar.add(pnlGroup);
-                    break;
-                    
                 case INTEGER:
                     text = new JTextField(arg.getDefaultValue());
                     text.setPreferredSize(new Dimension(arg.getControlWidth(), text.getPreferredSize().height));
                     text.setHorizontalAlignment(JTextField.RIGHT);
-                    text.addKeyListener(adapter);
                     arg.setRelatedControl(text);
                     pnlGroup.add(text);
                     toolBar.add(pnlGroup);
                     break;
                     
                 case EXPRESSION:
-                    expression = new SyntaxTextArea(Arrays.asList(MathPool.FUNCTIONS), null, false);
+                    expression = new SyntaxTextArea(Arrays.asList(MathPool.FUNCTIONS), 
+                            Arrays.asList(new String[] { "x", "y", "z" }), false);
                     expression.setPreferredSize(new Dimension(arg.getControlWidth(), expression.getPreferredSize().height));
                     expression.setText(arg.getDefaultValue());
                     arg.setRelatedControl(expression);
@@ -175,14 +168,14 @@ public final class TaskPane extends JPanel implements ActionListener
                     break;
                     
                 case RUN_BUTTON:
-                    button = new JButton(new ImageIcon("icons/button_go_small.png"));
+                    button = new JButton(RUN_ICON);
                     button.setActionCommand("RUN");
                     button.addActionListener(this);
                     toolBar.add(button);
                     break;
                     
                 case STOP_BUTTON:
-                    button = new JButton(new ImageIcon("icons/stop-button.png"));
+                    button = new JButton(STOP_ICON);
                     button.setActionCommand("STOP");
                     button.addActionListener(this);
                     toolBar.add(button);
@@ -201,6 +194,8 @@ public final class TaskPane extends JPanel implements ActionListener
     
     public void runTask()
     {
+        killTask();
+        
         taskThread = new Thread()
         {
             @Override
@@ -221,8 +216,17 @@ public final class TaskPane extends JPanel implements ActionListener
             }
         };
         
-        taskThread.start(); //asynchron
-//        taskThread.run(); //synchron
+        taskThread.start();
+    }
+    
+    
+    @SuppressWarnings("deprecation")
+    private void killTask()
+    {
+        if (taskThread != null && taskThread.isAlive())
+        {
+            taskThread.stop(); // nicht unbedingt schön, aber was solls
+        }
     }
     
     
@@ -309,7 +313,6 @@ public final class TaskPane extends JPanel implements ActionListener
     }
     
     
-    @SuppressWarnings("deprecation")
     @Override
     public void actionPerformed(ActionEvent e)
     {
@@ -320,10 +323,7 @@ public final class TaskPane extends JPanel implements ActionListener
                 break;
                 
             case "STOP":
-                if (taskThread != null && taskThread.isAlive())
-                {
-                    taskThread.stop(); // nicht unbedingt schön, aber was solls
-                }
+                killTask();
         }
     }
     
