@@ -117,6 +117,7 @@ public final class LUDecomposition implements Task
         formula.addVector(invAb).addNewLine(2);
         formula.addText(A.name+"^{-1} = ").addMatrix(invA).addNewLine(4);
 
+        MathLib.setPrecision( (parameters[5].toDecimal().intValue()<16) ? 16 : parameters[5].toDecimal().intValue() );
         MathLib.setRoundingMode( MathLib.NORMAL );
         formula.addText(A.name).addSymbol("*").addText(A.name+"^{-1} = ").addMatrix(AinvA).addNewLine(3);
         formula.addTextUL("relativer\\;Fehler\\;als\\;obere\\;Schranke:").addNewLine(1);

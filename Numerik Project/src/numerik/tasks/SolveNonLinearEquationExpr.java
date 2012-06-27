@@ -30,7 +30,6 @@ public final class SolveNonLinearEquationExpr implements Task
     private TaskPane taskPane;
     private LatexFormula     formula = new LatexFormula();
     private LatexFormula iterformula = new LatexFormula();
-//    private FunctionsDiscussion function = new FunctionsDiscussion();
     private Recorder recorder;
     
     private ArrayList<String> functions;
@@ -61,12 +60,12 @@ public final class SolveNonLinearEquationExpr implements Task
         MathLib.setRoundingMode( MathLib.EXACT );
         // wenn Precision zu gering -> Fehler
         MathLib.setPrecision( parameters[5].toDecimal().intValue() ); 
-//        MathLib.setPrecision( 16 ); 
         
         Vector iterx = parameters[4].toVector();
         int maxiters = parameters[3].toDecimal().intValue();
         // setze Vector mit Funktionen
         functions = new ArrayList<>();
+        
         
         Vector     x = new Vector( iterx.getLength() );
         Matrix    jm = new Matrix( iterx.getLength(), iterx.getLength() );
@@ -94,6 +93,7 @@ public final class SolveNonLinearEquationExpr implements Task
         // Abbruchbedingung 'obereschranke' bei x.norm() > 2^(-50) > eps
         BigDecimal obereschranke = BigDecimal.ONE.divide(new BigDecimal(2).pow(50), 16, RoundingMode.HALF_UP);
 
+        
         while (( x.norm()).compareTo( obereschranke )==1) 
         {
             iterformula.addLatexString("x_{"+ i +"} = ").addVector(iterx).addNewLine(1);
@@ -131,6 +131,7 @@ public final class SolveNonLinearEquationExpr implements Task
         // Ausgabe: Latex-Formula-String
         LatexFormula formula = new LatexFormula();
         
+        
         formula.addTextBold("3.E) ").addColorBoxBegin("green").addText("Iter. Verfahren zur Lösung nichtlinearer Gleichungssysteme");
         formula.addColorBoxEnd().addNewLine(2);
         formula.addText("Gegeben ist ein Gleichungssystem ").addLatexString("f_{i}(x_1,..., x_n)").addText(" mit 1...n").addText(" ").addNewLine(1);
@@ -139,6 +140,7 @@ public final class SolveNonLinearEquationExpr implements Task
         formula.addText("   und   ").addLatexString("x^{k+1} = x^{k} + \\Delta{x^{k+1}}").addText("  mit ").addNewLine(3).addLatexString("\\Phi( x ) = ");
         
         formula.jakobiMatrix().addNewLine(3);
+        
         if (chosenvector.getLength()<2) 
         {
             formula.addTextUL("Kontraktionsintervall").addNewLine(1);
@@ -252,7 +254,6 @@ public final class SolveNonLinearEquationExpr implements Task
         Matrix  dfunc = derive(  testvector );
         Matrix ddfunc = derive2( testvector );
         
-
         recorder.clear();
         recorder.add( 
                 formula.addLatexString("\\frac{").addVector(func).addText(" \\cdot ").addMatrix(ddfunc).addLatexString("}" +
