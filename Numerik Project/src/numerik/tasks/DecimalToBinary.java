@@ -1,6 +1,7 @@
 package numerik.tasks;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 
 import numerik.calc.MathLib;
@@ -22,9 +23,9 @@ public class DecimalToBinary implements Task
     {
         
         this.taskPane = taskPane;
-        taskPane.createJToolBarByArguments(new Argument("Dezimalzahl:", ArgType.DECIMAL_EX, "1/3434", 100), 
+        taskPane.createJToolBarByArguments(new Argument("Dezimalzahl:", ArgType.DECIMAL_EX, "9999.9999", 100), 
                                            new Argument("Runde:", "Binär", "Dezimal"),
-                                           new Argument("Mantissenlänge:", ArgType.PRECISION, "16"), 
+                                           new Argument("Mantissenlänge:", ArgType.PRECISION, "50"), 
                                                Argument.RUN_BUTTON);
     }
     
@@ -32,18 +33,17 @@ public class DecimalToBinary implements Task
     @Override
     public void run(Value... values)
     {
-        
         Boolean round = values[1].toText().equals("Binär") ? true : false;
         
         MathLib.setPrecision( values[2].toDecimal().intValue() );
-        MathLib.setRoundingMode( MathLib.EXACT );
+        MathLib.setRoundingMode( MathLib.NORMAL );
         
         formula.clear();
         
-        Double value = 0d;
-        if (!round) value = MathLib.round( values[0].toDecimal()).doubleValue(); 
-                             else value = values[0].toDecimal().doubleValue(); 
-        Double tmpval = value;
+        BigDecimal  value = BigDecimal.ZERO;
+        value = (!round) ? MathLib.round( values[0].toDecimal() ) : values[0].toDecimal();
+        BigDecimal tmpval = value;
+        
         
         String[] temp = new BigDecimal(value.toString()).toPlainString().split("\\.");
         
@@ -108,8 +108,8 @@ public class DecimalToBinary implements Task
         {
             binary = firstbin+"."+seconbin;
         }
-        
-        Double recalc = getDecimal(binary).doubleValue();
+
+        BigDecimal recalc = getDecimal(binary);
         
         MathLib.setPrecision( 8 );
            
@@ -117,17 +117,19 @@ public class DecimalToBinary implements Task
         String showrecalc = toPlain( recalc.toString() );
         
         formula.addTextBold("1.B) ");
-        formula.addColorBoxBegin("green").addText("Fehler bei Runden in Gleitkommaarithmetik").addColorBoxEnd().addNewLine(3);
+        formula.addColorBoxBegin("green").addText("Berechne Fehler bei Runden in Gleitkommaarithmetik").addColorBoxEnd().addNewLine(2);
+        formula.addLatexString("MAX_{mantisse} = "+(firstbin.length()+seconbin.length())).addNewLine(2);
         formula.addColorBoxBegin("cyan").addLatexString(showtmpval+"_{10} \\cong "+binary+"_{b} = "+showrecalc+"_{10}").addColorBoxEnd().addNewLine(4);
         formula.addText("Eingabe: "+showtmpval).addNewLine(1);
         formula.addText("Ausgabe: "+showrecalc).addNewLine(4);
         formula.addLatexString("abs.\\;Fehler\\;=\\;|\\;"+showtmpval+"-"+showrecalc+"\\;|\\;=\\;"
-                               +MathLib.round( new BigDecimal( Math.abs(tmpval-recalc)) )).addNewLine(1);
+                               +MathLib.round( tmpval.subtract(recalc).abs() )).addNewLine(1);
         formula.addLatexString("rel.\\;Fehler\\;=\\;\\frac{"
-                               +MathLib.round( new BigDecimal(Math.abs(tmpval-recalc)))+"}{"+showtmpval+"}\\;=\\;"); 
-        if (tmpval!=0)
+                               +MathLib.round( tmpval.subtract(recalc).abs() )+"}{"+showtmpval+"}\\;=\\;"); 
+        
+        if (tmpval.compareTo(zero)!=0)
         {
-            formula.addLatexString(""+MathLib.round( new BigDecimal(Math.abs(tmpval-recalc)/tmpval))).addNewLine(4);
+            formula.addLatexString(""+MathLib.round( tmpval.subtract(recalc).abs().divide(tmpval, MathLib.getPrecision(), RoundingMode.HALF_DOWN) )).addNewLine(4);
         }
           else
         {
@@ -159,7 +161,7 @@ public class DecimalToBinary implements Task
             
             if (gocount) relposition++;
             
-            if ( relposition > mantisse || i >= length )
+            if ( (relposition >= mantisse) || i >= length )
             {
                 relposition = i;
                 break;
@@ -174,14 +176,17 @@ public class DecimalToBinary implements Task
         }
         
         
-        // lösche alle Folgestellen > relposition
+        // lösche alle Stellen > relposition durch Anhängen von "0"
         for(int i = relposition+1; i <= length+1; i++)
         {
             binary = binary + "0";
         }
         
         
-        // Wenn Folgestelle nach Mantissenlänge gleich 0 ist, dann runde nicht und gib String zurück
+        // 1. geforderte Mantissenlänge die Länge des Strings überschreitet oder
+        // 2. relative Position         die Länge des Strings überschreitet oder
+        // 3. Folgestelle nach Mantissenlänge gleich 0 ist
+        // dann runde nicht und gib String zurück
         if ( mantisse >= length || relposition >= length || binchar[relposition+1] == '0')
         {
             binary = binary.substring(0, dotpos) +"."+ binary.substring(dotpos, length+1);
@@ -231,6 +236,7 @@ public class DecimalToBinary implements Task
         int      lengthL = tempbin[0].length();
         int      lengthR = tempbin[1].length();
         BigDecimal   sum = BigDecimal.ZERO;
+        BigDecimal   exp = BigDecimal.ONE;
 
         if (length < lengthL) length = lengthL; else length = lengthR; 
         
@@ -248,7 +254,9 @@ public class DecimalToBinary implements Task
             {
                 if (bincharR[i-1]=='1')
                 {
-                    sum = sum.add( BigDecimal.ONE.divide( new BigDecimal( Math.pow(2, i) )));
+                    exp = BigDecimal.ONE.add(BigDecimal.ONE).pow(i);  // 2 hoch i
+                    
+                    sum = sum.add( BigDecimal.ONE.divide( exp ));
                 }
             }
         }

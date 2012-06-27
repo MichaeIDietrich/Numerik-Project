@@ -17,8 +17,7 @@ import numerik.ui.misc.Recorder;
 public final class LUDecomposition implements Task
 {
     private TaskPane taskPane;
-    
-    
+
     @Override
     public void init(OutputFrame frame, TaskPane taskPane)
     {
@@ -40,6 +39,7 @@ public final class LUDecomposition implements Task
         Recorder recorder = Recorder.getInstance();
         recorder.setActive(true);
         recorder.clear();
+        
         String name;
         
         // ####### Alle Berechnungen werden mit niedriger Präzision ausgeführt #########
