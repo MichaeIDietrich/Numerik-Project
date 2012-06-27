@@ -1,5 +1,8 @@
 package numerik.tasks;
 
+import java.math.BigDecimal;
+
+import numerik.calc.MathLib;
 import numerik.expression.Value;
 import numerik.ui.controls.*;
 import numerik.ui.dialogs.OutputFrame;
@@ -22,8 +25,8 @@ public class CustomTask implements Task
     {
         LatexFormula formula = new LatexFormula();
         
-        formula.addText("Hier kann man selbst Code hinzufügen :)");
-        
+        formula.addText("Hier kann man selbst Code hinzufügen :)").addNewLine(4);
+        formula.addText(""+MathLib.sqrt(new BigDecimal("-16") ));
         // hier dein Zeugs machen
         
         

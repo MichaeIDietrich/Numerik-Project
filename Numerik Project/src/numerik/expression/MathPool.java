@@ -11,7 +11,7 @@ import numerik.ui.misc.Recorder;
 public final class MathPool
 {
     
-    public static final String[] FUNCTIONS = { "getPrecision", "setPrecision", "del", "delete", "det", "determinant", "L", "U", "solve", "get", "ln", 
+    public static final String[] FUNCTIONS = { "getPrecision", "setPrecision", "del", "delete", "det", "determinant", "L", "U", "solve", "get", "abs", "ln", 
         "sqrt", "sin", "cos", "tan", "asin", "acos", "atan", "deg", "rad" };
     
     
@@ -315,6 +315,19 @@ public final class MathPool
                 }
                 
                 throw new InvalidExpressionException("Bitte Eingabe überprüfen, get() nimmt als Parameter eine Matrix und zwei Indizes oder einen Vektor und ein Index.");
+                
+            case "abs":
+                if (args.length == 1)
+                {
+                    args[0] = resolveVariable(args[0]);
+                    
+                    if (args[0].getType() == ValueType.DECIMAL)
+                    {
+                        return new Value(args[0].toDecimal().abs());
+                    }
+                }
+                
+                throw new InvalidExpressionException("Bitte Eingabe überprüfen, abs() nimmt als Parameter eine Dezimalzahl.");
                 
                 
               //*********************************************************//

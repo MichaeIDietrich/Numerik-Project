@@ -45,6 +45,7 @@ public final class SolveNonLinearEquation3 implements Task
                 new Argument("Funktion 1:", ArgType.EXPRESSION, "x⋅x+y⋅y+0.6⋅y-0.16", 250),
                 new Argument("Funktion 2:", ArgType.EXPRESSION, "x⋅x-y⋅y+x-1.6⋅y-0.14", 250),
                 new Argument("Funktion 3:", ArgType.EXPRESSION, 250),
+                new Argument("max. Iterationen:", ArgType.PRECISION, "100"),
                 new Argument("Startvektor:", ArgType.VECTOR, "d", 100 ), Argument.RUN_BUTTON);
     }
     
@@ -52,14 +53,16 @@ public final class SolveNonLinearEquation3 implements Task
     @Override
     public void run(Value... parameters)
     {
+        recorder = Recorder.getInstance();
         iterformula.clear();
         
         MathLib.setNorm( MathLib.FROBENIUSEUKLIDNORM );
         MathLib.setRoundingMode( MathLib.EXACT );
         MathLib.setPrecision( 16 ); 
         
-        Vector iterx = parameters[3].toVector();
-        
+        Vector iterx = parameters[4].toVector();
+        int maxiters = parameters[3].toDecimal().intValue();
+        System.out.println(maxiters);
         // setze Vector mit Funktionen
         functions = new ArrayList<>();
         for (int i = 0; i < 3; i++)
@@ -105,14 +108,16 @@ public final class SolveNonLinearEquation3 implements Task
                    formula.clear();
                    recorder.clear();
                    showManual( "" );
+                   
+                   throw e;
                }
                return;
             }
             
             iterx = iterx.add( x );
-            if (i==1000) break;
+            if (i==maxiters) break;
         }
-        
+      
         iterformula.addNewLine(2);
         iterformula.addText("Abbruch bei ").addLatexString("\\; x_{"+i+"} = x_{"+(i-1)+"} \\;\\; \\leftrightarrow \\;\\; \\arrowvert{ x_{"+(i)+"}-x_{"+(i-1)+"} }\\arrowvert \\leq eps");
         
@@ -128,8 +133,12 @@ public final class SolveNonLinearEquation3 implements Task
         formula.addText("   und   ").addLatexString("x^{k+1} = x^{k} + \\Delta{x^{k+1}}").addText("  mit ").addNewLine(3).addLatexString("\\Phi( x ) = ");
         
         formula.jakobiMatrix().addNewLine(3);
-        formula.addTextUL("Kontraktionsintervall").addNewLine(1);
-        formula.addLatexString("|\\Phi(\\vec{x_{0}})| = ").addVector( getKontractionIntervall( chosenvector ) ).addLatexString(" < 1").addNewLine(1);
+        if (chosenvector.getLength()<2) 
+        {
+            formula.addTextUL("Kontraktionsintervall").addNewLine(1);
+            formula.addLatexString("|\\Phi(\\vec{x_{0}})| = ").addVector( getKontractionIntervall( chosenvector ));
+            formula.addLatexString(" < 1").addNewLine(3);
+        }
         formula.addNewLine(3).addTextUL("Start\\;der\\;Iteration").addNewLine(1);
         formula.addFormula( iterformula ).addNewLine(2);       
         
@@ -158,8 +167,12 @@ public final class SolveNonLinearEquation3 implements Task
         else 
         {
             formula.addText("Grund für Abbruch: "+error).addNewLine(3);
-            formula.addTextUL("Kontraktionsintervall").addNewLine(1);
-            formula.addLatexString("|\\Phi(\\vec{x_{0}})| = ").addVector( getKontractionIntervall( chosenvector ) ).addLatexString(" \\nless 1").addNewLine(3);
+            if (chosenvector.getLength()<2) 
+            {
+                formula.addTextUL("Kontraktionsintervall").addNewLine(1);
+                formula.addLatexString("|\\Phi(\\vec{x_{0}})| = ").addVector( getKontractionIntervall( chosenvector ));
+                formula.addLatexString(" < 1").addNewLine(3);
+            }
             formula.addFormula( recorder.get() );
         }
         
@@ -224,7 +237,7 @@ public final class SolveNonLinearEquation3 implements Task
         Matrix  dfunc = derive(  testvector );
         Matrix ddfunc = derive2( testvector );
         
-        recorder = Recorder.getInstance();
+
         recorder.clear();
         recorder.add( 
                 formula.addLatexString("\\frac{").addVector(func).addText(" \\cdot ").addMatrix(ddfunc).addLatexString("}" +
