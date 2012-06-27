@@ -7,7 +7,7 @@ import java.util.Set;
 public final class VariablesPool
 {
     public static final BigDecimal PI = new BigDecimal("3.14159265358979");
-    public static final BigDecimal E = new BigDecimal("2.718281828");
+    public static final BigDecimal E = new BigDecimal("2.7182818284590452353602874713");
     
     
     private boolean readOnly;

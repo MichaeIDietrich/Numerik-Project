@@ -2,5 +2,5 @@
 setPrecision(12)
 A=[[1,2],[3,4]]
 //Inverse
-I=A^-1
-E=I⋅A
+inv=A^-1
+einh=inv⋅A

@@ -42,11 +42,13 @@ public final class SolveNonLinearEquationExpr implements Task
     {
         this.taskPane = taskPane;
         taskPane.createJToolBarByArguments( 
-                new Argument("Funktion 1:", ArgType.EXPRESSION, "x⋅x+y⋅y+0.6⋅y-0.16", 250),
-                new Argument("Funktion 2:", ArgType.EXPRESSION, "x⋅x-y⋅y+x-1.6⋅y-0.14", 250),
-                new Argument("Funktion 3:", ArgType.EXPRESSION, 250),
+                new Argument("Funktion 1:", ArgType.EXPRESSION, "x⋅x+y⋅y+0.6⋅y-0.16", 450),
+                new Argument("Funktion 2:", ArgType.EXPRESSION, "x⋅x-y⋅y+x-1.6⋅y-0.14", 450),
+                new Argument("Funktion 3:", ArgType.EXPRESSION, 450),
                 new Argument("max. Iterationen:", ArgType.PRECISION, "100"),
-                new Argument("Startvektor:", ArgType.VECTOR, "d", 100 ), Argument.RUN_BUTTON);
+                new Argument("Startvektor:", ArgType.VECTOR, "d", 100 ), 
+                new Argument("Mantissenlänge:", ArgType.PRECISION, "16"), 
+                Argument.RUN_BUTTON);
     }
     
     
@@ -58,7 +60,9 @@ public final class SolveNonLinearEquationExpr implements Task
         
         MathLib.setNorm( MathLib.FROBENIUSEUKLIDNORM );
         MathLib.setRoundingMode( MathLib.EXACT );
-        MathLib.setPrecision( 16 ); 
+        // wenn Precision zu gering -> Fehler
+        MathLib.setPrecision( parameters[5].toDecimal().intValue() ); 
+//        MathLib.setPrecision( 16 ); 
         
         Vector iterx = parameters[4].toVector();
         int maxiters = parameters[3].toDecimal().intValue();

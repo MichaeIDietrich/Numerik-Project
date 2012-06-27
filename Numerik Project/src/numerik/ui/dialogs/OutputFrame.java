@@ -48,6 +48,7 @@ public final class OutputFrame extends JFrame
         tabMain.addTab("Gauss 4P", new GaussIntegrationOrder4());
         tabMain.addTab("Gauss 4P (Expr)", new GaussIntegrationOrder4Expr());
         tabMain.addTab("Runge-Kutta-4O", new RungeKuttaOrder4());
+        tabMain.addTab("Runge-Kutta-4O (Expr)", new RungeKuttaOrder4Expr());
         tabMain.addTab("Vektor-Iteration", new VectorIteration());
         tabMain.addTab("Spielwiese", new CustomTask(), "Hier kann mein seine eigenen Berechnungen etc. einfügen", "VIEL SPAẞ");
         tabMain.addTab("Optionen", new Options(), "Einstellungen vornehmen", "Matrizen / Vektoren hinzufügen oder löschen");
