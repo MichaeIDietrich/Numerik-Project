@@ -1,8 +1,5 @@
 package numerik.tasks;
 
-import java.math.BigDecimal;
-
-import numerik.calc.MathLib;
 import numerik.expression.Value;
 import numerik.ui.controls.*;
 import numerik.ui.dialogs.OutputFrame;

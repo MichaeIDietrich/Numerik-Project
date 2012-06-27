@@ -6,7 +6,6 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 
-import numerik.calc.FunctionsDiscussion;
 import numerik.calc.MathLib;
 import numerik.calc.Matrix;
 import numerik.calc.Vector;

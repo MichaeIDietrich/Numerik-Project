@@ -132,7 +132,11 @@ public final class TaskPane extends JPanel implements ActionListener
                     expression.setPreferredSize(new Dimension(arg.getControlWidth(), expression.getPreferredSize().height));
                     expression.setText(arg.getDefaultValue());
                     arg.setRelatedControl(expression);
-                    pnlGroup.add(expression);
+                    // Word-Wrap deaktivieren funktioniert leider noch nicht
+                    JScrollPane scroll = new JScrollPane(expression, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+                    scroll.setBorder(null);
+//                    pnlGroup.add(expression);
+                    pnlGroup.add(scroll);
                     toolBar.add(pnlGroup);
                     break;
                     

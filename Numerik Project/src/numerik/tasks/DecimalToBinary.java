@@ -1,7 +1,6 @@
 package numerik.tasks;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.RoundingMode;
 
 import numerik.calc.MathLib;
@@ -33,7 +32,7 @@ public class DecimalToBinary implements Task
     @Override
     public void run(Value... values)
     {
-        Boolean round = values[1].toText().equals("Binär") ? true : false;
+        boolean round = values[1].toText().equals("Binär");
         
         MathLib.setPrecision( values[2].toDecimal().intValue() );
         MathLib.setRoundingMode( MathLib.NORMAL );
