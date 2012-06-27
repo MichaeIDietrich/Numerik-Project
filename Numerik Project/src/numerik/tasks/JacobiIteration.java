@@ -20,11 +20,11 @@ public class JacobiIteration implements Task
     public void init(OutputFrame frame, TaskPane taskPane)
     {       
         this.taskPane = taskPane;
-        taskPane.createJToolBarByArguments(new Argument("Matrix:", ArgType.MATRIX, 100), 
+        taskPane.createJToolBarByArguments(new Argument("Matrix:", ArgType.MATRIX, 100),
                                            new Argument("Vektor:", ArgType.VECTOR, 100),
                                            new Argument("Startvektor:", ArgType.VECTOR, 100),
-                                           new Argument("n = ", ArgType.PRECISION, "20"),
-                                           new Argument("Mant = ", ArgType.PRECISION,  "7"),
+                                           new Argument("Iterationen:", ArgType.PRECISION, "20"),
+                                           new Argument("Mantissenlänge:", ArgType.PRECISION,  "7"),
                                                Argument.RUN_BUTTON);
     }
     

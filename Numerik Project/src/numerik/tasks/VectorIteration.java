@@ -14,7 +14,7 @@ import numerik.ui.misc.Recorder;
 public class VectorIteration implements Task
 {
     private TaskPane taskPane;
-
+    
     @Override
     public void init(OutputFrame frame, TaskPane taskPane)
     {       
@@ -28,7 +28,7 @@ public class VectorIteration implements Task
                                            new Argument("Mant = ", ArgType.PRECISION,  "7"),
                                                Argument.RUN_BUTTON);
     }
-
+    
     @Override
     public void run(Value... parameters)
     {
@@ -47,16 +47,16 @@ public class VectorIteration implements Task
         Vector startVectorY0 = parameters[4].toVector();
         Matrix A = parameters[0].toMatrix();
         
-        String matrixName = A.name;        
+        String matrixName = A.name;
         Matrix matrixInput = A;
         
         // Berechne M
         if (parameters[2].toBoolean())
         {
             matrixInput = MatrixIterationMethods.getM(A);
-            matrixName = "M";            
+            matrixName = "M";
         }
-
+        
         BigDecimal normM = matrixInput.norm();
         
         formula.addTextBold("2.4. ").addColorBoxBegin("green");
@@ -70,7 +70,7 @@ public class VectorIteration implements Task
             
             formula.addTextUL("Berechne\\;dafür\\;M").addNewLine(1);
         }
-
+        
         formula.addText(matrixName + " = ").addMatrix(matrixInput).addText(", ").addNewLine(3);
         formula.addTextUL("Wähle\\;Startvektor").addNewLine(1);
         formula.addLatexString("y_0").addText(" = ").addVector(startVectorY0).addNewLine(4);
@@ -85,7 +85,7 @@ public class VectorIteration implements Task
         {
             formula.addLatexString("\\leq 1"); 
         }
-        else  
+        else
         {
             formula.addLatexString("\\nleq 1").addNewLine(1);
             formula.addColorBoxBegin("red").addText("Achtung \\rho(" + matrixName + ") \\nleq 1 \\rightarrow divergent, keine Lösung")
@@ -93,10 +93,10 @@ public class VectorIteration implements Task
             recorder.clear();
             recorder.add( new LatexFormula().addText("Keine Lösung! Der Lösungsvektor divergiert.") );
         }
-
+        
         formula.addNewLine(4).addTextUL("Beginne\\;mit\\;Iteration").addNewLine(2);
         formula.addLatexString("y_0 = ").addVector( startVectorY0 ).addNewLine(2).addFormula( recorder.get(true) );
-
+        
         taskPane.setViewPortView(new TaskScrollPane(formula));
     }
 }

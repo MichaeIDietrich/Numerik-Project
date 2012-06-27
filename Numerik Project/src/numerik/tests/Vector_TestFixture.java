@@ -7,13 +7,11 @@ import org.junit.*;
 import org.junit.rules.*;
 
 import static org.junit.Assert.*;
-import static numerik.calc.Vector.*;
 
 public class Vector_TestFixture
 {
     private Vector vectorInput;
     private Vector vectorInput2;
-    private Matrix matrixInput;
     
     private Matrix matrixOutput;
     private Vector vectorOutput;
@@ -253,8 +251,6 @@ public class Vector_TestFixture
         vectorInput = null;
         vectorInput2 = null;
         vectorOutput = null;
-        
-        matrixInput = null;
         
         matrixOutput = null;
         

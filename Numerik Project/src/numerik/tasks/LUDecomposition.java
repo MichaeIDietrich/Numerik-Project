@@ -24,12 +24,12 @@ public final class LUDecomposition implements Task
     {
         this.taskPane = taskPane;
         taskPane.createJToolBarByArguments(
-                new Argument("Matrix:",         ArgType.MATRIX, 100),   
+                new Argument("Matrix:",         ArgType.MATRIX, 100),
                 new Argument("Vektor:",         ArgType.VECTOR, 100),
-                new Argument("Optimieren",      ArgType.BOOLEAN), 
-                new Argument("Pivot-Strategie", ArgType.BOOLEAN), 
-                new Argument("Norm:", "Zeilensummen-Norm", "Frobenius-Euklid-Norm"), 
-                new Argument("Genauigkeit",     ArgType.PRECISION, "5"), 
+                new Argument("Optimieren",      ArgType.BOOLEAN),
+                new Argument("Pivot-Strategie", ArgType.BOOLEAN),
+                new Argument("Norm:", "Zeilensummen-Norm", "Frobenius-Euklid-Norm"),
+                new Argument("Genauigkeit",     ArgType.PRECISION, "16"),
                 Argument.RUN_BUTTON);
     }
     
@@ -43,21 +43,21 @@ public final class LUDecomposition implements Task
         String name;
         
         // ####### Alle Berechnungen werden mit niedriger Präzision ausgeführt #########
-
+        
         MathLib.setPrecision( parameters[5].toDecimal().intValue() );     // Mantissenlänge
-
+        
         MathLib.setPivotStrategy( parameters[3].toBoolean() );
         MathLib.setRoundingMode( MathLib.EXACT );                         // EXACT = Mantissen genau, NORMAL = Nachkomma genau
         MathLib.setNorm( parameters[4].toText().equals("Zeilensummen-Norm") ? MathLib.ZEILENSUMMENNORM : MathLib.FROBENIUSEUKLIDNORM );  // ZEILENSUMMENNORM oder FROBENIUSEUKILDNORM
         MathLib.setInversePrecision( 20 );
-
+        
         Matrix A = parameters[0].toMatrix();
         Vector b = parameters[1].toVector();
         Matrix trueA = A.clone();
         Vector trueb = b.clone();
         
         A.mult(b);     // Prüfe: Matrix und Vektor verkettet? -> sonst Fehler.
-
+        
         if (parameters[2].toBoolean())
         {
             MathLib.enableRound( false );

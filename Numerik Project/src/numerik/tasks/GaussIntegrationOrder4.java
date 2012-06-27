@@ -32,8 +32,8 @@ public class GaussIntegrationOrder4 implements Task
     public void init(OutputFrame frame, TaskPane taskPane)
     {
         this.taskPane = taskPane;
-        taskPane.createJToolBarByArguments(new Argument("obere Grenze:",   ArgType.DECIMAL, "10"), 
-                                           new Argument("untere Grenze:",  ArgType.DECIMAL, "6"), 
+        taskPane.createJToolBarByArguments(new Argument("Obere Grenze:",   ArgType.DECIMAL, "10"), 
+                                           new Argument("Untere Grenze:",  ArgType.DECIMAL, "6"), 
                                            new Argument("Mantissenlänge:", ArgType.DOUBLEPRECISION, "5"), Argument.RUN_BUTTON);
     }
 
