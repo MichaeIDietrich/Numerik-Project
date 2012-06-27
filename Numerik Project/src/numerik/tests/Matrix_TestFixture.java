@@ -502,7 +502,7 @@ public class Matrix_TestFixture
     @Test
     public void get_und_set__tests_fuer_String()
     {
-        M1 = new Matrix(3,5);
+        M1 = new Matrix(3,3);
         
         M1.set(0, 0, new BigDecimal("2.16578958"));
         M1.set(0, 1, new BigDecimal("2512.0"));
@@ -527,6 +527,52 @@ public class Matrix_TestFixture
         assertEquals("0.9",         M1.get(2,0).toPlainString());
         assertEquals("-6.2",        M1.get(2,1).toPlainString());
         assertEquals("4.6",         M1.get(2,2).toPlainString());
+
+    }
+    
+    @Test
+    public void aa()
+    {
+        
+        M1 = new Matrix(3,3);
+        
+        M1.set(0, 0, new BigDecimal("2.16578958"));
+        M1.set(0, 1, new BigDecimal("2512.0"));
+        M1.set(0, 2, new BigDecimal("-2516.0"));
+        
+        M1.set(1, 0, new BigDecimal("-1.3"));
+        M1.set(1, 1, new BigDecimal("8.8"));
+        M1.set(1, 2, new BigDecimal("-7.6"));
+        
+        M1.set(2, 0, new BigDecimal("0.9"));
+        M1.set(2, 1, new BigDecimal("-6.2"));
+        M1.set(2, 2, new BigDecimal("4.6"));
+    
+        System.out.println(M1.getScaleOf());
+    }
+    
+    @Test
+    public void get_und_set__test_getter_und_setter_Reihen_und_Spalten()
+    {
+        M1 = new Matrix(3,5);
+        
+        M1.set(0, 0, new BigDecimal("2.16578958"));
+        M1.set(0, 1, new BigDecimal("2512.0"));
+        M1.set(0, 2, new BigDecimal("-2516.0"));
+        
+        M1.set(1, 0, new BigDecimal("-1.3"));
+        M1.set(1, 1, new BigDecimal("8.8"));
+        M1.set(1, 2, new BigDecimal("-7.6"));
+        
+        M1.set(2, 0, new BigDecimal("0.9"));
+        M1.set(2, 1, new BigDecimal("-6.2"));
+        M1.set(2, 2, new BigDecimal("4.6")); 
+        
+        //Test getter transponierte Matrix
+        assertEquals("[[2.166,-1.3,0.9],[2512,8.8,-6.2],[-2516,-7.6,4.6],[0,0,0],[0,0,0]]",M1.getTransposed().toString());
+        
+        assertEquals(Integer.parseInt("3"),M1.getRows());
+        assertEquals(Integer.parseInt("5"),M1.getCols());
     }
     
     /* Setzen von allgemeinen Werten, die bei jedem Test verwendet werden */
