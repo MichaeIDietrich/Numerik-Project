@@ -1,7 +1,6 @@
 package numerik.expression;
 
 import java.math.*;
-import java.util.HashMap;
 
 import numerik.calc.MathLib;
 import numerik.expression.ExpressionEngine.Token;
@@ -12,23 +11,20 @@ import numerik.ui.misc.Recorder;
 public final class MathPool
 {
     
-    public static final String[] FUNCTIONS = { "getPrecision", "setPrecision", "del", "delete", "det", "determinant", "L", "U", "solve", "get", "ln", 
+    public static final String[] FUNCTIONS = { "getPrecision", "setPrecision", "del", "delete", "det", "determinant", "L", "U", "solve", "get", "abs", "ln", 
         "sqrt", "sin", "cos", "tan", "asin", "acos", "atan", "deg", "rad" };
     
     
-    private static final BigDecimal PI = new BigDecimal("3.14159265358979");
-    
-    private HashMap<String, Value> variables;
+    private VariablesPool variables;
     
     
     public MathPool()
     {
-        variables = new HashMap<String, Value>();
-        variables.put("PI", new Value(PI));
+        variables = new VariablesPool();
     }
     
     
-    public HashMap<String, Value> getVariableTable()
+    public VariablesPool getVariableTable()
     {
         return variables;
     }
@@ -320,6 +316,19 @@ public final class MathPool
                 
                 throw new InvalidExpressionException("Bitte Eingabe überprüfen, get() nimmt als Parameter eine Matrix und zwei Indizes oder einen Vektor und ein Index.");
                 
+            case "abs":
+                if (args.length == 1)
+                {
+                    args[0] = resolveVariable(args[0]);
+                    
+                    if (args[0].getType() == ValueType.DECIMAL)
+                    {
+                        return new Value(args[0].toDecimal().abs());
+                    }
+                }
+                
+                throw new InvalidExpressionException("Bitte Eingabe überprüfen, abs() nimmt als Parameter eine Dezimalzahl.");
+                
                 
               //*********************************************************//
              // mathematische Standardfunktionen mit double-Genauigkeit //
@@ -436,7 +445,7 @@ public final class MathPool
                     
                     if (args[0].getType() == ValueType.DECIMAL)
                     {
-                        return new Value(args[0].toDecimal().multiply(new BigDecimal(180)).divide(PI, MathLib.getPrecision(), RoundingMode.HALF_UP));
+                        return new Value(args[0].toDecimal().multiply(new BigDecimal(180)).divide(VariablesPool.PI, MathLib.getPrecision(), RoundingMode.HALF_UP));
                     }
                 }
                 
@@ -450,7 +459,7 @@ public final class MathPool
                     
                     if (args[0].getType() == ValueType.DECIMAL)
                     {
-                        return new Value(args[0].toDecimal().multiply(PI).divide(new BigDecimal(180), MathLib.getPrecision(), RoundingMode.HALF_UP));
+                        return new Value(args[0].toDecimal().multiply(VariablesPool.PI).divide(new BigDecimal(180), MathLib.getPrecision(), RoundingMode.HALF_UP));
                     }
                 }
                 
@@ -459,7 +468,7 @@ public final class MathPool
         
         
         //schauen, ob es sich um eine Matrix oder einen Vektor handelt und die Parameter als Indizes interpretieren 
-        if (variables.containsKey(funcName))
+        if (variables.contains(funcName))
         {
             if (variables.get(funcName).getType() == ValueType.MATRIX && args.length == 2)
             {
@@ -492,7 +501,7 @@ public final class MathPool
     {
         if (var.getType() == ValueType.VARIABLE)
         {
-            if (!variables.containsKey(var.toVariable().toString())) 
+            if (!variables.contains(var.toVariable().toString())) 
             {
                 return new Value("undefiniert");
             }

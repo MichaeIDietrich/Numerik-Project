@@ -2,6 +2,7 @@ package numerik.calc;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.MessageFormat;
 import java.util.*;
 
 import numerik.ui.misc.*;
@@ -249,7 +250,7 @@ public class Matrix {
         {
                 for(int j=0; j<vector.getLength(); j++)
                 {
-                    sum = sum.add( MathLib.round( values[zeile][j].multiply( vector.get(j) )));
+                    sum = MathLib.round(sum.add( MathLib.round( values[zeile][j].multiply( MathLib.round(vector.get(j)) ))));
                 }
                 newVector.set(zeile, sum);
                 sum = BigDecimal.ZERO;
@@ -298,7 +299,7 @@ public class Matrix {
         
         for(int row=0; row<rows; row++) {
             for(int col=0; col<cols; col++) {
-                copy.values[row][col] = values[row][col];
+                copy.values[row][col] = new BigDecimal("0").add(values[row][col]);
             }
         }
         return copy;
@@ -315,7 +316,7 @@ public class Matrix {
     {
         if(!isQuadratic()) 
         {
-            throw new ArithmeticException("Die Matrix muss quadratisch sein");
+            throw new ArithmeticException("Die Matrix muss quadratisch sein, um deren Inverse bilden zu können!");
         }
         
         Matrix inverse = new Matrix( rows, rows ).identity();
@@ -369,8 +370,23 @@ public class Matrix {
     }
     
 
-    public Vector solveX(Vector b) 
+    public Vector solveX(Vector b) throws ArithmeticException 
     {
+        if (b == null)
+        {
+            throw new ArithmeticException("Der Inputvektor für die Methode solveX ist Null!");
+        }
+        
+        if (!this.isQuadratic())
+        {
+            throw new ArithmeticException("Die Inputmatrix für die Methode solveX ist nicht quadratisch!");
+        }
+        
+        if (this.getRows() != b.getLength())
+        {
+            throw new ArithmeticException("Die Inputmatrix und der Inputvektor sind nicht gleichlang für die Methode solveX!");
+        }
+        
         boolean recorderState = recorder.isActive();
         
         Vector clone_b = b.clone();
@@ -392,8 +408,6 @@ public class Matrix {
     {
         return doLUDecomposition(0, null).item2; // 0 liefert L zurück
     } 
-    
-    
     
     public Matrix getU()
     {
@@ -425,7 +439,20 @@ public class Matrix {
      * @param which_matrix Gibt an, ob L (=0), U (=1), oder lperm(=2) zurückgegeben wird
      * @param b Ist ein Vektor, der die Ergebnisse von den Gleichungssystemen darstellt
      */
-    private Tuple<Vector, Matrix> doLUDecomposition(int which_matrix, Vector b) {
+    private Tuple<Vector, Matrix> doLUDecomposition(int which_matrix, Vector b) throws ArithmeticException 
+    {
+        if (!this.isQuadratic())
+        {
+            throw new ArithmeticException("Die Inputmatrix für die LU-Zerlegung ist nicht quadratisch!");
+        }
+        
+        if (b != null)
+        {
+            if (this.getRows() != b.getLength())
+            {
+                throw new ArithmeticException("Die Inputmatrix und der Inputvektor sind nicht gleichlang für die LU-Zerlegung!");
+            }
+        }
         
         BigDecimal temp = BigDecimal.ZERO;
         Matrix        U = clone();
@@ -520,8 +547,28 @@ public class Matrix {
      * @param b Vektor, den man Substituieren will
      * @param str gibt an, wie man Substituieren will "forward" oder "backward"
      */
-    public Vector substitution( Matrix matrix, Vector b, SubstitutionDirection direction )
+    public Vector substitution( Matrix matrix, Vector b, SubstitutionDirection direction ) throws ArithmeticException
     {
+        if (matrix == null)
+        {
+            throw new ArithmeticException("Die Matrix als Input für die substitution-Methode ist Null!");
+        }
+        
+        if (b == null)
+        {
+            throw new ArithmeticException("Der Vektor als Input für die substitution-Methode ist Null!");
+        }
+        
+        if (!matrix.isQuadratic())
+        {
+            throw new ArithmeticException("Die Matrix als Input für die substitution-Methode ist nicht quadratisch!");
+        }
+        
+        if (matrix.getRows() != b.getLength())
+        {
+            throw new ArithmeticException("Die Matrix und der Vektor für die substitution-Methode sind unterschiedlich lang!");
+        }
+        
         BigDecimal term0 = BigDecimal.ZERO;
         BigDecimal term1 = BigDecimal.ZERO;
         BigDecimal term2 = BigDecimal.ZERO;
@@ -588,11 +635,34 @@ public class Matrix {
      * @param vector Vektor, für die die Pivotstrategie angewendet werden soll
      * @param row Anfangsreihe, bei welcher angefangen wird, die Zeilen zu vertauschen
      */
-    public int pivotColumnStrategy( Matrix matrix, Vector b, int row )
+    public int pivotColumnStrategy( Matrix matrix, Vector b, int row ) throws ArithmeticException
     {
+        if (matrix == null)
+        {
+            throw new ArithmeticException("Die Matrix als Input für die pivotColumnStrategy-Methode ist Null!");
+        }
+        
+        if (!matrix.isQuadratic())
+        {
+            throw new ArithmeticException("Die Matrix als Input für die pivotColumnStrategy-Methode ist nicht quadratisch!");
+        }
+        
+        if (b != null)
+        {
+            if (this.getRows() != b.getLength())
+            {
+                throw new ArithmeticException("Die Inputmatrix und der Inputvektor sind nicht gleichlang für die Methode pivotColumnStrategy!");
+            }
+        }
+
+        if (row < 0 || row > (matrix.getRows() - 1))
+        {
+            throw new ArithmeticException("Der row-Input bei der Methode pivotColumnStrategy liegt ausserhalb des gültigen Bereiches!");
+        }
+        
         BigDecimal maximum = BigDecimal.ZERO;
         BigDecimal    temp = BigDecimal.ZERO;
-        int    rowposition = 0;
+        int    rowposition = matrix.rows == (row + 1) ? row : 0;
         boolean    rowswap = false;
         
         for(int t=0; t<matrix.getRows()-row; t++)
@@ -823,7 +893,7 @@ public class Matrix {
         if( MathLib.getNorm()==0 ) return zeilensummenNorm();
         if( MathLib.getNorm()==1 ) return frobeniusNorm();
         
-        throw new RuntimeException("'MathLib.getNorm()' liefert keinen gültigen Wert");
+        throw new RuntimeException(MessageFormat.format("MathLib.getNorm() liefert den Wert {0}, für welche es keine Normimplementierung für Matrizen gibt.", MathLib.getNorm()));
     }
     
     

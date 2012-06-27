@@ -45,7 +45,6 @@ public class DezimalToBinary implements Task
                              else value = values[0].toDecimal().doubleValue(); 
         Double tmpval = value;
         
-        
         String[] temp = new BigDecimal(value.toString()).toPlainString().split("\\.");
         
         BigDecimal     zero = BigDecimal.ZERO;

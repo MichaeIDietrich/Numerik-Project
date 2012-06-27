@@ -98,7 +98,7 @@ public final class ExpressionEngine
     }
     
     
-    public HashMap<String, Value> getVariableTable()
+    public VariablesPool getVariableTable()
     {
         return mathPool.getVariableTable();
     }
@@ -365,7 +365,7 @@ public final class ExpressionEngine
                     vars.add(mathPool.resolveVariable(expression(priority + 1)));
                     
                     assignedVariable = vars.peek().toVariable().toString();
-                    mathPool.getVariableTable().put(vars.poll().toVariable().toString(), vars.peek());
+                    mathPool.getVariableTable().set(vars.poll().toVariable().toString(), vars.peek());
                     
                 }
                 else
