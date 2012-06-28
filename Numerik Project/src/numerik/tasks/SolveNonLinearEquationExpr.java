@@ -6,7 +6,6 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 
-import numerik.calc.FunctionsDiscussion;
 import numerik.calc.MathLib;
 import numerik.calc.Matrix;
 import numerik.calc.Vector;
@@ -44,7 +43,7 @@ public final class SolveNonLinearEquationExpr implements Task
                 new Argument("Funktion 1:", ArgType.EXPRESSION, "x⋅x+y⋅y+0.6⋅y-0.16", 450),
                 new Argument("Funktion 2:", ArgType.EXPRESSION, "x⋅x-y⋅y+x-1.6⋅y-0.14", 450),
                 new Argument("Funktion 3:", ArgType.EXPRESSION, 450),
-                new Argument("max. Iterationen:", ArgType.PRECISION, "100"),
+                new Argument("<html>Iterationen<sub>max</sub>:</html>", ArgType.PRECISION, "100"),
                 new Argument("Startvektor:", ArgType.VECTOR, "d", 100 ), 
                 new Argument("Mantissenlänge:", ArgType.PRECISION, "16"), 
                 Argument.RUN_BUTTON);
@@ -122,7 +121,7 @@ public final class SolveNonLinearEquationExpr implements Task
             }
             
             iterx = iterx.add( x );
-            if (i==maxiters) break;
+            if (i>maxiters) break;
         }
       
         iterformula.addNewLine(2);

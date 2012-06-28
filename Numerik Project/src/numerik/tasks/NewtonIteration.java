@@ -21,7 +21,7 @@ public class NewtonIteration implements Task
         this.taskPane = taskPane;
         taskPane.createJToolBarByArguments(new Argument("k:", ArgType.INTEGER, "5"), new Argument("a:", ArgType.DECIMAL, "18"), 
                                            new Argument("<html>x<sub>0</sub>:</html>", ArgType.DECIMAL, "12800"), 
-                                           new Argument("Genauigkeit:", ArgType.DOUBLEPRECISION, "16"), Argument.RUN_BUTTON);
+                                           new Argument("Mantissenlänge:", ArgType.DOUBLEPRECISION, "16"), Argument.RUN_BUTTON);
     }
 
     @Override

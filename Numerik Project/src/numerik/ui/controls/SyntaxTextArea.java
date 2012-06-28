@@ -6,6 +6,7 @@ import java.util.Collection;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+//import javax.swing.plaf.ComponentUI;
 import javax.swing.text.*;
 
 import numerik.ui.misc.ListFilter;
@@ -143,6 +144,20 @@ public class SyntaxTextArea extends JTextPane
         {
             this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "NULL");
         }
+        
+//        new ParagraphView(doc.getDefaultRootElement())
+//        {
+//            @Override
+//            protected void layout(int width, int height)
+//            {
+//                super.layout(Short.MAX_VALUE, height);
+//            }
+//            
+//            public float getMinimumSpan(int axis)
+//            {
+//                return super.getPreferredSpan(axis);
+//            }
+//        };
         
         list.addMouseListener(new MouseAdapter()
         {
@@ -512,4 +527,23 @@ public class SyntaxTextArea extends JTextPane
     {
         return c == '_' || c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z';
     }
+    
+//    public boolean getScrollableTracksViewportWidth()
+//    {
+//        Component parent = getParent();  
+//        ComponentUI ui = getUI();  
+//        
+//        return parent != null ? (ui.getPreferredSize(this).width <= parent.getSize().width) : true;
+//    }
+//    @Override
+//    public boolean getScrollableTracksViewportWidth()
+//    {
+//       return false;
+//    }
+    
+//    @Override
+//    public void layout(int width, int height) 
+//    {
+//        super.layout(Short.MAX_VALUE, height);
+//    }
 }

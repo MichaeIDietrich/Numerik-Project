@@ -29,7 +29,7 @@ public final class LUDecomposition implements Task
                 new Argument("Optimieren",      ArgType.BOOLEAN),
                 new Argument("Pivot-Strategie", ArgType.BOOLEAN),
                 new Argument("Norm:", "Zeilensummen-Norm", "Frobenius-Euklid-Norm"),
-                new Argument("Mantissenlänge",  ArgType.PRECISION, "5"),
+                new Argument("Mantissenlänge:",     ArgType.PRECISION, "5"),
                 new Argument("Hilfe", ArgType.BOOLEAN),
                 Argument.RUN_BUTTON);
     }
@@ -76,9 +76,9 @@ public final class LUDecomposition implements Task
             b = P.mult(b);
             b.name = name;
         } 
-
+        
         Vector x = A.solveX(b);
-
+        
         
         // ####### Alle folgenden Berechnungen werden mit "maximaler" Präzision ausgeführt #########
         MathLib.enableRound( false );
@@ -87,10 +87,10 @@ public final class LUDecomposition implements Task
         Vector invAb = invA.mult(trueb);
         Vector     r = trueA.mult(x).sub(b);
         MathLib.enableRound( true );
-
+        
         BigDecimal     kappa = invA.norm().multiply( trueA.norm() );
         BigDecimal relFehler = kappa.multiply( r.norm().divide( b.norm(), MathLib.getPrecision(), RoundingMode.HALF_UP) );
-       
+        
         
         // ####### Ausgabe mit niedriger Präzision / Achtung! Ausgabe sollte Mantissengenauigkeit haben. #########
         LatexFormula formula = new LatexFormula();
@@ -100,6 +100,17 @@ public final class LUDecomposition implements Task
         
         formula.addNewLine(2);
         formula.addText("Löse Gleichung der Form ").addLatexString(A.name+" \\cdot x = "+b.name).addNewLine(2);
+        
+        if (hilfe)
+        {
+            formula.addText("  - zerlege dazu $"+A.name+"\\cdot{x} = "+b.name+"$  in  $(L \\cdot U)\\cdot{x} = "+b.name+"$ ").addNewLine(1); 
+            formula.addText("  - substituiere nach Auflösen der Klammern $U\\cdot{x}$ mit $y$.").addNewLine(1);
+            formula.addText("  - löse zuerst    'vorwärts': (1) $L\\cdot{y}="+b.name+"$").addNewLine(1);
+            formula.addText("  - und danach 'rückwärts': (2) $U\\cdot{x}=y$.").addNewLine(1);
+            formula.addNewLine(2);
+        }
+        
+        formula.addTextUL("gegeben").addNewLine(1);
         formula.addText(A.name+" = ").addMatrix(A).addText(", "+b.name+" = ").addVector(b).addNewLine(2);
         formula.addFormula( recorder.get( true ) );
         formula.addText("x = ").addVector(x).addText(",     Exakt: "+A.name+"^{-1}").addSymbol("*").addText(b.name+" = ");

@@ -32,6 +32,8 @@ public class RungeKuttaOrder4Expr implements Task
                 new Argument("Funktion:", ArgType.EXPRESSION, "y-x^2+1", 400),
                 new Argument("Startwert:", ArgType.DECIMAL_EX, "0"),
                 new Argument("Funktionswert:", ArgType.DECIMAL_EX, "0.5"),
+                new Argument("Obere Schranke:", ArgType.DECIMAL_EX, "2"),
+                new Argument("Schrittweite:", ArgType.DECIMAL_EX, "0.2"),
                 Argument.PRECISION, Argument.RUN_BUTTON);
     }
     
@@ -41,8 +43,7 @@ public class RungeKuttaOrder4Expr implements Task
     {
         function = parameters[0].toText();
         
-        
-        MathLib.setPrecision(parameters[3].toDecimal().intValue());
+        MathLib.setPrecision(parameters[5].toDecimal().intValue());
         MathLib.setRoundingMode(MathLib.EXACT);
         
         formula = new LatexFormula();
@@ -59,27 +60,26 @@ public class RungeKuttaOrder4Expr implements Task
         formula.addLatexString("k_3 = h \\cdot f( x + \\frac{h}{2}, w_i + \\frac{k_2}{2} )").addNewLine();
         formula.addLatexString("k_4 = h \\cdot f( x + h, w_i + k_3 )").addNewLine(3);
         
-        formula.addFormula( calculateRungeKuttaDGL(parameters[1].toDecimal(), parameters[2].toDecimal()) );
+        formula.addFormula( calculateRungeKuttaDGL(parameters[1].toDecimal(), parameters[2].toDecimal(), parameters[3].toDecimal(), parameters[4].toDecimal()) );
         
         taskPane.setViewPortView(new TaskScrollPane(formula));
     }
     
-    
-    public LatexFormula calculateRungeKuttaDGL(BigDecimal x_0, BigDecimal y_0)
+    public LatexFormula calculateRungeKuttaDGL(BigDecimal x_0, BigDecimal y_0, BigDecimal upperBound, BigDecimal stepRange)
     {
         LatexFormula internFormula = new LatexFormula();
         
         // Die Zeit oder ein x-Wert, bis die Iteration abgebrochen werden soll,
         // weil sich die Rekursion am Ende des Intervalls befindet (Bsp. 0 <= t <= 2)
-        BigDecimal timeTillBreak = TWO;
+        BigDecimal timeTillBreak = upperBound;
         
         // Schritte h, die durchgeführt werden, um Punkte der 
         // Differenzialfunktionen zu berechnen
-        BigDecimal h = TWO.divide(BigDecimal.TEN);
+        BigDecimal h = stepRange;
         
         // Berechnen der benötigten Iterationen, um die Funktionswerte
         // bis Zeit t zu berechnen
-        int iterations = timeTillBreak.divide(h, MathLib.getPrecision(), RoundingMode.HALF_UP).intValue();
+        int iterations = timeTillBreak.abs().add(x_0.abs()).divide(h, MathLib.getPrecision(), RoundingMode.HALF_UP).intValue();
         
         // Anfangswertproblem, Bsp.: y(0) = 5, die Startzeit ist hierbei 0
         BigDecimal x = x_0;

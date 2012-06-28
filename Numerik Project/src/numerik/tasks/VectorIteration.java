@@ -25,7 +25,7 @@ public class VectorIteration implements Task
                                            new Argument("Ignoriere Konvergenzkrit.", ArgType.BOOLEAN),
                                            new Argument("Startvektor:", ArgType.VECTOR, 100),
                                            new Argument("n = ", ArgType.PRECISION, "20"),
-                                           new Argument("Mant = ", ArgType.PRECISION,  "7"),
+                                           new Argument("Mantissenlänge:", ArgType.PRECISION,  "7"),
                                            new Argument("Hilfe", ArgType.BOOLEAN), 
                                                Argument.RUN_BUTTON);
     }

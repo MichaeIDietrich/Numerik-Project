@@ -2,15 +2,14 @@ package numerik.tasks;
 
 import javax.swing.JComponent;
 
-public class Argument
+public final class Argument
 {
     public enum ArgType { MATRIX, VECTOR, DECIMAL, DECIMAL_EX, INTEGER, EXPRESSION, BOOLEAN, CHOICE, 
         PRECISION, DOUBLEPRECISION, RUN_BUTTON, STOP_BUTTON }
     
-    public final static Argument RUN_BUTTON = new Argument(null, ArgType.RUN_BUTTON); 
-    public final static Argument STOP_BUTTON = new Argument(null, ArgType.STOP_BUTTON); 
-    public final static Argument PRECISION = new Argument("Genauigkeit:", ArgType.PRECISION, "5"); 
-    public final static Argument DOUBLEPRECISION = new Argument("Genauigkeit:", ArgType.DOUBLEPRECISION, "5"); 
+    public final static Argument RUN_BUTTON = new Argument(null, ArgType.RUN_BUTTON);
+    public final static Argument STOP_BUTTON = new Argument(null, ArgType.STOP_BUTTON);
+    public final static Argument PRECISION = new Argument("Mantissenlänge:", ArgType.PRECISION, "16");
     
     private String name;
     private ArgType argumentType;
@@ -44,6 +43,11 @@ public class Argument
         this.argumentType = argumentType;
         this.defaultValue = defaultValue == null ? "" : defaultValue;
         this.controlWidth = controlWidth;
+        // die Standardgröße des JSpinners auf 100 setzen
+        if (argumentType == ArgType.PRECISION && controlWidth == 50)
+        {
+            this.controlWidth = 100;
+        }
     }
     
     
