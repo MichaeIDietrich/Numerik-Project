@@ -164,6 +164,13 @@ public final class MathLib
     
     public static BigDecimal pow(BigDecimal base, BigDecimal exponent)
     {
+        // Spezialfall für Basis kleiner Null und Exponent kein Integer
+        double x = base.doubleValue();
+        double y = exponent.doubleValue();
+        if (x < 0 && Math.floor(y) != y)
+        {
+            return round(BigDecimal.valueOf(Math.pow(-x, y)).negate());
+        }
         return round(BigDecimal.valueOf(Math.pow(base.doubleValue(), exponent.doubleValue())));
     }
     
