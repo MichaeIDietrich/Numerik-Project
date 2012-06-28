@@ -43,7 +43,7 @@ public final class SolveNonLinearEquationExpr implements Task
                 new Argument("Funktion 1:", ArgType.EXPRESSION, "x⋅x+y⋅y+0.6⋅y-0.16", 450),
                 new Argument("Funktion 2:", ArgType.EXPRESSION, "x⋅x-y⋅y+x-1.6⋅y-0.14", 450),
                 new Argument("Funktion 3:", ArgType.EXPRESSION, 450),
-                new Argument("max. Iterationen:", ArgType.PRECISION, "100"),
+                new Argument("<html>Iterationen<sub>max</sub>:</html>", ArgType.PRECISION, "100"),
                 new Argument("Startvektor:", ArgType.VECTOR, "d", 100 ), 
                 new Argument("Mantissenlänge:", ArgType.PRECISION, "16"), 
                 Argument.RUN_BUTTON);
