@@ -38,18 +38,18 @@ public final class OutputFrame extends JFrame
         
         final TabbedTaskPane tabMain = new TabbedTaskPane(this);
         tabMain.addTab("Expression", new ExpressionTask(), "Eingabebereich, um mathematische Ausdrücke auszuwerten");
-        tabMain.addTab("Dezimal->Binär", new DecimalToBinary());
-        tabMain.addTab("LU-Zerlegung", new LUDecomposition());
-        tabMain.addTab("Eingabefehler-Abschätzung", new InputErrorEstimation());
-        tabMain.addTab("Jakobi-Iteration", new JacobiIteration());
-        tabMain.addTab("Newton Wurzel", new NewtonIteration());
+        tabMain.addTab("Dezimal->Binär", new DecimalToBinary(), "Mantissengenaue Umrechnung einer Dezimalzahl in eine", "Binärzahl mit anschließender Fehlerbetrachtung.");
+        tabMain.addTab("LU-Zerlegung", new LUDecomposition(), "Berechnet den approximierten Vektor x der Gleichung Ax=b.");
+        tabMain.addTab("Eingabefehler-Abschätzung", new InputErrorEstimation(), "Berechnet den Eingabefehler für die Gleichung Ax=b mit", "(A+ΔA)(x+Δx)=(b+Δb).");
+        tabMain.addTab("Jakobi-Iteration", new JacobiIteration(), "Löse lineare (!) Gleichung.");
+        tabMain.addTab("Newton Wurzel", new NewtonIteration(), "Einfache Berechnung der n-ten Wurzel einer Zahl>0 mittels Heron-Verfahren");
 //        tabMain.addTab("Non-Lin-GS", new SolveNonLinearEquation2());
-        tabMain.addTab("Non-Lin-GS (Expr)", new SolveNonLinearEquationExpr());
-        tabMain.addTab("Gauss 4P", new GaussIntegrationOrder4());
-        tabMain.addTab("Gauss 4P (Expr)", new GaussIntegrationOrder4Expr());
-        tabMain.addTab("Runge-Kutta-4O", new RungeKuttaOrder4());
-        tabMain.addTab("Runge-Kutta-4O (Expr)", new RungeKuttaOrder4Expr());
-        tabMain.addTab("Vektor-Iteration", new VectorIteration());
+        tabMain.addTab("Non-Lin-GS (Expr)", new SolveNonLinearEquationExpr(), "Löse nichtlineare (und auch lineare) Gleichungssyteme.");
+        tabMain.addTab("Gauss 4P", new GaussIntegrationOrder4(), "Lösen nicht explizit lösbarer Integrale mittels Gauss 4 Punkt Verfahren.");
+        tabMain.addTab("Gauss 4P (Expr)", new GaussIntegrationOrder4Expr(), "Lösen nicht explizit lösbarer Integrale mittels Gauss 4 Punkt Verfahren.");
+        tabMain.addTab("Runge-Kutta-4O", new RungeKuttaOrder4(), "Lösen von Differentialgleichungen erster Ordnung.");
+        tabMain.addTab("Runge-Kutta-4O (Expr)", new RungeKuttaOrder4Expr(), "Lösen von Differentialgleichungen erster Ordnung.");
+        tabMain.addTab("Vektor-Iteration", new VectorIteration(), "Berechnung des größten Eigenwertes λ eines Gleichungssytems (Matrix).");
         tabMain.addTab("Spielwiese", new CustomTask(), "Hier kann mein seine eigenen Berechnungen etc. einfügen", "VIEL SPAẞ");
         tabMain.addTab("Optionen", new Options(), "Einstellungen vornehmen", "Matrizen / Vektoren hinzufügen oder löschen");
         
