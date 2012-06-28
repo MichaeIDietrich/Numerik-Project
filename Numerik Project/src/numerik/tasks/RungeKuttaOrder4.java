@@ -1,9 +1,11 @@
 package numerik.tasks;
 
+import java.math.*;
 import java.math.BigDecimal;
 
 import numerik.calc.MathLib;
 import numerik.expression.Value;
+import numerik.tasks.Argument.ArgType;
 import numerik.ui.controls.TaskPane;
 import numerik.ui.controls.TaskScrollPane;
 import numerik.ui.dialogs.OutputFrame;
@@ -13,22 +15,28 @@ import numerik.ui.misc.LatexFormula;
 // von Anfangswert y0, mit h-Schrittgröße bis zur Zeit t
 public class RungeKuttaOrder4 implements Task
 {
+    private static final BigDecimal TWO = new BigDecimal("2");
     
     TaskPane taskPane;
     LatexFormula formula = new LatexFormula();
-    
 
     @Override
     public void init(OutputFrame frame, TaskPane taskPane)
     {
-        this.taskPane = taskPane;       
+        this.taskPane = taskPane;    
+        
+        taskPane.createJToolBarByArguments(
+                new Argument("Startwert:", ArgType.DECIMAL_EX, "0"),
+                new Argument("Funktionswert:", ArgType.DECIMAL_EX, "0.5"),
+                new Argument("Obere Schranke:", ArgType.DECIMAL_EX, "2"),
+                new Argument("Schrittweite:", ArgType.DECIMAL_EX, "0.2"),
+                Argument.PRECISION, Argument.RUN_BUTTON);
     }
-
     
     @Override
     public void run(Value... parameters)
     {
-        MathLib.setPrecision(15);
+        MathLib.setPrecision(parameters[4].toDecimal().intValue());
         MathLib.setRoundingMode(MathLib.EXACT);
         
         formula = new LatexFormula();
@@ -45,31 +53,31 @@ public class RungeKuttaOrder4 implements Task
         formula.addLatexString("k_3 = h \\cdot f( x + \\frac{h}{2}, w_i + \\frac{k_2}{2} )").addNewLine();
         formula.addLatexString("k_4 = h \\cdot f( x + h, w_i + k_3 )").addNewLine(3);
         
-        formula.addFormula( calculateRungeKuttaDGL() );
+        formula.addFormula( calculateRungeKuttaDGL(parameters[0].toDecimal(), parameters[1].toDecimal(), parameters[2].toDecimal(), parameters[3].toDecimal()) );
         
         taskPane.setViewPortView(new TaskScrollPane(formula));
     }
     
 
-    public LatexFormula calculateRungeKuttaDGL()
+    public LatexFormula calculateRungeKuttaDGL(BigDecimal x_0, BigDecimal y_0, BigDecimal upperBound, BigDecimal stepRange)
     {
         LatexFormula internFormula = new LatexFormula();
         
         // Die Zeit oder ein x-Wert, bis die Iteration abgebrochen werden soll,
         // weil sich die Rekursion am Ende des Intervalls befindet (Bsp. 0 <= t <= 2)
-        double timeTillBreak = 2d;
+        BigDecimal timeTillBreak = upperBound;
         
         // Schritte h, die durchgeführt werden, um Punkte der 
         // Differenzialfunktionen zu berechnen
-        double h = 0.2d;
+        BigDecimal h = stepRange;
         
         // Berechnen der benötigten Iterationen, um die Funktionswerte
         // bis Zeit t zu berechnen
-        int iterations = (int) Math.round(timeTillBreak / h);
+        int iterations = timeTillBreak.abs().add(x_0.abs()).divide(h, MathLib.getPrecision(), RoundingMode.HALF_UP).intValue();
         
         // Anfangswertproblem, Bsp.: y(0) = 5, die Startzeit ist hierbei 0
-        double x = 0d;
-        double y = 0.5d;
+        BigDecimal x = x_0;
+        BigDecimal y = y_0;
 
         
         internFormula.addText("definiere Intervall: " + showRoundedVal(x) + " \\leq t \\leq " + showRoundedVal(timeTillBreak)).addNewLine();
@@ -85,29 +93,30 @@ public class RungeKuttaOrder4 implements Task
         
         // Funktion (Differenzialgleichung) zum Ausrechnen der Funktionswerte
         // + Ausrechnung des Anfangsfunktionswertes
-        double w = y;
+        BigDecimal w = y;
         
         internFormula.addLatexString("0 & " + showRoundedVal(x) + " & " + w + "\\\\");
         
         for (int i = 1; i < iterations + 1; i++)
         {
             // k1 = h * f(x, w)
-            double k1 = h * getFunctionValueFromDGL(x, w);
-
+            BigDecimal k1 = h.multiply(getFunctionValueFromDGL(x, w));
+            
             // k2 = h * f(x + (1/2)h, w + (k1/ 2))
-            double k2 = h * getFunctionValueFromDGL(x + (h/2d), w + (k1 / 2d));
+            BigDecimal k2 = h.multiply(getFunctionValueFromDGL(x.add(h.divide(TWO)), w.add(k1.divide(TWO))));
             
             // k3 = h * f(x + (1/2)h, w + (k2/ 2)) 
-            double k3 = h * getFunctionValueFromDGL(x + (h/2d), w + (k2 / 2d));
+            BigDecimal k3 = h.multiply(getFunctionValueFromDGL(x.add(h.divide(TWO)), w.add(k2.divide(TWO))));
             
             // k4 = h * f(x + h, w0 + k3)
-            double k4 = h * getFunctionValueFromDGL(x + h, w + k3);
+            BigDecimal k4 = h.multiply(getFunctionValueFromDGL(x.add(h), w.add(k3)));
             
             // wi+1 = wi + (1/6)(k1 + 2*k2 + 2*k3 + k4)
-            w = w + ((k1 + 2*k2 + 2*k3 + k4)/(6d));
+            
+            w = w.add(k1.add(k2.multiply(TWO)).add(k3.multiply(TWO)).add(k4).divide(new BigDecimal("6"), MathLib.getPrecision(), RoundingMode.HALF_UP));
             
             // Weitergehen der Zeit t oder auch x --> x = x + h
-            x = x + h;
+            x = x.add(h);
             
             internFormula.addLatexString(i +" & "+ showRoundedVal(x) +" & "+ w +"\\\\");
         }
@@ -121,19 +130,21 @@ public class RungeKuttaOrder4 implements Task
     }
     
     
-    public String showRoundedVal(double x) 
+    public String showRoundedVal(BigDecimal x) 
     {
-        BigDecimal temp = MathLib.round(new BigDecimal(x));
+        BigDecimal temp = MathLib.round(x);
         
         return temp.toString();
     }
     
     // Die eigentliche Funktion zum Ausrechnen der Funktionswerte
-    public double getFunctionValueFromDGL(double x, double y)
+    public BigDecimal getFunctionValueFromDGL(BigDecimal x, BigDecimal y)
     {
-        return y - Math.pow(x, 2) + 1;
+        double x_double = x != null ? x.doubleValue() : 0;
+        double y_double = y != null ? y.doubleValue() : 0;
+        
+        Double value = new Double(y_double - Math.pow(x_double, 2d) + 1d);
+        
+        return BigDecimal.valueOf(value);
     }
-    
-    
-
 }
