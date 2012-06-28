@@ -1772,5 +1772,5 @@ public class Matrix_TestFixture
         
         MathLib.enableRound(false);
         MathLib.setPivotStrategy(false);
-    }   
+    }
 }

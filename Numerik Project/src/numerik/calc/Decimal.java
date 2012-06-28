@@ -139,7 +139,7 @@ public final class Decimal
         return new Decimal(number.add(augend.getBigDecimal())).round();
     }
     
-    public Decimal subtract(Decimal subtrahend)
+    public Decimal sub(Decimal subtrahend)
     {
         return new Decimal(number.subtract(subtrahend.getBigDecimal())).round();
     }
@@ -149,21 +149,21 @@ public final class Decimal
         return new Decimal(number.multiply(multiplicand.getBigDecimal())).round();
     }
     
-    public Decimal divide(Decimal divisor)
+    public Decimal div(Decimal divisor)
     {
         if (MathLib.getRoundingMode() == MathLib.EXACT)
         {
-            return divide(divisor, new MathContext(MathLib.getPrecision(), RoundingMode.HALF_UP));
+            return div(divisor, new MathContext(MathLib.getPrecision(), RoundingMode.HALF_UP));
         }
-        return divide(divisor, MathLib.getPrecision(), RoundingMode.HALF_UP);
+        return div(divisor, MathLib.getPrecision(), RoundingMode.HALF_UP);
     }
     
-    public Decimal divide(Decimal divisor, MathContext mc)
+    public Decimal div(Decimal divisor, MathContext mc)
     {
         return new Decimal(number.divide(divisor.getBigDecimal(), mc)).round();
     }
     
-    public Decimal divide(Decimal divisor, int scale, RoundingMode roundingMode)
+    public Decimal div(Decimal divisor, int scale, RoundingMode roundingMode)
     {
         return new Decimal(number.divide(divisor.getBigDecimal(), scale, roundingMode)).round();
     }
