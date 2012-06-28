@@ -121,7 +121,7 @@ public final class SolveNonLinearEquationExpr implements Task
             }
             
             iterx = iterx.add( x );
-            if (i==maxiters) break;
+            if (i>maxiters) break;
         }
       
         iterformula.addNewLine(2);

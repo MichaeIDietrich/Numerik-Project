@@ -85,7 +85,9 @@ public class SolveNonLinearEquation implements Task
             }
             
             iterx = iterx.add( x );
-            if (i==1000) break;
+            
+            // 1000 ist hierbei die Abbruchbedingung
+            if (i>1000) break;
         }
         
         iterformula.addNewLine(2);
