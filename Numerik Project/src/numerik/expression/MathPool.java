@@ -92,7 +92,14 @@ public final class MathPool
                     return value;
                     
                 case DIVISION:
-                    value = new Value(MathLib.round(var1.toDecimal().divide(var2.toDecimal(), MathLib.getPrecision(), RoundingMode.HALF_UP)));
+                    if (MathLib.getRoundingMode() == MathLib.EXACT)
+                    {
+                        value = new Value(MathLib.round(var1.toDecimal().divide(var2.toDecimal(), new MathContext(MathLib.getPrecision(), RoundingMode.HALF_UP))));
+                    }
+                    else
+                    {
+                        value = new Value(MathLib.round(var1.toDecimal().divide(var2.toDecimal(), MathLib.getPrecision(), RoundingMode.HALF_UP)));
+                    }
                     
                     calcSteps.addLatexString(var1.toDecimal().toPlainString() + ":" + var2.toDecimal().toPlainString() + "=");
                     calcSteps.addText(value.toDecimal().toPlainString()).addNewLine();
