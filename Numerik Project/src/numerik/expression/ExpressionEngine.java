@@ -14,8 +14,18 @@ public final class ExpressionEngine
     
     enum Token
     {
-        NONE, EQUAL, UNEQUAL, GREATER, LESS, GREATEREQ, LESSEQ, ASSIGN, PLUS, MINUS, TIMES, DIVISION, POW, 
-        LGROUP, RGROUP, KOMMA, FUNCTION, NUMERIC, VARIABLE, LMATRIX, RMATRIX//, LINDEX, RINDEX
+        NONE("Ende"), EQUAL("="), UNEQUAL("≠"), GREATER(">"), LESS("<"), 
+        GREATEREQ("≥"), LESSEQ("≤"), ASSIGN("Zuweisung"), PLUS("+"), MINUS("_"), 
+        TIMES("⋅"), DIVISION("÷"), POW("^"), LGROUP("öffnende Klammer"), 
+        RGROUP("schließende Klammer"), KOMMA(","), FUNCTION("Funktion"), 
+        NUMERIC("Zahl"), VARIABLE("Variable"), LMATRIX("öffnende eckigie Klammer"), 
+        RMATRIX("schließende eckige Klammer");//, LINDEX, RINDEX
+        
+        String name;
+        
+        Token(String name) {
+            this.name = name;
+        }
     }
     
     private final char END_OF_INPUT = 0;
@@ -82,6 +92,7 @@ public final class ExpressionEngine
     
     public Value solve(String input) throws InvalidExpressionException
     {
+        // cstring konvertieren
         this.input = new char[input.length() + 1];
         System.arraycopy(input.toCharArray(), 0, this.input, 0, input.length());
         this.input[input.length()] = END_OF_INPUT;
@@ -329,7 +340,7 @@ public final class ExpressionEngine
             }
         }
         
-        throw new InvalidExpressionException("Ungültige Zeichenfolge: " + nextToken + " darf nicht auf " + lastToken + " folgen.");
+        throw new InvalidExpressionException("Ungültige Zeichenfolge: '" + nextToken.name + "' darf nicht auf '" + lastToken.name + "' folgen.");
     }
     
     
@@ -497,7 +508,7 @@ public final class ExpressionEngine
                             if (lastToken != Token.RMATRIX)
                             {
                                 
-                                throw new InvalidExpressionException("Klammer zu fehlt.");
+                                throw new InvalidExpressionException("Schließende Klammer fehlt.");
                             }
                             lastToken = getNextToken(); // müsste, glaube ich,
                                                         // im else stehen
@@ -531,7 +542,7 @@ public final class ExpressionEngine
                     if (lastToken != Token.RMATRIX)
                     {
                         
-                        throw new InvalidExpressionException("Eckige Klammer zu fehlt.");
+                        throw new InvalidExpressionException("Schließende eckige Klammer fehlt.");
                     }
                     lastToken = getNextToken(); // müsste, glaube ich, im else
                                                 // stehen
