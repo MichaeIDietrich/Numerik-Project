@@ -1,22 +1,28 @@
 package numerik.ui.controls;
 
 import java.awt.*;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import javax.swing.*;
-import javax.swing.plaf.basic.ComboPopup;
+import javax.swing.plaf.basic.*;
 
 public final class ToolTippedComboBox
 {
     
-    public ToolTippedComboBox(JComboBox<String> comboBox, ArrayList<Image> previewImages, Color background)
+;    public ToolTippedComboBox(JComboBox<String> comboBox, ArrayList<Image> previewImages, Color background)
     {
+        if (manipulateTooltip(comboBox, previewImages, background)) {
+            return;
+        }
+        
         // an dieser Stelle muss zwischen den Betriebssystemen unterschieden werden, weil wir das jeweilige "native" Look&Feel unterstützen möchten
         // und wir deshalb von verschieden Klassen erben müssen und auch andere Sachen sich leicht unterscheiden (teilweise auch wegen Grafik-Bugs)
         switch (System.getProperty("os.name"))
         {
             case "Windows 7":
-                comboBox.setUI(new ToolTippedComboBoxUI_Windows7(previewImages, background));
+            case "Windows 8":
+                comboBox.setUI(new ToolTippedComboBoxUI_Windows(previewImages, background));
                 comboBox.setRenderer(new ComboBoxRenderer());
                 break;
             
@@ -34,13 +40,37 @@ public final class ToolTippedComboBox
     }
     
     
-    protected final class ToolTippedComboBoxUI_Windows7 extends com.sun.java.swing.plaf.windows.WindowsComboBoxUI
+    private boolean manipulateTooltip(JComboBox<String> comboBox, ArrayList<Image> previewImages, Color background) {
+        
+        try {
+            
+            Field listBoxField = BasicComboBoxUI.class.getDeclaredField("listBox");
+            if (listBoxField != null) {
+                
+                listBoxField.setAccessible(true);
+                
+                Object res = listBoxField.get(comboBox.getUI());
+                if (res instanceof JList<?>) {
+                    new ListItemImageToolTip((JList<?>)res, previewImages, background);
+                    return true;
+                }
+            }
+            
+        } catch (Exception ex) { 
+            ex.printStackTrace();
+        }
+        
+        return false;
+    }
+    
+    
+    protected final class ToolTippedComboBoxUI_Windows extends com.sun.java.swing.plaf.windows.WindowsComboBoxUI
     {
         
         private ArrayList<Image> images;
         private Color background = Color.WHITE;
         
-        public ToolTippedComboBoxUI_Windows7(ArrayList<Image> previewImages, Color background)
+        public ToolTippedComboBoxUI_Windows(ArrayList<Image> previewImages, Color background)
         {
             images = previewImages;
             this.background = background;
